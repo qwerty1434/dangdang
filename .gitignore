@@ -1,3 +1,5 @@
 
 backend/src/main/resources/application-personal.properties
 backend/src/main/resources/application-local.properties
+.idea/workspace.xml
+.gradle/7.5/checksums/checksums.lock
