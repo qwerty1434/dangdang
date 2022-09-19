@@ -1,6 +1,7 @@
 package com.dangdang.funding.domain;
 
 import com.dangdang.category.domain.Category;
+import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.member.domain.Maker;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -42,8 +43,10 @@ public class Funding {
     @Column(name = "target_price" , nullable = false)
     private int targetPrice;
 
+    @Builder.Default
+    @ColumnDefault("0")
     @Column(name = "now_price" , nullable = false)
-    private int nowPrice;
+    private int nowPrice = 0;
 
     @Column(name = "project_introduction" , nullable = false)
     private String projectIntroduction;
@@ -62,11 +65,28 @@ public class Funding {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" )
     private Timestamp startDate;
 
+
+    @Builder.Default
     @ColumnDefault("0")
     @Column(name = "state", nullable = false)
-    private int state;
+    private int state = 0;
 
-    @ColumnDefault("작성중")
+    @Builder.Default
+    @ColumnDefault("작성 중")
     @Column(name = "detail_state", nullable = false)
-    private int detailState;
+    private String detailState = "작성 중";
+
+    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category){
+        return Funding.builder()
+                .maker(maker)
+                .category(category)
+                .title(request.getTitle())
+                .targetPrice(request.getTargetPrice())
+                .projectIntroduction(request.getProjectIntroduction())
+                .company(request.getCompany())
+                .businessLicenseNum(request.getBusinessLicenseNum())
+                .endDate(request.getEndDate())
+                .startDate(request.getStartDate())
+                .build();
+    }
 }
