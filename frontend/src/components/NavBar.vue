@@ -1,21 +1,30 @@
 <template>
   <div>
-    <div class="logo"></div>
-    <div class="logotext">당당</div>
+    <div>
+      <router-link :to="{ name: 'home' }">
+        <div class="logo"></div>
+        <div class="logotext">당당</div>
+      </router-link>
+    </div>
     <div class="searchbar"></div>
     <div class="searchbutton"></div>
     <div class="searchtext">검색</div>
-    <div class="login">로그인</div>
+    <router-link :to="{ name: 'login' }" class="login">로그인</router-link>
     <div class="bar1">|</div>
     <div class="assign">회원가입</div>
     <div class="bar2">|</div>
     <div class="category">카테고리</div>
     <div class="plan">펀딩예정</div>
-    <div class="funding">당당펀딩</div>
-    <div class="charity">당당후원</div>
+
+    <router-link :to="{ name: 'funding' }" class="funding"
+      >당당펀딩</router-link
+    >
+    <router-link :to="{ name: 'charity' }" class="charity"
+      >당당후원</router-link
+    >
     <div class="notification">공지사항</div>
 
-    <div class=""></div>
+    <div class="shadow"></div>
     <div class=""></div>
   </div>
 </template>
@@ -236,5 +245,18 @@ export default {
   /* identical to box height */
 
   color: #000000;
+}
+.shadow {
+  position: absolute;
+  width: 1920px;
+  height: 10px;
+  left: 0px;
+  top: 230px;
+
+  background: linear-gradient(
+    180deg,
+    #e7e7e7 0%,
+    rgba(231, 231, 231, 0) 80.73%
+  );
 }
 </style>
