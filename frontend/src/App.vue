@@ -1,8 +1,8 @@
 <template>
   <div>
     <nav-bar></nav-bar>
-    <div class="banner"></div>
   </div>
+  <router-view />
 </template>
 
 <script>
@@ -15,14 +15,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.banner {
-  position: absolute;
-  width: 100%;
-  height: 550px;
-  left: 0px;
-  top: 230px;
-
-  background: url("@/assets/550banner.png");
-}
-</style>
+<style scoped></style>

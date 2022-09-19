@@ -14,7 +14,7 @@
     <div class="funding">당당펀딩</div>
     <div class="charity">당당후원</div>
     <div class="notification">공지사항</div>
-    <div class="imminent">마감임박</div>
+
     <div class=""></div>
     <div class=""></div>
   </div>
@@ -234,22 +234,6 @@ export default {
   font-size: 28px;
   line-height: 32px;
   /* identical to box height */
-
-  color: #000000;
-}
-.imminent {
-  position: absolute;
-  width: 400px;
-  height: 60px;
-  left: 760px;
-  top: 850px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 60px;
-  line-height: 68px;
-  text-align: center;
 
   color: #000000;
 }
