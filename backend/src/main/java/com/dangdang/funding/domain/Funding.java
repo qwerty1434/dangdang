@@ -21,7 +21,6 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class Funding {
 
     @Id
@@ -44,7 +43,6 @@ public class Funding {
     private int targetPrice;
 
     @Builder.Default
-    @ColumnDefault("0")
     @Column(name = "now_price" , nullable = false)
     private int nowPrice = 0;
 
@@ -72,7 +70,7 @@ public class Funding {
     private int state = 0;
 
     @Builder.Default
-    @ColumnDefault("작성 중")
+//    @ColumnDefault("작성 중")
     @Column(name = "detail_state", nullable = false)
     private String detailState = "작성 중";
 
