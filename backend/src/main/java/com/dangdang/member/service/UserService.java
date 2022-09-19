@@ -3,7 +3,7 @@ package com.dangdang.member.service;
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.User;
-import com.dangdang.member.dto.JoinInputDTO;
+import com.dangdang.member.dto.JoinRequest;
 import com.dangdang.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
@@ -23,7 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public void join(JoinInputDTO user) throws NotFoundException {
+    public void join(JoinRequest user) throws NotFoundException {
 
         chkEmail(user.getEmail());
         chkNickname(user.getNickname());
