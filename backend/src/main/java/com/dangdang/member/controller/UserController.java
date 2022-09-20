@@ -1,7 +1,7 @@
 package com.dangdang.member.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
-import com.dangdang.member.dto.JoinRequest;
+import com.dangdang.member.dto.UserJoinRequest;
 import com.dangdang.member.dto.ResultResponse;
 import com.dangdang.member.dto.StringRequest;
 import com.dangdang.member.service.UserService;
@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping("/join")
     @ApiOperation(value="당당펀딩(일반) 회원가입", notes = "가입 축하 메일은 현재 안갑니다.")
-    public void join(@RequestBody JoinRequest user) throws NotFoundException {
+    public void join(@RequestBody UserJoinRequest user) throws NotFoundException {
         userService.join(user);
     }
 

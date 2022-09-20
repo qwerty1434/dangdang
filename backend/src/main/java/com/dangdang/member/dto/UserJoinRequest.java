@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JoinRequest {
+public class UserJoinRequest {
 
     private String email;
 
