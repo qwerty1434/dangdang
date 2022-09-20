@@ -1,6 +1,9 @@
 package com.dangdang.order.domain;
 
+import com.dangdang.category.domain.Category;
 import com.dangdang.funding.domain.Funding;
+import com.dangdang.funding.dto.FundingRequest;
+import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -45,17 +48,16 @@ public class OrderHistory {
     @Column(name = "email" , nullable = false)
     private String email;
 
-    public OrderHistory(User user, Funding funding, int totalPrice, String address, String phoneNumber, String email ) {
-        this.user = user;
-        this.funding = funding;
-        this.totalPrice = totalPrice;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-
-
+    public static OrderHistory OrderHistoryCreate(User user, Funding funding, int totalPrice, String address, String phoneNumber, String email ) {
+        return OrderHistory.builder()
+                .user(user)
+                .funding(funding)
+                .totalPrice(totalPrice)
+                .address(address)
+                .phoneNumber(phoneNumber)
+                .email(email)
+                .build();
     }
-
 
 
 }

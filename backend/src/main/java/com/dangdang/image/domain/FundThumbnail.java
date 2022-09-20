@@ -1,4 +1,4 @@
-package com.dangdang.thumbnail.domain;
+package com.dangdang.image.domain;
 
 
 import com.dangdang.funding.domain.Funding;
