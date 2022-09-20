@@ -1,9 +1,6 @@
 package com.dangdang.order.domain;
 
-import com.dangdang.category.domain.Category;
 import com.dangdang.funding.domain.Funding;
-import com.dangdang.funding.dto.FundingRequest;
-import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
