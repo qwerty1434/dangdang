@@ -1,18 +1,13 @@
 package com.dangdang.funding.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
-import com.dangdang.funding.domain.Funding;
-import com.dangdang.funding.dto.FundingContent;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.funding.dto.FundingResponse;
 import com.dangdang.funding.service.FundingService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/funding")
@@ -38,6 +33,24 @@ public class FundingController {
     @ApiOperation(value="메이커가 개최한 펀딩 목록 조회", notes = "state= 0: 펀딩 승인전, 1: 펀딩 진행중, 2: 펀딩 완료")
     public ResponseEntity<FundingResponse.fundingList> makerFundingList(int state){
         return ResponseEntity.ok().body(fundingService.MakerFundingList(state));
+    }
+
+    @GetMapping("/search/category")
+    @ApiOperation(value="카테고리 별 조회", notes = "카테고리 타입 별 펀딩 리스트 조회 기능 , page : 페이지 , size : 한 페이지에서 보여줄 개수")
+    public ResponseEntity<FundingResponse.fundingList> categoryList(String category ) throws NotFoundException {
+        return ResponseEntity.ok().body(fundingService.CategoryFundingList(category));
+    }
+
+    @GetMapping("/search")
+    @ApiOperation(value="마감임박, 신규상품, 인기상품 펀딩 리스트 조회", notes = "type=조회조건(endedAt/new/popular) , page : 페이지 , size : 한 페이지에서 보여줄 개수")
+    public ResponseEntity<FundingResponse.fundingList> fundingList (String type) {
+        return ResponseEntity.ok().body(fundingService.FundingList(type));
+    }
+
+    @GetMapping("/detail")
+    @ApiOperation(value="펀딩 상세 조회", notes = "펀딩 상세 페이지 조회 기능으로 fundingId 를 통해 조회한 펀딩의 상세 정보 반환환")
+    public ResponseEntity<FundingResponse.DetailFunding> detailFunding (String fundingId) throws NotFoundException {
+        return ResponseEntity.ok().body(fundingService.DetailFunding(fundingId));
     }
 
 

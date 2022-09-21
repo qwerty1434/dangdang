@@ -12,4 +12,9 @@ public interface FundingRepository extends JpaRepository<Funding, UUID> {
 
     @Query(value = "SELECT * FROM funding WHERE (`maker_id`=:makerId  and `state`=:state) order by `start_date` ", nativeQuery = true)
     List<Funding> findByMakerIdAndState(@Param("makerId") String makerId, @Param("state") int state);
+
+    @Query(value = "SELECT * FROM funding WHERE (`category_id`=:categoryId and `state`=:state) order by `start_date` ", nativeQuery = true)
+    List<Funding> findByCategoryAndState(@Param("categoryId") String categoryId, @Param("state") int state);
+
+    List<Funding> findByState(int state);
 }
