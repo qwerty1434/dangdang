@@ -16,6 +16,8 @@ public class FundingContent {
     private int nowPrice;
     private String detailState;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Seoul")
+    private Timestamp startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Seoul")
     private Timestamp endDate;
     private int achieveRate;
     private String img;
@@ -30,6 +32,7 @@ public class FundingContent {
                 .nowPrice(funding.getNowPrice())
                 .achieveRate(achieveRate)
                 .img(img)
+                .startDate(funding.getStartDate())
                 .endDate(funding.getEndDate())
                 .remainDays(remainDays)
                 .category(category)
