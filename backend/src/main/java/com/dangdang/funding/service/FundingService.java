@@ -113,15 +113,13 @@ public class FundingService {
         }
     }
 
+    // 메이커 마이페이지에서 펀딩 리스트 조회
     public FundingResponse.fundingList MakerFundingList(int state) {
         List<FundingContent> response = new ArrayList<>();
         // 토큰에서 MakerId 값 가져와서 조회해야 하도록 수정하기
         List<Funding> fundings = fundingRepository.findByMakerIdAndState("430b929f-bc2a-49fa-b358-2f876dae6ad8", state);
         for(int i = 0; i < fundings.size(); i++){
             Funding funding = fundings.get(i);
-            if(state == 0 && funding.getDetailState().equals("작성중")){
-                continue;
-            }
             response.add(this.changeResponseFunding(funding));
         }
         return FundingResponse.fundingList.build(response);
@@ -148,6 +146,20 @@ public class FundingService {
 
     // 조회한 펀딩 응답 형태로 변경 (달성률, 메인 썸네일, 남은 펀딩 기간 추가)
     public FundingContent changeResponseFunding(Funding funding){
+        if(funding.getDetailState().equals("작성중")){
+            int achieveRate = 0;
+            int day = 0;
+            String categoryType = null;
+            String img = null;
+            if(funding.getCategory() != null){
+                categoryType = funding.getCategory().getType();
+            }
+            FundThumbnail thumbnail = fundThumbnailRepository.findByFundingIdAndSequence(funding.getId().toString(), 0);
+            if(thumbnail != null){
+                img = thumbnail.getImg();
+            }
+            return FundingContent.Create(funding, achieveRate, img, day, categoryType);
+        }
         int achieveRate = (int)(funding.getNowPrice() / (double)funding.getTargetPrice() * 100);
         FundThumbnail thumbnail = fundThumbnailRepository.findByFundingIdAndSequence(funding.getId().toString(), 0);
         String img = thumbnail.getImg();
@@ -158,6 +170,7 @@ public class FundingService {
         FundingContent fundingContent = FundingContent.Create(funding, achieveRate, img , day , categoryType);
         return fundingContent;
     }
+
 
     // 펀딩 리스트 조회 (마감임박, 인기순, 신제품)
     public FundingResponse.fundingList FundingList(String type) {

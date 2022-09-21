@@ -30,7 +30,7 @@ public class FundingController {
     }
 
     @GetMapping("/maker/list")
-    @ApiOperation(value="메이커가 개최한 펀딩 목록 조회", notes = "state= 0: 펀딩 승인전, 1: 펀딩 진행중, 2: 펀딩 완료")
+    @ApiOperation(value="메이커의 마이페이지에서 펀딩 목록 조회", notes = "state= 0: 펀딩 승인전, 1: 펀딩 진행중, 2: 펀딩 완료")
     public ResponseEntity<FundingResponse.fundingList> makerFundingList(int state){
         return ResponseEntity.ok().body(fundingService.MakerFundingList(state));
     }

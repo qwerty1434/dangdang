@@ -29,6 +29,7 @@ public class FundingContent {
                 .id(funding.getId().toString())
                 .title(funding.getTitle())
                 .companyName(funding.getCompany())
+                .detailState(funding.getDetailState())
                 .nowPrice(funding.getNowPrice())
                 .achieveRate(achieveRate)
                 .img(img)
