@@ -41,4 +41,8 @@ public class Maker implements Serializable {
     @Builder.Default
     private Long fundingSum=0L;
 
+    public void addFundingSum(Long fundingMoney){
+        this.fundingSum+=fundingMoney;
+    }
+
 }

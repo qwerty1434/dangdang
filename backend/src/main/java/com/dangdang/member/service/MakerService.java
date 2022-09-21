@@ -4,6 +4,7 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
+import com.dangdang.member.dto.CoinAppRequest;
 import com.dangdang.member.dto.MakerJoinRequest;
 import com.dangdang.member.dto.UserJoinRequest;
 import com.dangdang.member.repository.MakerRepository;

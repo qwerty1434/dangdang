@@ -2,6 +2,7 @@ package com.dangdang.withdraw.domain;
 
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.withdraw.dto.WithdrawFormRequest;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,6 +49,11 @@ public class WithdrawForm {
 
     @Column(name = "refer_reason" )
     private String referReason;
+
+    @NotNull
+    @Builder.Default
+    @ColumnDefault("false")
+    private boolean isDelete = false;
 
     public static WithdrawForm withdrawFormCreate(Funding funding, WithdrawFormRequest.Create request){
         return WithdrawForm.builder()

@@ -11,6 +11,8 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -45,6 +47,14 @@ public class UserService {
     public void chkNickname(String nickname) throws NotFoundException {
         if(userRepository.findByNickname(nickname) !=null) {
             throw new NotFoundException("이미 사용 중인 닉네임입니다.");
+        }
+    }
+
+    public void vaildUserId(String userId) throws NotFoundException {
+        try{
+            User user = userRepository.findById(UUID.fromString(userId)).get();
+        } catch(Exception e){
+            throw new NotFoundException("유효하지 않은 유저 정보입니다.");
         }
     }
 }
