@@ -6,8 +6,11 @@ import com.dangdang.funding.dto.FundingResponse;
 import com.dangdang.funding.service.FundingService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/api/funding")
@@ -31,20 +34,21 @@ public class FundingController {
 
     @GetMapping("/maker/list")
     @ApiOperation(value="메이커의 마이페이지에서 펀딩 목록 조회", notes = "state= 0: 펀딩 승인전, 1: 펀딩 진행중, 2: 펀딩 완료")
-    public ResponseEntity<FundingResponse.fundingList> makerFundingList(int state){
-        return ResponseEntity.ok().body(fundingService.MakerFundingList(state));
+    public ResponseEntity<FundingResponse.fundingList> makerFundingList(int state, Pageable pageable){
+        return ResponseEntity.ok().body(fundingService.MakerFundingList(state, pageable));
     }
 
     @GetMapping("/search/category")
     @ApiOperation(value="카테고리 별 조회", notes = "카테고리 타입 별 펀딩 리스트 조회 기능 , page : 페이지 , size : 한 페이지에서 보여줄 개수")
-    public ResponseEntity<FundingResponse.fundingList> categoryList(String category ) throws NotFoundException {
-        return ResponseEntity.ok().body(fundingService.CategoryFundingList(category));
+    public ResponseEntity<FundingResponse.fundingList> categoryList(String category , Pageable pageable) throws NotFoundException {
+        return ResponseEntity.ok().body(fundingService.CategoryFundingList(category, pageable));
     }
 
     @GetMapping("/search")
     @ApiOperation(value="마감임박, 신규상품, 인기상품 펀딩 리스트 조회", notes = "type=조회조건(endedAt/new/popular) , page : 페이지 , size : 한 페이지에서 보여줄 개수")
-    public ResponseEntity<FundingResponse.fundingList> fundingList (String type) {
-        return ResponseEntity.ok().body(fundingService.FundingList(type));
+    public ResponseEntity<FundingResponse.fundingList> fundingList (String type, Pageable pageable) {
+        System.out.println(type);
+        return ResponseEntity.ok().body(fundingService.FundingList(type, pageable));
     }
 
     @GetMapping("/detail")

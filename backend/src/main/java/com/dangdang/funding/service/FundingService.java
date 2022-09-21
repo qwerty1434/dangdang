@@ -25,12 +25,16 @@ import com.dangdang.reward.repository.RewardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -114,10 +118,10 @@ public class FundingService {
     }
 
     // 메이커 마이페이지에서 펀딩 리스트 조회
-    public FundingResponse.fundingList MakerFundingList(int state) {
+    public FundingResponse.fundingList MakerFundingList(int state, Pageable pageable) {
         List<FundingContent> response = new ArrayList<>();
         // 토큰에서 MakerId 값 가져와서 조회해야 하도록 수정하기
-        List<Funding> fundings = fundingRepository.findByMakerIdAndState("430b929f-bc2a-49fa-b358-2f876dae6ad8", state);
+        List<Funding> fundings = fundingRepository.findByMakerIdAndState(UUID.fromString("430b929f-bc2a-49fa-b358-2f876dae6ad8"), state, pageable);
         for(int i = 0; i < fundings.size(); i++){
             Funding funding = fundings.get(i);
             response.add(this.changeResponseFunding(funding));
@@ -127,7 +131,7 @@ public class FundingService {
     }
 
     // 카테고리 별 펀딩 리스트 조회 기능
-    public FundingResponse.fundingList CategoryFundingList(String type) throws NotFoundException {
+    public FundingResponse.fundingList CategoryFundingList(String type, Pageable pageable) throws NotFoundException {
 
         List<FundingContent> response = new ArrayList<>();
 
@@ -135,8 +139,9 @@ public class FundingService {
         if(category == null){
             throw new NotFoundException("존재하지 않는 카테고리 입니다.");
         }
-        // state : 1 현재 진행중인 펀딩만 조회
-        List<Funding> fundings = fundingRepository.findByCategoryAndState(category.getId().toString(), 1);
+
+        List<Funding> fundings = fundingRepository.findByCategoryIdAndState(category.getId(),1 ,pageable);
+        System.out.println(fundings);
         for(int i = 0; i < fundings.size(); i++){
             response.add(this.changeResponseFunding(fundings.get(i)));
         }
@@ -173,37 +178,52 @@ public class FundingService {
 
 
     // 펀딩 리스트 조회 (마감임박, 인기순, 신제품)
-    public FundingResponse.fundingList FundingList(String type) {
+    public FundingResponse.fundingList FundingList(String type, Pageable pageable) {
+//        List<FundingContent> response = new ArrayList<>();
+//        List<Funding> fundings = fundingRepository.findByState(1);
+//        for(int i = 0; i < fundings.size(); i++){
+//            response.add(this.changeResponseFunding(fundings.get(i)));
+//        }
+//        // 마감임박
+//        if(type.equals("endedAt")){
+//            Collections.sort(response, new Comparator<FundingContent>() {
+//                @Override
+//                public int compare(FundingContent o1, FundingContent o2) {
+//                    return o1.getEndDate().compareTo(o2.getEndDate());
+//                }
+//            });
+//            // 인기 상품
+//        }else if(type.equals("popular")){
+//            Collections.sort(response, new Comparator<FundingContent>() {
+//                @Override
+//                public int compare(FundingContent o1, FundingContent o2) {
+//                    return -(o1.getAchieveRate()-o2.getAchieveRate());
+//                }
+//            });
+//        }else{ // 신규 상품
+//            Collections.sort(response, new Comparator<FundingContent>() {
+//                @Override
+//                public int compare(FundingContent o1, FundingContent o2) {
+//                    return -(o1.getStartDate().compareTo(o2.getStartDate()));
+//                }
+//            });
+//        }
+//        return FundingResponse.fundingList.build(response);
+
+
+
         List<FundingContent> response = new ArrayList<>();
-        List<Funding> fundings = fundingRepository.findByState(1);
+        List<Funding> fundings = null;
+        if(type.equals("popular")){
+            fundings = fundingRepository.findByPopular(1, pageable);
+        }
+        fundings = fundingRepository.findByState(1, pageable);
         for(int i = 0; i < fundings.size(); i++){
             response.add(this.changeResponseFunding(fundings.get(i)));
         }
-        // 마감임박
-        if(type.equals("endedAt")){
-            Collections.sort(response, new Comparator<FundingContent>() {
-                @Override
-                public int compare(FundingContent o1, FundingContent o2) {
-                    return o1.getEndDate().compareTo(o2.getEndDate());
-                }
-            });
-            // 인기 상품
-        }else if(type.equals("popular")){
-            Collections.sort(response, new Comparator<FundingContent>() {
-                @Override
-                public int compare(FundingContent o1, FundingContent o2) {
-                    return -(o1.getAchieveRate()-o2.getAchieveRate());
-                }
-            });
-        }else{ // 신규 상품
-            Collections.sort(response, new Comparator<FundingContent>() {
-                @Override
-                public int compare(FundingContent o1, FundingContent o2) {
-                    return -(o1.getStartDate().compareTo(o2.getStartDate()));
-                }
-            });
-        }
+
         return FundingResponse.fundingList.build(response);
+
     }
 
     // 펀딩 상세 정보 조회
