@@ -27,9 +27,24 @@ const routes = [
     component: () => import("@/views/LoginView.vue"),
   },
   {
-    path: "/Signup",
+    path: "/signup",
     name: "signup",
     component: () => import("@/views/SignupView.vue"),
+  },
+  {
+    path: "/mypage",
+    name: "mypage",
+    component: () => import("@/views/MypageView.vue"),
+  },
+  {
+    path: "/mypage/maker",
+    name: "maker",
+    component: () => import("@/views/MakerView.vue"),
+  },
+  {
+    path: "/funding/submit",
+    name: "submit",
+    component: () => import("@/views/FundingsubmitView.vue"),
   },
 ];
 

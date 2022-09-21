@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="background"></div>
     <h1>this is a signup page</h1>
 
     <div class="signuptext">회원가입</div>
@@ -12,7 +13,8 @@
       <input
         type="text"
         placeholder="예: dangdangfunding@dangdang.com"
-        class="emailinput" />
+        class="emailinput"
+      />
     </div>
 
     <div>
@@ -20,15 +22,30 @@
       <div class="validationbox"></div>
       <div class="validationchecktext">인증번호 확인</div>
       <div class="validationcheckbox"></div>
+      <input
+        type="text"
+        placeholder="이메일로 전달된 인증번호를 입력해 주세요"
+        class="validationinput"
+      />
     </div>
     <div>
       <div class="pwtext">비밀번호</div>
       <div class="pwbox"></div>
+      <input
+        type="password"
+        placeholder="비밀번호를 입력해 주세요"
+        class="pwinput"
+      />
     </div>
 
     <div>
       <div class="pwchecktext">비밀번호확인</div>
       <div class="pwcheckbox"></div>
+      <input
+        type="password"
+        placeholder="비밀번호를 다시 한번 입력해 주세요"
+        class="pwcheckinput"
+      />
     </div>
 
     <div>
@@ -36,10 +53,16 @@
       <div class="aliasbox"></div>
       <div class="aliasisuniquetext">중복 확인</div>
       <div class="aliasisuniquebox"></div>
+      <input
+        type="text"
+        placeholder="닉네임을 입력해 주세요"
+        class="aliasinput"
+      />
     </div>
-
-    <div class=""></div>
-    <div class=""></div>
+    <div>
+      <div class="signupbox"></div>
+      <div class="signupboxtext">가입하기</div>
+    </div>
   </div>
 </template>
 
@@ -48,6 +71,20 @@ export default {};
 </script>
 
 <style scoped>
+input[type="password"] {
+  font-family: "맑은 고딕", "malgun gothic", "돋움", Dotum, sans-serif;
+}
+input[type="password"]::placeholder {
+  font-family: "NanumSquare";
+}
+.background {
+  float: left top;
+  width: 1920px;
+  height: 1080px;
+  z-index: -5;
+
+  background: #ffffff;
+}
 .signuptext {
   position: absolute;
   width: 300px;
@@ -283,12 +320,98 @@ export default {};
 
   color: #000000;
 }
+.signupbox {
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 891px;
+  top: 876px;
+
+  background: #62b878;
+  border-radius: 5px;
+}
+.signupboxtext {
+  position: absolute;
+  width: 120px;
+  height: 20px;
+  left: 900px;
+  top: 892px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #ffffff;
+}
 .emailinput {
   position: absolute;
   width: 400px;
   height: 20px;
   left: 726px;
   top: 440px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #000000;
+}
+.validationinput {
+  position: absolute;
+  width: 400px;
+  height: 20px;
+  left: 726px;
+  top: 524px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #000000;
+}
+.pwinput {
+  position: absolute;
+  width: 400px;
+  height: 20px;
+  left: 726px;
+  top: 608px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #000000;
+}
+.pwcheckinput {
+  position: absolute;
+  width: 400px;
+  height: 20px;
+  left: 726px;
+  top: 692px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #000000;
+}
+.aliasinput {
+  position: absolute;
+  width: 400px;
+  height: 20px;
+  left: 726px;
+  top: 776px;
 
   font-family: "NanumSquare";
   font-style: normal;

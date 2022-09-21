@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="background"></div>
     <div class="logintext">로그인</div>
     <div class="loginbox"></div>
     <input type="text" placeholder="아이디를 입력해주세요" class="logininput" />
@@ -7,7 +8,8 @@
     <input
       type="password"
       placeholder="비밀번호를 입력해주세요"
-      class="pwinput" />
+      class="pwinput"
+    />
     <div>
       <div class="loginbutton"></div>
       <div class="loginboxtext">로그인</div>
@@ -35,6 +37,14 @@ input[type="password"] {
 }
 input[type="password"]::placeholder {
   font-family: "NanumSquare";
+}
+.background {
+  float: left top;
+  width: 1920px;
+  height: 1080px;
+  z-index: -5;
+
+  background: #ffffff;
 }
 .logintext {
   position: absolute;

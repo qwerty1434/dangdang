@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div class="background"></div>
+
     <div class="banner"></div>
     <div class="imminent">마감임박</div>
     <div class="carousel1"></div>
@@ -18,6 +20,14 @@ export default {};
 </script>
 
 <style scoped>
+.background {
+  float: left;
+  width: 1920px;
+  height: 3198px;
+  z-index: -5;
+
+  background: #ffffff;
+}
 .banner {
   position: absolute;
   width: 100%;
