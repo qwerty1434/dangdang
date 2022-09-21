@@ -15,4 +15,5 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     Category findByType(String type) throws NotFoundException;
 
+
 }
