@@ -1,12 +1,13 @@
 package com.dangdang.member.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.funding.domain.Funding;
+import com.dangdang.funding.dto.FundingSimpleInfo;
+import com.dangdang.funding.repository.FundingRepository;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
-import com.dangdang.member.dto.CoinAppRequest;
-import com.dangdang.member.dto.MakerJoinRequest;
-import com.dangdang.member.dto.UserJoinRequest;
+import com.dangdang.member.dto.*;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +33,8 @@ public class MakerService {
 
     private final MakerRepository makerRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final FundingRepository fundingRepository;
 
     public void join(MakerJoinRequest input) {
 
@@ -54,6 +59,35 @@ public class MakerService {
         Maker maker = Maker.builder().user(user).companyNumber(input.getCompanyNumber())
                 .companyName(input.getCompanyName()).img(input.getImg()).fundingSum(0L).build();
         makerRepository.save(maker);
+    }
+
+    public MakerInfoResponse pjtInfo(String makerId) throws NotFoundException {
+
+        userService.vaildUserId(makerId);
+        Maker maker = makerRepository.findByUserId(makerId);
+        if (maker.getCompanyNumber()==null) throw new NotFoundException("사업자 등록이 되어있지 않은 유저입니다.");
+
+        List<Funding> fundingList = fundingRepository.findByMakerId(makerId);
+        List<FundingSimpleInfo> output = new LinkedList<>();
+        for(Funding f:fundingList){
+            FundingSimpleInfo result = new FundingSimpleInfo(f.getId().toString(), f.getTitle(), f.getTargetPrice(), f.getNowPrice(),
+                    f.getEndDate(), f.getDetailState());
+            output.add(result);
+        }
+
+        //이후 블록체인 연결하기
+        int supportNum = 0;
+        MakerInfoResponse info = new MakerInfoResponse(makerId, maker.getCompanyName(), maker.getImg(), supportNum, maker.getFundingSum(), output);
+
+        return info;
+    }
+
+    public MakerCompanyInfo makerInfo(String makerId) throws NotFoundException {
+        userService.vaildUserId(makerId);
+        Maker maker = makerRepository.findByUserId(makerId);
+        if (maker.getCompanyNumber()==null) throw new NotFoundException("사업자 등록이 되어있지 않은 유저입니다.");
+
+        return new MakerCompanyInfo(maker.getCompanyName(),maker.getCompanyNumber());
     }
 
 }

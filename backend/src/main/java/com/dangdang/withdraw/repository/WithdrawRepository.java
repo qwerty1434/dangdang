@@ -1,7 +1,6 @@
 package com.dangdang.withdraw.repository;
 
 import com.dangdang.withdraw.domain.WithdrawForm;
-import com.dangdang.withdraw.dto.WithdrawFormResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
