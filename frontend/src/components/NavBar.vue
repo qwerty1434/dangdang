@@ -11,7 +11,7 @@
     <div class="searchtext">검색</div>
     <router-link :to="{ name: 'login' }" class="login">로그인</router-link>
     <div class="bar1">|</div>
-    <div class="assign">회원가입</div>
+    <router-link :to="{ name: 'signup' }" class="signup">회원가입</router-link>
     <div class="bar2">|</div>
     <div class="category">카테고리</div>
     <div class="plan">펀딩예정</div>
@@ -118,7 +118,7 @@ export default {
 
   color: #000000;
 }
-.assign {
+.signup {
   position: absolute;
   width: 60px;
   height: 20px;
