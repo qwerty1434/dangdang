@@ -3,13 +3,15 @@ package com.dangdang.member.service;
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.User;
-import com.dangdang.member.dto.JoinRequest;
+import com.dangdang.member.dto.UserJoinRequest;
 import com.dangdang.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -23,7 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public void join(JoinRequest user) throws NotFoundException {
+    public void join(UserJoinRequest user) throws NotFoundException {
 
         chkEmail(user.getEmail());
         chkNickname(user.getNickname());
@@ -45,6 +47,14 @@ public class UserService {
     public void chkNickname(String nickname) throws NotFoundException {
         if(userRepository.findByNickname(nickname) !=null) {
             throw new NotFoundException("이미 사용 중인 닉네임입니다.");
+        }
+    }
+
+    public void vaildUserId(String userId) throws NotFoundException {
+        try{
+            User user = userRepository.findById(UUID.fromString(userId)).get();
+        } catch(Exception e){
+            throw new NotFoundException("유효하지 않은 유저 정보입니다.");
         }
     }
 }

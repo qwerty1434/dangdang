@@ -2,16 +2,15 @@ package com.dangdang.withdraw.domain;
 
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.withdraw.dto.WithdrawFormRequest;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -26,7 +25,8 @@ public class WithdrawForm {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Type(type="uuid-char")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,6 +49,11 @@ public class WithdrawForm {
 
     @Column(name = "refer_reason" )
     private String referReason;
+
+    @NotNull
+    @Builder.Default
+    @ColumnDefault("false")
+    private boolean isDelete = false;
 
     public static WithdrawForm withdrawFormCreate(Funding funding, WithdrawFormRequest.Create request){
         return WithdrawForm.builder()

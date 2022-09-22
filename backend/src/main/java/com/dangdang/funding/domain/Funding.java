@@ -5,12 +5,11 @@ import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.member.domain.Maker;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -21,11 +20,14 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Setter
 public class Funding {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    @Type(type="uuid-char")
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,33 +35,33 @@ public class Funding {
     private Maker maker;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "title" , nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column(name = "target_price" , nullable = false)
+    @Column(name = "target_price")
     private int targetPrice;
 
     @Builder.Default
     @Column(name = "now_price" , nullable = false)
     private int nowPrice = 0;
 
-    @Column(name = "project_introduction" , nullable = false)
+    @Column(name = "project_introduction")
     private String projectIntroduction;
 
     @Column(name = "company" , nullable = false)
     private String company;
 
     @Column(name = "business_license_num" , nullable = false)
-    private int businessLicenseNum;
+    private String businessLicenseNum;
 
-    @Column(name = "end_date" , nullable = false)
+    @Column(name = "end_date" )
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" )
     private Timestamp endDate;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" )
     private Timestamp startDate;
 
@@ -69,22 +71,22 @@ public class Funding {
     @Column(name = "state", nullable = false)
     private int state = 0;
 
-    @Builder.Default
-//    @ColumnDefault("작성 중")
-    @Column(name = "detail_state", nullable = false)
-    private String detailState = "작성 중";
 
-    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category){
+    @Column(name = "detail_state", nullable = false)
+    private String detailState;
+
+    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category, String detailState){
         return Funding.builder()
                 .maker(maker)
                 .category(category)
                 .title(request.getTitle())
                 .targetPrice(request.getTargetPrice())
                 .projectIntroduction(request.getProjectIntroduction())
-                .company(request.getCompany())
-                .businessLicenseNum(request.getBusinessLicenseNum())
+                .company(maker.getCompanyName())
+                .businessLicenseNum(maker.getCompanyNumber())
                 .endDate(request.getEndDate())
                 .startDate(request.getStartDate())
+                .detailState(detailState)
                 .build();
     }
 }
