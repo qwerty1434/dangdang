@@ -38,6 +38,7 @@ public class OrderService {
     private final OrderRewardRepository orderRewardRepository;
 
 
+    @Transactional(rollbackFor = {NotFoundException.class})
     public OrderResponse.Regist RegistOrder(OrderRequest.Create request) throws NotFoundException {
         // 주문내역 저장
         Optional<Funding> funding = fundingRepository.findById(request.getFundingId());
