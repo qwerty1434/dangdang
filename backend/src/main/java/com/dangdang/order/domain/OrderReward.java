@@ -32,7 +32,7 @@ public class OrderReward {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_history_id", nullable = false)
-    private OrderHistory orderHistoryId;
+    private OrderHistory orderHistory;
 
     @Column(name = "count" , nullable = false)
     private int count;
@@ -40,10 +40,10 @@ public class OrderReward {
     @Column(name = "item_total_price" , nullable = false)
     private int itemTotalPrice;
 
-    public static OrderReward OrderRewardCreate(Reward reward, OrderHistory orderHistoryId, int count , int itemTotalPrice){
+    public static OrderReward OrderRewardCreate(Reward reward, OrderHistory orderHistory, int count , int itemTotalPrice){
         return OrderReward.builder()
                 .reward(reward)
-                .orderHistoryId(orderHistoryId)
+                .orderHistory(orderHistory)
                 .count(count)
                 .itemTotalPrice(itemTotalPrice)
                 .build();
