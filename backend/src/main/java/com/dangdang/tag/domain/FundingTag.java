@@ -35,4 +35,10 @@ public class FundingTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fundingId")
     private Funding funding;
+
+
+    public FundingTag(Tag tag, Funding funding) {
+        this.tag = tag;
+        this.funding = funding;
+    }
 }

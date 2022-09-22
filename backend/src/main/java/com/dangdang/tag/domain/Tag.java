@@ -19,7 +19,6 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class Tag {
 
     @Id
@@ -31,4 +30,7 @@ public class Tag {
     @NotNull
     private String name;
 
+    public Tag(String name) {
+        this.name = name;
+    }
 }
