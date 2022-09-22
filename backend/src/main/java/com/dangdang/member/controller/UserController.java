@@ -28,23 +28,23 @@ public class UserController {
 
     @PostMapping("/check/email")
     @ApiOperation(value="이메일 중복 및 유효 검사")
-    public ResultResponse chkEmail(@RequestBody StringRequest inputDto) throws NotFoundException {
+    public boolean chkEmail(@RequestBody StringRequest inputDto) throws NotFoundException {
         try{
             userService.chkEmail(inputDto.getStr());
-            return new ResultResponse(true);
+            return false;
         } catch (NotFoundException e){
-            return new ResultResponse(false);
+            return true;
         }
     }
 
     @PostMapping("/check/nick")
     @ApiOperation(value="닉네임 중복 검사")
-    public ResultResponse chkNickname(@RequestBody StringRequest inputDto) throws NotFoundException {
+    public boolean chkNickname(@RequestBody StringRequest inputDto) throws NotFoundException {
         try{
             userService.chkNickname(inputDto.getStr());
-            return new ResultResponse(true);
+            return false;
         } catch (NotFoundException e){
-            return new ResultResponse(false);
+            return true;
         }
     }
 }

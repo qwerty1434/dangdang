@@ -19,7 +19,6 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class Tag {
 
     @Id

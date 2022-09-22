@@ -11,9 +11,11 @@ import java.util.UUID;
 
 public interface TagRepository extends JpaRepository<Tag, UUID> {
 
-    void findAllByName(@Param("name") String name) throws NotFoundException;
+    List<Tag> findAllByName(@Param("name") String name);
 
-    @Query(value="select * from tag where name like :name", nativeQuery = true)
+    @Query(value="select * from tag where name LIKE %:name%", nativeQuery = true)
     List<Tag> findAllByNameContainTag(@Param("name") String name);
+
+    Tag findByName(@Param("name") String name);
 
 }
