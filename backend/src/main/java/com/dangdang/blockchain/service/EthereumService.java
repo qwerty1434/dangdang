@@ -42,7 +42,7 @@ public class EthereumService {
     //    테스트넷
     //    private final static String PRIVATE_KEY = "ed21a9034322bc810c282209ad36730e9c5139aa36ad1346ca3d3f3faaab850c";
 
-    public String createAccount() {
+    public String createAccount() { // private_key 생성
         try {
             ECKeyPair keyPair = Keys.createEcKeyPair();
             return keyPair.getPrivateKey().toString();
@@ -51,6 +51,7 @@ public class EthereumService {
         }
     }
 
+    // 블록체인 내 스마트 컨트랙트 생성 >> 15초 - 1분 >> 승인처리 되면 진행
     public void createFundingInBlockChain(String fundingId, String makerPrivateKey) {
         Function function = new Function("createFunding",
                 Arrays.asList(new Utf8String(fundingId), new Address(getAddressFromPrivateKey(makerPrivateKey))),
@@ -62,6 +63,7 @@ public class EthereumService {
         }
     }
 
+    // 펀딩 구매 시 입금
     public void sendMoneyToFunding(String fundingId, String nickname, String buyerPrivateKey, boolean isAnonymous, String ether) {
         Function function = new Function("sendMoneyToFunding",
                 Arrays.asList(new Utf8String(fundingId), new Utf8String(nickname), new Bool(isAnonymous)),
@@ -73,6 +75,7 @@ public class EthereumService {
         }
     }
 
+    // 펀딩 상태 변경(모금 가능 상태로)
     public void setFundingStateToFundRaising(String fundingId) {
         Function function = new Function("setFundingStatusFundRaising",
                 Arrays.asList(new Utf8String(fundingId)),
@@ -84,6 +87,7 @@ public class EthereumService {
         }
     }
 
+    // 펀딩 상태 변경(성공적인 종료 시)
     public void setFundingStatusProduction(String fundingId) {
         Function function = new Function("setFundingStatusProduction",
                 Arrays.asList(new Utf8String(fundingId)),
@@ -95,6 +99,7 @@ public class EthereumService {
         }
     }
 
+    // 펀딩이 완전히 끝났을 때
     public void setFundingStatusDone(String fundingId) {
         Function function = new Function("setFundingStatusDone",
                 Arrays.asList(new Utf8String(fundingId)),
@@ -106,6 +111,7 @@ public class EthereumService {
         }
     }
 
+    // 모금 히스토리 (서포터 히스토리)
     public List<DepositHistoryResponse> getDepositHistory(String fundingId) {
         ArrayList<DepositHistoryResponse> ret = new ArrayList<>();
 
@@ -138,7 +144,7 @@ public class EthereumService {
         return ret;
     }
 
-    public Object ethCall(String from, String contract, Function function) throws IOException {
+    private Object ethCall(String from, String contract, Function function) throws IOException {
         Transaction transaction = Transaction.createEthCallTransaction(from, contract,
                 FunctionEncoder.encode(function));
 
@@ -154,7 +160,7 @@ public class EthereumService {
         return decode.get(0).getValue();
     }
 
-    public String ethSendRawTransaction(Function function, String privateKey, String contract) throws IOException {
+    private String ethSendRawTransaction(Function function, String privateKey, String contract) throws IOException {
         EthGetTransactionCount ethGetTransactionCount = ADMIN.ethGetTransactionCount(
                 getAddressFromPrivateKey(privateKey), DefaultBlockParameterName.PENDING).send();
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
@@ -178,7 +184,7 @@ public class EthereumService {
         return ethSendTransaction.getTransactionHash();
     }
 
-    public void ethSendRawTransactionWithEther(Function function, String privateKey, String contract, String ether) throws IOException {
+    private void ethSendRawTransactionWithEther(Function function, String privateKey, String contract, String ether) throws IOException {
         EthGetTransactionCount ethGetTransactionCount = ADMIN.ethGetTransactionCount(
                 getAddressFromPrivateKey(privateKey), DefaultBlockParameterName.LATEST).send();
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
@@ -199,7 +205,7 @@ public class EthereumService {
 //        EthSendTransaction transactionResponse = ADMIN.ethSendTransaction(transaction).send();
     }
 
-    public TransactionReceipt getReceipt(String transactionHash) throws IOException {
+    private TransactionReceipt getReceipt(String transactionHash) throws IOException {
 
         EthGetTransactionReceipt transactionReceipt = ADMIN.ethGetTransactionReceipt(transactionHash).send();
 
@@ -213,12 +219,12 @@ public class EthereumService {
         return transactionReceipt.getResult();
     }
 
-    public String getAddressFromPrivateKey(String privateKey) {
+    private String getAddressFromPrivateKey(String privateKey) {
         Credentials cs = Credentials.create(privateKey);
         return cs.getAddress();
     }
 
-    public String getPublicKeyFromPrivateKey(String privateKey) {
+    private String getPublicKeyFromPrivateKey(String privateKey) {
         Credentials cs = Credentials.create(privateKey);
         return cs.getEcKeyPair().getPublicKey().toString(16);
     }
