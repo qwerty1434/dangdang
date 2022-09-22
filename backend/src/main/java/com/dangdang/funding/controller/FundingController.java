@@ -4,12 +4,15 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.funding.dto.FundingResponse;
 import com.dangdang.funding.service.FundingService;
+import com.dangdang.order.dto.OrderRequest;
+import com.dangdang.order.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 
 
 @RestController
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class FundingController {
 
     private final FundingService fundingService;
+    private final OrderService orderService;
 
     @PostMapping("/regist")
     @ApiOperation(value="펀딩 신청하기", notes = "작성한 펀딩 신청서 기준으로 펀딩을 신청")
@@ -55,6 +59,18 @@ public class FundingController {
     @ApiOperation(value="펀딩 상세 조회", notes = "펀딩 상세 페이지 조회 기능으로 fundingId 를 통해 조회한 펀딩의 상세 정보 반환환")
     public ResponseEntity<FundingResponse.DetailFunding> detailFunding (String fundingId) throws NotFoundException {
         return ResponseEntity.ok().body(fundingService.DetailFunding(fundingId));
+    }
+
+    @PostMapping("/order")
+    @ApiOperation(value="유저가 진행중인 펀딩 참여", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
+    public ResponseEntity<?> Order (@RequestBody OrderRequest.Create request) throws NotFoundException {
+        return ResponseEntity.ok().body(orderService.RegistOrder(request));
+    }
+
+    @GetMapping("/user/order")
+    @ApiOperation(value="유저 마이페이지 펀딩 별 주문상품 내역 조회", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
+    public ResponseEntity<?> MyPageOrder (String fundingId) throws NotFoundException {
+        return ResponseEntity.ok().body(orderService.FindMyPageOrderList(fundingId));
     }
 
 

@@ -3,12 +3,11 @@ package com.dangdang.order.domain;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.member.domain.User;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -35,7 +34,7 @@ public class OrderHistory {
     @JoinColumn(name = "fund_id", nullable = false)
     private Funding funding;
 
-    @Column(name = "total_price" , nullable = false)
+    @Column(name = "total_price")
     private int totalPrice;
 
     @Column(name = "address" , nullable = false)
@@ -44,17 +43,17 @@ public class OrderHistory {
     @Column(name = "phone_number" , nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email" , nullable = false)
-    private String email;
+    @Column(name = "order_date", nullable = false)
+    @CreationTimestamp
+    private Timestamp orderDate;
 
-    public static OrderHistory OrderHistoryCreate(User user, Funding funding, int totalPrice, String address, String phoneNumber, String email ) {
+
+    public static OrderHistory OrderHistoryCreate(User user, Funding funding,  String address, String phoneNumber) {
         return OrderHistory.builder()
                 .user(user)
                 .funding(funding)
-                .totalPrice(totalPrice)
                 .address(address)
                 .phoneNumber(phoneNumber)
-                .email(email)
                 .build();
     }
 
