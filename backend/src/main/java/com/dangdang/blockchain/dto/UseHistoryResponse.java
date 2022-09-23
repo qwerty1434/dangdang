@@ -11,10 +11,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DepositHistoryResponse {
+public class UseHistoryResponse {
     String address;
-    int won;
+    int spendMoney;
+    int leftMoney;
     Timestamp time;
-    String nickname;
-    boolean isAnonymous;
+    String purpose;
 }
