@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @DynamicInsert
 @DynamicUpdate
