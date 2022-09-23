@@ -36,7 +36,7 @@ public class MakerService {
     private final UserService userService;
     private final FundingRepository fundingRepository;
 
-    public void join(MakerJoinRequest input) {
+    public void join(MakerJoinRequest input) throws NotFoundException {
 
         /*
         토큰 이용해서 회원 정보 가져오기 (uuid)

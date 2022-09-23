@@ -89,10 +89,6 @@ public class OrderService {
 //        }
 
         return OrderResponse.Regist.build(true);
-
-
-
-
     }
 
     // 유저가 마이페이지에서 펀딩 별 본인이 주문한 주문내역을 확인하는 기능

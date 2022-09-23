@@ -19,6 +19,7 @@ import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.MakerResponse;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.order.domain.OrderHistory;
 import com.dangdang.reward.domain.Reward;
 import com.dangdang.reward.dto.RewardResponse;
 import com.dangdang.reward.repository.RewardRepository;
@@ -31,10 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional

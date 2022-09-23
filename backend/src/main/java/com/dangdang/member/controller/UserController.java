@@ -1,16 +1,12 @@
 package com.dangdang.member.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
-import com.dangdang.member.dto.UserJoinRequest;
-import com.dangdang.member.dto.ResultResponse;
-import com.dangdang.member.dto.StringRequest;
+import com.dangdang.mail.MailService;
+import com.dangdang.member.dto.*;
 import com.dangdang.member.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -19,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final MailService mailService;
 
     @PostMapping("/join")
     @ApiOperation(value="당당펀딩(일반) 회원가입", notes = "가입 축하 메일은 현재 안갑니다.")
@@ -46,5 +43,43 @@ public class UserController {
         } catch (NotFoundException e){
             return true;
         }
+    }
+
+    @PostMapping("/login")
+    @ApiOperation(value="로그인")
+    public void login(@RequestBody LoginRequest input) throws NotFoundException {
+        // 추후 토큰 return 예정
+        userService.login(input);
+    }
+
+    @PostMapping("/logout")
+    @ApiOperation(value="로그아웃")
+    public void logout() throws NotFoundException {
+        // 추후 토큰으로 user uuid 받아서 처리 예정
+        userService.logout();
+    }
+
+    @PostMapping("/auth-email")
+    @ApiOperation(value="인증번호 메일 전송")
+    public void authMail(@RequestBody EmailRequest input) {
+        mailService.sendPWMail(input.getEmail());
+    }
+
+    @PatchMapping("/change/pw")
+    @ApiOperation(value="일반 회원 비밀번호 재설정")
+    public void renewPW(@RequestBody pwRequest input) throws NotFoundException {
+        userService.renewPW(input.getPassword());
+    }
+
+    @GetMapping("/check/pw")
+    @ApiOperation(value="일반 회원 비밀번호 재설정 전 확인")
+    public boolean chechPW(@RequestBody pwRequest input) throws NotFoundException {
+        return userService.checkPW(input.getPassword());
+    }
+
+    @PatchMapping("/change/nick")
+    @ApiOperation(value="회원 닉네임 변경")
+    public void renewNick(@RequestBody nickRequest input) throws NotFoundException {
+        userService.renewNick(input.getNickname());
     }
 }
