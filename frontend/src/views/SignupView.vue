@@ -13,8 +13,7 @@
       <input
         type="text"
         placeholder="예: dangdangfunding@dangdang.com"
-        class="emailinput"
-      />
+        class="emailinput" />
     </div>
 
     <div>
@@ -25,8 +24,7 @@
       <input
         type="text"
         placeholder="이메일로 전달된 인증번호를 입력해 주세요"
-        class="validationinput"
-      />
+        class="validationinput" />
     </div>
     <div>
       <div class="pwtext">비밀번호</div>
@@ -34,8 +32,7 @@
       <input
         type="password"
         placeholder="비밀번호를 입력해 주세요"
-        class="pwinput"
-      />
+        class="pwinput" />
     </div>
 
     <div>
@@ -44,8 +41,7 @@
       <input
         type="password"
         placeholder="비밀번호를 다시 한번 입력해 주세요"
-        class="pwcheckinput"
-      />
+        class="pwcheckinput" />
     </div>
 
     <div>
@@ -56,8 +52,7 @@
       <input
         type="text"
         placeholder="닉네임을 입력해 주세요"
-        class="aliasinput"
-      />
+        class="aliasinput" />
     </div>
     <div>
       <div class="signupbox"></div>
@@ -349,76 +344,99 @@ input[type="password"]::placeholder {
 .emailinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 726px;
-  top: 440px;
+  height: 50px;
+  left: 720px;
+  top: 426px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
-
+  display: flex;
+  align-items: center;
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 .validationinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 726px;
-  top: 524px;
+  height: 50px;
+  left: 720px;
+  top: 510px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
-
+  display: flex;
+  align-items: center;
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 .pwinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 726px;
-  top: 608px;
+  height: 50px;
+  left: 720px;
+  top: 594px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 .pwcheckinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 726px;
-  top: 692px;
+  height: 50px;
+  left: 720px;
+  top: 678px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 .aliasinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 726px;
-  top: 776px;
+  height: 50px;
+  left: 720px;
+  top: 762px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
+  display: flex;
+  align-items: center;
 
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 </style>

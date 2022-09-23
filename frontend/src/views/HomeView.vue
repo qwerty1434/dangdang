@@ -22,7 +22,7 @@ export default {};
 <style scoped>
 .background {
   float: left;
-  width: 1920px;
+  width: 1900px;
   height: 3198px;
   z-index: -5;
 

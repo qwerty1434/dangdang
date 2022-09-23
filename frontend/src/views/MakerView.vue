@@ -21,13 +21,12 @@
     </div>
 
     <div>
-      <div class="registrationtext">사업자 등록번호</div>
+      <div class="registrationnumber">사업자 등록번호</div>
       <div class="registrationbox"></div>
       <input
         type="text"
         class="registrationinput"
-        placeholder="사업자 등록번호"
-      />
+        placeholder="사업자 등록번호" />
     </div>
 
     <div>
@@ -162,7 +161,7 @@ export default {};
 
   color: #000000;
 }
-.registrationtext {
+.registrationnumber {
   position: absolute;
   width: 320px;
   height: 40px;

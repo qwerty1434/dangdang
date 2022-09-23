@@ -14,7 +14,7 @@
     <router-link :to="{ name: 'signup' }" class="signup">회원가입</router-link>
     <div class="bar2">|</div>
     <div class="category">카테고리</div>
-    <div class="plan">펀딩예정</div>
+    <router-link :to="{ name: 'plan' }" class="plan">펀딩예정</router-link>
 
     <router-link :to="{ name: 'funding' }" class="funding"
       >당당펀딩</router-link
@@ -23,6 +23,9 @@
       >당당후원</router-link
     >
     <div class="notification">공지사항</div>
+    <router-link :to="{ name: 'mypage' }" class="mypage"
+      >임시마이페이지버튼</router-link
+    >
 
     <div class="shadow"></div>
     <div class=""></div>
@@ -36,6 +39,23 @@ export default {
 </script>
 
 <style scoped>
+.mypage {
+  position: absolute;
+  width: 160px;
+  height: 32px;
+  left: 1560px;
+  top: 170px;
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background: rgba(254, 229, 0, 0.5);
+  color: #000000;
+}
 .logo {
   position: absolute;
   width: 120px;

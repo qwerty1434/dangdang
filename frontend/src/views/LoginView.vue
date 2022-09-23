@@ -8,8 +8,7 @@
     <input
       type="password"
       placeholder="비밀번호를 입력해주세요"
-      class="pwinput"
-    />
+      class="pwinput" />
     <div>
       <div class="loginbutton"></div>
       <div class="loginboxtext">로그인</div>
@@ -40,8 +39,8 @@ input[type="password"]::placeholder {
 }
 .background {
   float: left top;
-  width: 1920px;
-  height: 1080px;
+  width: 1900px;
+  height: 1060px;
   z-index: -5;
 
   background: #ffffff;
@@ -65,17 +64,21 @@ input[type="password"]::placeholder {
 .logininput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 763px;
-  top: 472px;
+  height: 60px;
+  left: 760px;
+  top: 452px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
-
+  display: flex;
+  align-items: center;
   color: #000000;
+  border: none;
+  background: none;
+  outline: none;
 }
 .loginbox {
   box-sizing: border-box;
@@ -120,17 +123,20 @@ input[type="password"]::placeholder {
 .pwinput {
   position: absolute;
   width: 400px;
-  height: 20px;
-  left: 763px;
-  top: 552px;
+  height: 60px;
+  left: 760px;
+  top: 532px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 23px;
-
-  color: #000000;
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  outline: none;
 }
 .loginbutton {
   position: absolute;

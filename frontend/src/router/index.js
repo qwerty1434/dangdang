@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: "/charity",
     name: "charity",
     component: () => import("@/views/CharityView.vue"),
+  },
+  {
+    path: "/plan",
+    name: "plan",
+    component: () => import("@/views/PlanView.vue"),
   },
   {
     path: "/login",
@@ -45,6 +51,15 @@ const routes = [
     path: "/funding/submit",
     name: "submit",
     component: () => import("@/views/FundingsubmitView.vue"),
+  },
+  {
+    path: "/404",
+    name: "notfound",
+    component: () => import("@/views/NotFound.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/404",
   },
 ];
 
