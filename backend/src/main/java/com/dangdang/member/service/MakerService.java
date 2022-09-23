@@ -120,20 +120,18 @@ public class MakerService {
         return new TotalSupportResponse(set.size());
     }
 
-    public List<FundingListResponse> findFundingList(int state, Pageable pageable, HttpServletRequest req){
-        //  토큰으로 가져오기
+    public List<FundingListResponse> findFundingList(MakerFundingListRequest input, Pageable pageable, HttpServletRequest req){
 
-        String uuid = "8d146241-e2ca-4950-aac8-55f1135f3473";
+        String uuid = input.getMakerId();
         User user = userRepository.findById(UUID.fromString(uuid)).get();
 
-        List<Funding> fundings = fundingRepository.findByState(state,pageable);
+        List<Funding> fundings = fundingRepository.findByState(input.getState(),pageable);
         List<FundingListResponse> output = new LinkedList<>();
 
         for(Funding f:fundings){
             LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             LocalDateTime end = f.getEndDate().toLocalDateTime();
             int day = (int) ChronoUnit.DAYS.between(start, end);
-            System.out.println("f.getId() = " + f.getId());
 
             List<FundThumbnail> imgList = fundThumbnailRepository.findByFundingId(f.getId().toString());
             FundThumbnail ff=new FundThumbnail();

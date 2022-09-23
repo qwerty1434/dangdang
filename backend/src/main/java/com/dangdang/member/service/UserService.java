@@ -2,22 +2,31 @@ package com.dangdang.member.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.blockchain.service.EthereumService;
+import com.dangdang.funding.domain.Funding;
+import com.dangdang.funding.repository.FundingRepository;
+import com.dangdang.image.domain.FundThumbnail;
+import com.dangdang.image.repository.FundThumbnailRepository;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.*;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.exception.NotValidateRefreshToken;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.order.domain.OrderHistory;
+import com.dangdang.order.repository.OrderHistoryRepository;
 import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 @Transactional
@@ -32,6 +41,12 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final EthereumService ethereumService;
+
+    private final OrderHistoryRepository historyRepository;
+
+    private final FundingRepository fundingRepository;
+
+    private final FundThumbnailRepository fundThumbnailRepository;
 
     private final JWTUtil jwtUtil;
 
@@ -152,5 +167,37 @@ public class UserService {
         String userId = jwtUtil.getUserId(accessToken);
 //        return userInfoRepository.findByUserId(userId);
         return userRepository.findById(UUID.fromString(userId));
+    }
+
+    public List<FundingListResponse> findFundingList(String state, Pageable pageable, HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
+        String uuid = jwtUtil.getUserIdByHeaderAccessToken(req);
+        User user = userRepository.findById(UUID.fromString(uuid)).get();
+        if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+
+        List<OrderHistory> histories = historyRepository.findAllByUserId(UUID.fromString(uuid));
+        List<FundingListResponse> output = new LinkedList<>();
+        Set<String> set = new HashSet<>();
+
+        for(OrderHistory o: histories){
+            UUID fundingId = o.getFunding().getId();
+            if(set.contains(fundingId.toString())) continue;
+            set.add(fundingId.toString());
+
+            Funding f = fundingRepository.findById(fundingId).get();
+            LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            LocalDateTime end = f.getEndDate().toLocalDateTime();
+            int day = (int) ChronoUnit.DAYS.between(start, end);
+
+            List<FundThumbnail> imgList = fundThumbnailRepository.findByFundingId(f.getId().toString());
+            FundThumbnail ff=new FundThumbnail();
+            for(FundThumbnail img : imgList){
+                if(img.getSequence()==0) ff=img;
+            }
+            FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
+                    ff.getImg(), f.getNowPrice(), (1.0*f.getNowPrice()/ f.getTargetPrice()),
+                    f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
+            output.add(result);
+        }
+        return output;
     }
 }
