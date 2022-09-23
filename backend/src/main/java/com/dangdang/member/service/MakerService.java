@@ -131,10 +131,15 @@ public class MakerService {
             LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             LocalDateTime end = f.getEndDate().toLocalDateTime();
             int day = (int) ChronoUnit.DAYS.between(start, end);
+            System.out.println("f.getId() = " + f.getId());
 
-            FundThumbnail ff = fundThumbnailRepository.findById(f.getId()).get();
+            List<FundThumbnail> imgList = fundThumbnailRepository.findByFundingId(f.getId().toString());
+            FundThumbnail ff=new FundThumbnail();
+            for(FundThumbnail img : imgList){
+                if(img.getSequence()==0) ff=img;
+            }
             FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
-                    ff.getImg(), f.getNowPrice(), 1.0*(f.getNowPrice()/ f.getTargetPrice()),
+                    ff.getImg(), f.getNowPrice(), (1.0*f.getNowPrice()/ f.getTargetPrice()),
                     f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
             output.add(result);
         }
