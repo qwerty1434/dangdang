@@ -19,6 +19,7 @@ import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.MakerResponse;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.order.domain.OrderHistory;
 import com.dangdang.reward.domain.Reward;
 import com.dangdang.reward.dto.RewardResponse;
 import com.dangdang.reward.repository.RewardRepository;
@@ -31,10 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -66,7 +64,7 @@ public class FundingService {
         System.out.println(maker);
 
         Category category = categoryRepository.findByType(request.getCategory());
-        Funding funding = Funding.FundingCreate(request, maker, category, "승인완료");
+        Funding funding = Funding.FundingCreate(request, maker, category, "승인완료", new LinkedList<OrderHistory>());
         System.out.println(funding+" 저장할 펀딩");
         fundingRepository.save(funding);
         this.RegistReward(request.getRewards(), funding);
@@ -82,7 +80,7 @@ public class FundingService {
 
         Category category = categoryRepository.findByType(request.getCategory());
 
-        Funding funding = Funding.FundingCreate(request, maker, category, "작성중");
+        Funding funding = Funding.FundingCreate(request, maker, category, "작성중", new LinkedList<OrderHistory>());
         fundingRepository.save(funding);
         if(request.getRewards() != null){
             this.RegistReward(request.getRewards(), funding);

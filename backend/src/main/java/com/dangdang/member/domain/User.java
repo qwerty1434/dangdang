@@ -28,9 +28,11 @@ public class User {
     @NotNull
     private String email;
 
+    @Setter
     @NotNull
     private String password;
 
+    @Setter
     @NotNull
     private String nickname;
 
@@ -56,6 +58,7 @@ public class User {
 //    @ColumnDefault("DD")
     private String provider = "DD";
 
+    @Setter
     private String refreshToken;
 
     private String publicKey;
@@ -66,10 +69,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
-    public User(String email, String password, String nickname) {
+    public User(String email, String password, String nickname, String publicKey) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.publicKey = publicKey;
         this.provider = "DD";
     }
 }

@@ -3,14 +3,18 @@ package com.dangdang.funding.domain;
 import com.dangdang.category.domain.Category;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.member.domain.Maker;
+import com.dangdang.order.domain.OrderHistory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -71,11 +75,14 @@ public class Funding {
     @Column(name = "state", nullable = false)
     private int state = 0;
 
-
     @Column(name = "detail_state", nullable = false)
     private String detailState;
 
-    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category, String detailState){
+    @Builder.Default
+    @OneToMany(mappedBy = "funding",cascade = CascadeType.ALL)
+    private List<OrderHistory> supporters = new LinkedList<>();
+
+    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category, String detailState, List<OrderHistory> supporters){
         return Funding.builder()
                 .maker(maker)
                 .category(category)
@@ -87,6 +94,19 @@ public class Funding {
                 .endDate(request.getEndDate())
                 .startDate(request.getStartDate())
                 .detailState(detailState)
+                .supporters(supporters)
                 .build();
+    }
+
+    public void test(){
+        System.out.println(this.supporters.size());
+    }
+
+    public void addSupporter(OrderHistory orderhistory){
+        supporters.add(orderhistory);
+    }
+
+    public void subSupporter(OrderHistory orderHistory){
+        supporters.remove(orderHistory);
     }
 }
