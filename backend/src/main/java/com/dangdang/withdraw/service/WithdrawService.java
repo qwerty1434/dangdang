@@ -7,9 +7,11 @@ import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.CoinAppRequest;
 import com.dangdang.member.dto.MakerInfoResponse;
+import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
 import com.dangdang.member.service.UserService;
+import com.dangdang.util.JWTUtil;
 import com.dangdang.withdraw.domain.WithdrawForm;
 import com.dangdang.withdraw.dto.WithdrawFormResponse;
 import com.dangdang.withdraw.repository.WithdrawRepository;
@@ -19,11 +21,13 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,14 +44,15 @@ public class WithdrawService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
 
-    public void coinApplication(CoinAppRequest input) {
+    private final JWTUtil jwtUtil;
+
+    public void coinApplication(CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken {
 
         ZonedDateTime datetime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         Timestamp timestamp = Timestamp.valueOf(datetime.toLocalDateTime());
 
-        // 토큰에서 userid 뽑아오기. 아직 토큰이 없으므로 static data로 대체
-        String userId = "8d146241-e2ca-4950-aac8-55f1135f3473";
-
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
         User user = userRepository.findById(UUID.fromString(userId)).get();
         Funding funding = fundingRepository.findById(UUID.fromString(input.getFundingId())).get();
 

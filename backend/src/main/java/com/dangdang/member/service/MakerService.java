@@ -9,10 +9,12 @@ import com.dangdang.image.repository.FundThumbnailRepository;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.*;
+import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
 import com.dangdang.order.domain.OrderHistory;
 import com.dangdang.order.repository.OrderHistoryRepository;
+import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -44,16 +47,14 @@ public class MakerService {
     private final OrderHistoryRepository historyRepository;
     private final FundThumbnailRepository fundThumbnailRepository;
 
-    public void join(MakerJoinRequest input) throws NotFoundException {
+    private final JWTUtil jwtUtil;
 
-        /*
-        토큰 이용해서 회원 정보 가져오기 (uuid)
-        이 부분은 이후 security완성 후 추가 예정
-        현재는 무조건 이메일이 ssafy@ssafy.com이라는 상태에서 진행
-         */
-        User user = userRepository.findByEmail("ssafy@ssafy.com");
-        System.out.println(user.getEmail());
-        System.out.println(user.getId());
+    public void join(MakerJoinRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+
+
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
         /*
         사업자 등록 여부 등도 확인 해서 넣을 예정
@@ -64,7 +65,7 @@ public class MakerService {
          */
 
         // 메이커 생성 시 하나의 사업자번호를 한명만 등록하게 했었는지 파악 후 예외처리 추가
-        Maker maker = Maker.builder().user(user).companyNumber(input.getCompanyNumber())
+        Maker maker = Maker.builder().user(user.get()).companyNumber(input.getCompanyNumber())
                 .companyName(input.getCompanyName()).img(input.getImg()).fundingSum(0L).build();
         makerRepository.save(maker);
     }
@@ -119,8 +120,9 @@ public class MakerService {
         return new TotalSupportResponse(set.size());
     }
 
-    public List<FundingListResponse> findFundingList(int state, Pageable pageable){
+    public List<FundingListResponse> findFundingList(int state, Pageable pageable, HttpServletRequest req){
         //  토큰으로 가져오기
+
         String uuid = "8d146241-e2ca-4950-aac8-55f1135f3473";
         User user = userRepository.findById(UUID.fromString(uuid)).get();
 

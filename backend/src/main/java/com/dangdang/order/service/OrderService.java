@@ -5,6 +5,7 @@ import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.repository.FundingRepository;
 import com.dangdang.member.domain.User;
+import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.UserRepository;
 import com.dangdang.order.domain.OrderHistory;
 import com.dangdang.order.domain.OrderReward;
@@ -14,12 +15,14 @@ import com.dangdang.order.repository.OrderRewardRepository;
 import com.dangdang.reward.domain.Reward;
 import com.dangdang.reward.dto.RewardRequest;
 import com.dangdang.reward.repository.RewardRepository;
+import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -40,17 +43,21 @@ public class OrderService {
 
     private final EthereumService ethereumService;
 
+    private final JWTUtil jwtUtil;
+
 
     @Transactional(rollbackFor = {NotFoundException.class})
-    public OrderResponse.Regist RegistOrder(OrderRequest.Create request) throws NotFoundException {
+    public OrderResponse.Regist RegistOrder(OrderRequest.Create request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         // 주문내역 저장
         Optional<Funding> funding = fundingRepository.findById(request.getFundingId());
         if(!funding.isPresent()){
             throw new NotFoundException("존재하지 않는 펀딩입니다.");
         }
-        // 토큰에서 찾은 userId로 user 찾도록 코드 수정 필요함.
-        User user = userRepository.findByEmail("ssafy@ssafy.com");
-        OrderHistory orderHistory = OrderHistory.OrderHistoryCreate(user, funding.get(), request.getAddress(), request.getPhoneNumber());
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+
+        OrderHistory orderHistory = OrderHistory.OrderHistoryCreate(user.get(), funding.get(), request.getAddress(), request.getPhoneNumber());
         UUID orderHistoryId = orderHistoryRepository.save(orderHistory).getId();
         Optional<OrderHistory> savedOrderHistory = orderHistoryRepository.findById(orderHistoryId);
 
@@ -83,7 +90,7 @@ public class OrderService {
         fundingRepository.save(funding.get());
 
         // 펀딩 구매 시 입금하는 블록체인 코드
-        ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.getNickname(), user.getPublicKey(), request.isAnonymous(), totalPrice);
+        ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.get().getNickname(), user.get().getPublicKey(), request.isAnonymous(), totalPrice);
 
         return OrderResponse.Regist.build(true);
 
@@ -93,9 +100,11 @@ public class OrderService {
     }
 
     // 유저가 마이페이지에서 펀딩 별 본인이 주문한 주문내역을 확인하는 기능
-    public OrderResponse.UserOrderList FindMyPageOrderList(String fundingId) throws NotFoundException {
-        // userId는 토큰에서 가져오도록 수정해야 함.
-        List<OrderHistory> orderHistory = orderHistoryRepository.findByUserIdAndFundingIdOrderByOrderDate(UUID.fromString("430b929f-bc2a-49fa-b358-2f876dae6ad8"), UUID.fromString(fundingId));
+    public OrderResponse.UserOrderList FindMyPageOrderList(String fundingId, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        List<OrderHistory> orderHistory = orderHistoryRepository.findByUserIdAndFundingIdOrderByOrderDate(UUID.fromString(userId), UUID.fromString(fundingId));
         List<UserOrder> response = new ArrayList<>();
         int orderTotalPrice = 0;
         for(int i = 0; i < orderHistory.size(); i++){
