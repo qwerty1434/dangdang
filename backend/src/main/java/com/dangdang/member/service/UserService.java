@@ -4,15 +4,19 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.User;
-import com.dangdang.member.dto.LoginRequest;
-import com.dangdang.member.dto.UserJoinRequest;
+import com.dangdang.member.dto.*;
+import com.dangdang.member.exception.NotValidateAccessToken;
+import com.dangdang.member.exception.NotValidateRefreshToken;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,6 +32,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final EthereumService ethereumService;
+
+    private final JWTUtil jwtUtil;
+
 
     public void join(UserJoinRequest user) throws NotFoundException {
 
@@ -60,61 +67,90 @@ public class UserService {
         }
     }
 
-    public void login(LoginRequest input) throws NotFoundException {
+    public LoginResponse.UserInfo login(LoginRequest input) throws NotFoundException {
         User user = userRepository.findByEmail(input.getEmail());
         if(user==null)
             throw new NotFoundException("이메일을 다시 입력해주세요.");
 
         if(user.getPassword().equals(input.getPassword())){
-            // 토큰 생성. 지금은 일단 에러 안나면 로그인
+            //토큰 발행 후 유저 정보 반환
+            String accessToken = jwtUtil.createToken(user.getId().toString());
+            return LoginResponse.UserInfo.build(user.getNickname(), user.isAdmin(), user.getEmail(), accessToken);
         }
         else {
             throw new NotFoundException("비밀번호를 다시 입력해주세요.");
         }
     }
     
-    public void logout() throws NotFoundException {
-        // 토큰으로 user uuid 찾기
-        String uuid = "";
+    public void logout(HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        if(!user.isPresent()) throw new NotFoundException("유효한 사용자가 아닙니다.");
 
-        User user = userRepository.findById(UUID.fromString(uuid)).get();
-        if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
-
-        user.setRefreshToken("");
-        userRepository.save(user);
+        user.get().setRefreshToken("");
+        userRepository.save(user.get());
     }
 
-    public void renewPW(String password) throws NotFoundException {
-        // 토큰으로 user uuid 찾기
-        String uuid = "";
+    public void renewPW(String password, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
-        User user = userRepository.findById(UUID.fromString(uuid)).get();
-        if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+        if(!user.isPresent()) throw new NotFoundException("유효한 사용자가 아닙니다.");
 
-        user.setPassword(password);
-        userRepository.save(user);
+        user.get().setPassword(password);
+        userRepository.save(user.get());
     }
 
-    public boolean checkPW(String password) throws NotFoundException {
-        // 토큰으로 user uuid 찾기
-        String uuid = "";
+    public boolean checkPW(String password, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
-        User user = userRepository.findById(UUID.fromString(uuid)).get();
-        if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+        if(!user.isPresent()) throw new NotFoundException("유효한 사용자가 아닙니다.");
 
-        if(!user.getPassword().equals(password)) return false;
+        if(!user.get().getPassword().equals(password)) return false;
 
         return true;
     }
 
-    public void renewNick(String nickname) throws NotFoundException {
-        // 토큰으로 user uuid 찾기
-        String uuid = "";
+    public void renewNick(String nickname, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        if(!user.isPresent()) throw new NotFoundException("유효한 사용자가 아닙니다.");
 
-        User user = userRepository.findById(UUID.fromString(uuid)).get();
-        if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+        user.get().setNickname(nickname);
+        userRepository.save(user.get());
+    }
 
-        user.setNickname(nickname);
+    public String refreshToken(String email) {
+        String refreshToken = jwtUtil.createRefreshToken();
+        User user = userRepository.findByEmail(email);
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
+        return refreshToken;
+    }
+
+    public TokenResponse.NewToken getNewToken(TokenRequest.Create request, String refreshToken) throws NotValidateRefreshToken, NotValidateAccessToken {
+        if(!jwtUtil.validateTokenExpiration(refreshToken)){
+            throw new NotValidateRefreshToken();
+        }
+        Optional<User> user = this.findUserByToken(request.getAccessToken());
+        if(!user.isPresent()){
+            throw new NotValidateAccessToken();
+        }
+        if(!user.get().getRefreshToken().equals(refreshToken)){
+            throw new NotValidateRefreshToken();
+        }
+        String accessToken = jwtUtil.createToken(user.get().getId().toString());
+        return TokenResponse.NewToken.build(accessToken, user.get().getEmail());
+    }
+
+    public Optional<User> findUserByToken(String accessToken) throws NotValidateAccessToken {
+        String userId = jwtUtil.getUserId(accessToken);
+//        return userInfoRepository.findByUserId(userId);
+        return userRepository.findById(UUID.fromString(userId));
     }
 }

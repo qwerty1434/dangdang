@@ -18,11 +18,13 @@ import com.dangdang.image.repository.FundThumbnailRepository;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.MakerResponse;
+import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
 import com.dangdang.reward.domain.Reward;
 import com.dangdang.reward.dto.RewardResponse;
 import com.dangdang.reward.repository.RewardRepository;
+import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -31,6 +33,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -65,11 +68,14 @@ public class FundingService {
 
     private final EthereumService ethereumService;
 
+    private final JWTUtil jwtUtil;
 
-    public FundingResponse.Regist RegistFunding(FundingRequest.Create request) throws NotFoundException {
-        // 토큰에서 찾은 userId로 User 찾게 코드 수정 필요함
-        User user = userRepository.findByEmail("ssafy@ssafy.com");
-        Maker maker = makerRepository.findByUserId(user.getId().toString());
+
+    public FundingResponse.Regist RegistFunding(FundingRequest.Create request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        Maker maker = makerRepository.findByUserId(user.get().getId().toString());
         System.out.println(maker);
 
         Category category = categoryRepository.findByType(request.getCategory());
@@ -82,17 +88,19 @@ public class FundingService {
 
         //현재 관리자 승인 없이 바로 펀딩 승인 완료로 상태 저장 됨
         //블록체인에 해당 펀딩에 관련 된 스마트컨트랙트 생성
-        ethereumService.createFundingInBlockChain(String.valueOf(fundingId), user.getPublicKey());
+        ethereumService.createFundingInBlockChain(String.valueOf(fundingId), user.get().getPublicKey());
 
 
 
         return FundingResponse.Regist.build(true);
     }
 
-    public FundingResponse.Regist TempStorage(FundingRequest.Create request) throws NotFoundException {
-        // 토큰에서 찾은 userId로 User 찾게 코드 수정 필요함
-        User user = userRepository.findByEmail("ssafy@ssafy.com");
-        Maker maker = makerRepository.findByUserId(user.getId().toString());
+    public FundingResponse.Regist TempStorage(FundingRequest.Create request , HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+
+        Maker maker = makerRepository.findByUserId(user.get().getId().toString());
 
         Category category = categoryRepository.findByType(request.getCategory());
 
@@ -132,16 +140,19 @@ public class FundingService {
     }
 
     // 메이커 마이페이지에서 펀딩 리스트 조회
-    public FundingResponse.fundingList MakerFundingList(int state, Pageable pageable) {
+    public FundingResponse.fundingList MakerFundingList(int state, Pageable pageable, HttpServletRequest req) throws NotValidateAccessToken {
         List<FundingContent> response = new ArrayList<>();
-        // 토큰에서 MakerId 값 가져와서 조회해야 하도록 수정하기
-        List<Funding> fundings = fundingRepository.findByMakerIdAndState(UUID.fromString("430b929f-bc2a-49fa-b358-2f876dae6ad8"), state, pageable);
+
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+
+        List<Funding> fundings = fundingRepository.findByMakerIdAndState(user.get().getId(), state, pageable);
         for(int i = 0; i < fundings.size(); i++){
             Funding funding = fundings.get(i);
             response.add(this.changeResponseFunding(funding));
         }
         return FundingResponse.fundingList.build(response);
-
     }
 
     // 카테고리 별 펀딩 리스트 조회 기능
@@ -266,7 +277,7 @@ public class FundingService {
         }
 
           /*
-           펀딩 상세페이지에서 확인하는 메이커 정보 중 서포터 수는 블록체인을 통해 가져와야 합니다.
+           펀딩 상세페이지에서 확인하는 메이커 정보 중 서포터 수는 효정님 코드에서 가져와서 넣어줘야 함
            현재는 서포터 수 0으로 넣고 처리
          */
 
@@ -319,6 +330,11 @@ public class FundingService {
                 funding.setDetailState("펀딩 성공");
                 // 컨트랙트 상태 변경
                 ethereumService.setFundingStatusProduction(funding.getId().toString());
+                Maker maker = funding.getMaker();
+                Long nowSum = maker.getFundingSum();
+                int fundingSum = funding.getNowPrice();
+                maker.setFundingSum(nowSum+fundingSum);
+                makerRepository.save(maker);
             }
             fundingRepository.save(funding);
             System.out.println("펀딩 상태 종료로 변경 완료");

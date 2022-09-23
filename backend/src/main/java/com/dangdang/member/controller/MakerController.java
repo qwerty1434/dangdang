@@ -2,6 +2,7 @@ package com.dangdang.member.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.dto.*;
+import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.service.MakerService;
 import com.dangdang.withdraw.domain.WithdrawForm;
 import com.dangdang.withdraw.dto.WithdrawFormResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -24,14 +26,14 @@ public class MakerController {
 
     @PostMapping("/join")
     @ApiOperation(value="메이커 등록")
-    public void join(@RequestBody MakerJoinRequest maker) throws NotFoundException {
-        makerService.join(maker);
+    public void join(@RequestBody MakerJoinRequest maker, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        makerService.join(maker, req);
     }
 
     @PostMapping("/coin-app")
     @ApiOperation(value="코인 사용 신청")
-    public void coinApplication(@RequestBody CoinAppRequest input) {
-        withdrawService.coinApplication(input);
+    public void coinApplication(@RequestBody CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken {
+        withdrawService.coinApplication(input, req);
     }
 
     @GetMapping("/coin-app/list")
@@ -67,8 +69,8 @@ public class MakerController {
     @GetMapping("/funding-list")
     @ApiOperation(value="(마이페이지) 메이커 펀딩 목록 조회", notes = "'/api/maker/funding-list?state=0&page=1&size=12&sort=startDate 형식으로 사용")
     public List<FundingListResponse> findFundingList(
-            @RequestParam("state") int state, Pageable pageable) throws NotFoundException {
-        return makerService.findFundingList(state, pageable);
+            @RequestParam("state") int state, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return makerService.findFundingList(state, pageable, req);
     }
 
 }

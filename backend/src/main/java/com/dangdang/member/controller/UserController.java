@@ -3,10 +3,17 @@ package com.dangdang.member.controller;
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.mail.MailService;
 import com.dangdang.member.dto.*;
+import com.dangdang.member.exception.NotValidateAccessToken;
+import com.dangdang.member.exception.NotValidateRefreshToken;
 import com.dangdang.member.service.UserService;
+import com.dangdang.util.JWTUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/user")
@@ -16,6 +23,9 @@ public class UserController {
 
     private final UserService userService;
     private final MailService mailService;
+
+    private final JWTUtil jwtUtil;
+
 
     @PostMapping("/join")
     @ApiOperation(value="당당펀딩(일반) 회원가입", notes = "가입 축하 메일은 현재 안갑니다.")
@@ -47,16 +57,20 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value="로그인")
-    public void login(@RequestBody LoginRequest input) throws NotFoundException {
+    public ResponseEntity<LoginResponse.UserInfo> login(@RequestBody LoginRequest input, HttpServletResponse res) throws NotFoundException {
         // 추후 토큰 return 예정
-        userService.login(input);
+        LoginResponse.UserInfo userInfo= userService.login(input);
+        String refreshToken = userService.refreshToken(userInfo.getEmail());
+        res.addHeader("Set-Cookie", "refreshToken="+refreshToken+"; path=/; MaxAge=7 * 24 * 60 * 60; SameSite=Lax; HttpOnly");
+        return ResponseEntity.ok().body(userService.login(input));
     }
+
 
     @PostMapping("/logout")
     @ApiOperation(value="로그아웃")
-    public void logout() throws NotFoundException {
+    public void logout(HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         // 추후 토큰으로 user uuid 받아서 처리 예정
-        userService.logout();
+        userService.logout(req);
     }
 
     @PostMapping("/auth-email")
@@ -67,19 +81,24 @@ public class UserController {
 
     @PatchMapping("/change/pw")
     @ApiOperation(value="일반 회원 비밀번호 재설정")
-    public void renewPW(@RequestBody pwRequest input) throws NotFoundException {
-        userService.renewPW(input.getPassword());
+    public void renewPW(@RequestBody pwRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        userService.renewPW(input.getPassword(), req);
     }
 
     @GetMapping("/check/pw")
     @ApiOperation(value="일반 회원 비밀번호 재설정 전 확인")
-    public boolean chechPW(@RequestBody pwRequest input) throws NotFoundException {
-        return userService.checkPW(input.getPassword());
+    public boolean chechPW(@RequestBody pwRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return userService.checkPW(input.getPassword(), req);
     }
 
-    @PatchMapping("/change/nick")
-    @ApiOperation(value="회원 닉네임 변경")
-    public void renewNick(@RequestBody nickRequest input) throws NotFoundException {
-        userService.renewNick(input.getNickname());
+    @PatchMapping("/retoken")
+    @ApiOperation(value = "토큰 재발급", notes = "accessToken은 body로 refrestToken은 쿠키로 전달받아 토큰 유효성 확인 후 jwt 토큰 재발급")
+    public ResponseEntity<TokenResponse.NewToken> reIssue(@RequestBody TokenRequest.Create request, HttpServletResponse res, @CookieValue(name="refreshToken") String refresh, HttpServletRequest req) throws NotValidateAccessToken, NotValidateRefreshToken {
+        TokenResponse.NewToken response = userService.getNewToken(request, refresh);
+        String refreshToken = userService.refreshToken(response.getEmail());
+        res.addHeader("Set-Cookie", "refreshToken="+refreshToken+"; path=/; MaxAge=7 * 24 * 60 * 60; SameSite=Lax; HttpOnly");
+        return ResponseEntity.ok().body(response);
     }
+
+
 }
