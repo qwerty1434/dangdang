@@ -9,11 +9,13 @@ import com.dangdang.member.service.UserService;
 import com.dangdang.util.JWTUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -100,5 +102,10 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/funding-list")
+    @ApiOperation(value="(마이페이지) 내가 참여한 목록 조회", notes = "'/api/user/funding-list?state=0&page=1&size=12&sort=startDate 형식으로 사용")
+    public List<FundingListResponse> findFundingList(String state, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return userService.findFundingList(state, pageable, req);
+    }
 
 }

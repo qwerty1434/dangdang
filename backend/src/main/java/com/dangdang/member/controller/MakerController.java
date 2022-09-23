@@ -67,10 +67,10 @@ public class MakerController {
     }
 
     @GetMapping("/funding-list")
-    @ApiOperation(value="(마이페이지) 메이커 펀딩 목록 조회", notes = "'/api/maker/funding-list?state=0&page=1&size=12&sort=startDate 형식으로 사용")
+    @ApiOperation(value="(판매자페이지) 메이커 펀딩 목록 조회", notes = "'/api/maker/funding-list?page=1&size=12&sort=startDate 형식으로 사용")
     public List<FundingListResponse> findFundingList(
-            @RequestParam("state") int state, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
-        return makerService.findFundingList(state, pageable, req);
+            @RequestBody MakerFundingListRequest input, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return makerService.findFundingList(input, pageable, req);
     }
 
 }

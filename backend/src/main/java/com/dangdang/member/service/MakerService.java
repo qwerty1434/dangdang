@@ -120,13 +120,12 @@ public class MakerService {
         return new TotalSupportResponse(set.size());
     }
 
-    public List<FundingListResponse> findFundingList(int state, Pageable pageable, HttpServletRequest req){
-        //  토큰으로 가져오기
+    public List<FundingListResponse> findFundingList(MakerFundingListRequest input, Pageable pageable, HttpServletRequest req){
 
-        String uuid = "8d146241-e2ca-4950-aac8-55f1135f3473";
+        String uuid = input.getMakerId();
         User user = userRepository.findById(UUID.fromString(uuid)).get();
 
-        List<Funding> fundings = fundingRepository.findByState(state,pageable);
+        List<Funding> fundings = fundingRepository.findByState(input.getState(),pageable);
         List<FundingListResponse> output = new LinkedList<>();
 
         for(Funding f:fundings){
@@ -134,9 +133,13 @@ public class MakerService {
             LocalDateTime end = f.getEndDate().toLocalDateTime();
             int day = (int) ChronoUnit.DAYS.between(start, end);
 
-            FundThumbnail ff = fundThumbnailRepository.findById(f.getId()).get();
+            List<FundThumbnail> imgList = fundThumbnailRepository.findByFundingId(f.getId().toString());
+            FundThumbnail ff=new FundThumbnail();
+            for(FundThumbnail img : imgList){
+                if(img.getSequence()==0) ff=img;
+            }
             FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
-                    ff.getImg(), f.getNowPrice(), 1.0*(f.getNowPrice()/ f.getTargetPrice()),
+                    ff.getImg(), f.getNowPrice(), (1.0*f.getNowPrice()/ f.getTargetPrice()),
                     f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
             output.add(result);
         }

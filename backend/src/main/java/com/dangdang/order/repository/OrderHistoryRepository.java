@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface OrderHistoryRepository extends JpaRepository<OrderHistory, UUID> {
     List<OrderHistory> findByUserIdAndFundingIdOrderByOrderDate(UUID userId, UUID fundingId);
 
+    List<OrderHistory> findAllByUserId(UUID userId);
     List<OrderHistory> findByFundingId(UUID fundingId);
 }
