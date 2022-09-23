@@ -83,7 +83,7 @@ public class OrderService {
         fundingRepository.save(funding.get());
 
         // 펀딩 구매 시 입금하는 블록체인 코드
-        ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.getNickname(), user.getPublicKey(), request.isAnonymous(), Integer.toString(totalPrice));
+        ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.getNickname(), user.getPublicKey(), request.isAnonymous(), totalPrice);
 
         return OrderResponse.Regist.build(true);
 
