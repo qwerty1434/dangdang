@@ -61,8 +61,8 @@ public class UserController {
 
     @PostMapping("/auth-email")
     @ApiOperation(value="인증번호 메일 전송")
-    public void authMail(@RequestBody EmailRequest input) {
-        mailService.sendPWMail(input.getEmail());
+    public AuthNumResponse authMail(@RequestBody EmailRequest input) {
+        return mailService.sendPWMail(input.getEmail());
     }
 
     @PatchMapping("/change/pw")

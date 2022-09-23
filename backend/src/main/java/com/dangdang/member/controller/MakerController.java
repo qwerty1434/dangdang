@@ -1,16 +1,14 @@
 package com.dangdang.member.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
-import com.dangdang.member.dto.CoinAppRequest;
-import com.dangdang.member.dto.MakerCompanyInfo;
-import com.dangdang.member.dto.MakerInfoResponse;
-import com.dangdang.member.dto.MakerJoinRequest;
+import com.dangdang.member.dto.*;
 import com.dangdang.member.service.MakerService;
 import com.dangdang.withdraw.domain.WithdrawForm;
 import com.dangdang.withdraw.dto.WithdrawFormResponse;
 import com.dangdang.withdraw.service.WithdrawService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,6 +50,25 @@ public class MakerController {
     @ApiOperation(value="판매자 페이지/ 마이 페이지 메이커 회사 정보 조회", notes = "'/api/maker/company-info?makerId=45fe5566-3377-4c97-8e5a-7afeba50dafb' 형식으로 사용")
     public MakerCompanyInfo makerInfo(@RequestParam("makerId") String makerId) throws NotFoundException {
         return makerService.makerInfo(makerId);
+    }
+
+    @GetMapping("/total-fund")
+    @ApiOperation(value="메이커가 진행했던 펀딩의 총 모금액 조회", notes = "'/api/maker/total-fund?makerId=45fe5566-3377-4c97-8e5a-7afeba50dafb' 형식으로 사용")
+    public TotalFundResponse totalFund(@RequestParam("makerId") String makerId) throws NotFoundException {
+        return makerService.totalFund(makerId);
+    }
+
+    @GetMapping("/total-support")
+    @ApiOperation(value="메이커 총 서포터 수 조회", notes = "'/api/maker/total-support?makerId=45fe5566-3377-4c97-8e5a-7afeba50dafb' 형식으로 사용")
+    public TotalSupportResponse totalSupport(@RequestParam("makerId") String makerId) throws NotFoundException {
+        return makerService.totalSupport(makerId);
+    }
+
+    @GetMapping("/funding-list")
+    @ApiOperation(value="(마이페이지) 메이커 펀딩 목록 조회", notes = "'/api/maker/funding-list?state=0&page=1&size=12&sort=startDate 형식으로 사용")
+    public List<FundingListResponse> findFundingList(
+            @RequestParam("state") int state, Pageable pageable) throws NotFoundException {
+        return makerService.findFundingList(state, pageable);
     }
 
 }
