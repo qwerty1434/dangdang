@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,4 +27,13 @@ public interface FundingRepository extends JpaRepository<Funding, UUID> {
 
     @Query(value = "SELECT * FROM funding WHERE maker_id=:makerId and state>=1 order by state", nativeQuery = true)
     List<Funding> findByMakerId(@Param("makerId") String makerId);
+
+    @Query(value = "SELECT * FROM funding WHERE `detail_state`=:detailState and `start_date`=:now  ", nativeQuery = true)
+    List<Funding> findByDetailStateAndStartDate(@Param("detailState") String detailState, @Param("now") Timestamp now);
+
+    @Query(value = "SELECT * FROM funding WHERE `detail_state`=:detailState and `end_date`=:now  ", nativeQuery = true)
+    List<Funding> findByDetailStateAndEndDate(@Param("detailState") String detailState, @Param("now") Timestamp now);
+
+    @Query(value = "SELECT * FROM funding WHERE `state`=:state and `title` like %:keyword% order by `start_date` Desc ", nativeQuery = true)
+    List<Funding> findByKeywordAndState(String keyword, int state, Pageable pageable);
 }

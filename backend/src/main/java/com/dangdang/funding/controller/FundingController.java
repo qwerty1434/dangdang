@@ -1,6 +1,8 @@
 package com.dangdang.funding.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.blockchain.dto.DepositHistoryResponse;
+import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.funding.dto.FundingResponse;
 import com.dangdang.funding.service.FundingService;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -23,6 +26,8 @@ public class FundingController {
 
     private final FundingService fundingService;
     private final OrderService orderService;
+
+    private final EthereumService ethereumService;
 
     @PostMapping("/regist")
     @ApiOperation(value="펀딩 신청하기", notes = "작성한 펀딩 신청서 기준으로 펀딩을 신청")
@@ -62,7 +67,7 @@ public class FundingController {
     }
 
     @PostMapping("/order")
-    @ApiOperation(value="유저가 진행중인 펀딩 참여", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
+    @ApiOperation(value="진행중인 펀딩에 참여하는 기능", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
     public ResponseEntity<?> Order (@RequestBody OrderRequest.Create request) throws NotFoundException {
         return ResponseEntity.ok().body(orderService.RegistOrder(request));
     }
@@ -71,6 +76,17 @@ public class FundingController {
     @ApiOperation(value="유저 마이페이지 펀딩 별 주문상품 내역 조회", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
     public ResponseEntity<?> MyPageOrder (String fundingId) throws NotFoundException {
         return ResponseEntity.ok().body(orderService.FindMyPageOrderList(fundingId));
+    }
+
+    @GetMapping("/supporter")
+    @ApiOperation(value="펀딩 상세페이지 서포터 목록 조회", notes = "펀딩에 참여한 서포터 목록 조회 기능")
+    public ResponseEntity<List<DepositHistoryResponse>> FundingSupporterList (String fundingId) throws NotFoundException {
+        return ResponseEntity.ok().body(ethereumService.getDepositHistory(fundingId));
+    }
+
+    @GetMapping("/searchtitle")
+    public ResponseEntity<?> searchFunding (String keyword, Pageable pageable){
+        return ResponseEntity.ok().body(fundingService.searchFunding(keyword, pageable));
     }
 
 
