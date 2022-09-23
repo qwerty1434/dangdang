@@ -4,7 +4,6 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.dto.FundingSimpleInfo;
 import com.dangdang.funding.repository.FundingRepository;
-import com.dangdang.member.domain.Authority;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.*;
@@ -18,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -36,7 +33,7 @@ public class MakerService {
     private final UserService userService;
     private final FundingRepository fundingRepository;
 
-    public void join(MakerJoinRequest input) {
+    public void join(MakerJoinRequest input) throws NotFoundException {
 
         /*
         토큰 이용해서 회원 정보 가져오기 (uuid)

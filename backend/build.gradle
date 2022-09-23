@@ -51,6 +51,10 @@ dependencies {
 
 	//implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 	//implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.279'
+
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	//mail
+	implementation 'com.sun.mail:javax.mail:1.6.2'
 }
 
 tasks.named('test') {

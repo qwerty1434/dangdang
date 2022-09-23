@@ -1,6 +1,7 @@
 package com.dangdang.funding.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.category.domain.Category;
 import com.dangdang.category.repository.CategoryRepository;
 import com.dangdang.funding.domain.Funding;
@@ -26,9 +27,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -59,6 +63,9 @@ public class FundingService {
 
     private final BodyImageRepository bodyImageRepository;
 
+    private final EthereumService ethereumService;
+
+
     public FundingResponse.Regist RegistFunding(FundingRequest.Create request) throws NotFoundException {
         // 토큰에서 찾은 userId로 User 찾게 코드 수정 필요함
         User user = userRepository.findByEmail("ssafy@ssafy.com");
@@ -68,10 +75,17 @@ public class FundingService {
         Category category = categoryRepository.findByType(request.getCategory());
         Funding funding = Funding.FundingCreate(request, maker, category, "승인완료");
         System.out.println(funding+" 저장할 펀딩");
-        fundingRepository.save(funding);
+        UUID fundingId = fundingRepository.save(funding).getId();
         this.RegistReward(request.getRewards(), funding);
         this.RegistThumbnail(request.getThumbnails(), funding);
         this.RegistBodyImg(request.getBodyImgs(), funding);
+
+        //현재 관리자 승인 없이 바로 펀딩 승인 완료로 상태 저장 됨
+        //블록체인에 해당 펀딩에 관련 된 스마트컨트랙트 생성
+        ethereumService.createFundingInBlockChain(String.valueOf(fundingId), user.getPublicKey());
+
+
+
         return FundingResponse.Regist.build(true);
     }
 
@@ -254,7 +268,6 @@ public class FundingService {
           /*
            펀딩 상세페이지에서 확인하는 메이커 정보 중 서포터 수는 블록체인을 통해 가져와야 합니다.
            현재는 서포터 수 0으로 넣고 처리
-           성공적으로 종료 된 펀딩이면 서포터랑 거래내역 블록체인을 통해 가져와서 제공해야 합니다.
          */
 
         Maker maker = funding.get().getMaker();
@@ -262,6 +275,66 @@ public class FundingService {
 
         return FundingResponse.DetailFunding.build(rewardRes,bodyImgRes,thumbnailsRes,fundingContent, makerRes);
 
+    }
+    @Scheduled(cron = "0 * * * * *") // 1분 주기로 실행
+    public void ScheduledFunding() {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
+        String now = sdf.format(timestamp);
+        Timestamp changeNow = Timestamp.valueOf(now);
+        //승인된 펀딩 펀딩중으로(state 0 -> 1, detailState 승인완료 -> 펀딩 진행중)
+        this.ChangeProceedingState(changeNow);
+        //펀딩 진행중 -> 마감 (state 1 -> 2, 달성률에 따라 펀딩 성공, 펀딩 실패로 detailState 편경)
+        this.ChangeEndState(changeNow);
+
+
+
+    }
+
+    // 승인 완료 상태인 펀딩을 펀딩 시작일에 맞춰 펀딩 진행중으로 상태 변경
+    public void ChangeProceedingState(Timestamp now) {
+        List<Funding> fundings = fundingRepository.findByDetailStateAndStartDate("승인 완료" , now);
+        for(int i = 0; i < fundings.size(); i++){
+            Funding funding = fundings.get(i);
+            funding.setState(1);
+            funding.setDetailState("펀딩 진행중");
+            fundingRepository.save(funding);
+            System.out.println("펀딩 상태 진행중으로 변경 완료");
+
+            // 이더리움 컨트랙트 모금 가능 상태로 변경
+            ethereumService.setFundingStateToFundRaising(funding.getId().toString());
+        }
+
+    }
+
+    // 펀딩 종료일에 맞춰 펀딩 상태 변경
+    private void ChangeEndState(Timestamp now) {
+        List<Funding> fundings = fundingRepository.findByDetailStateAndEndDate("펀딩 진행중", now);
+        for(int i = 0; i < fundings.size(); i++){
+            Funding funding = fundings.get(i);
+            funding.setState(2);
+            if(funding.getTargetPrice() > funding.getNowPrice()){
+                funding.setDetailState("펀딩 실패");
+            }else{
+                funding.setDetailState("펀딩 성공");
+                // 컨트랙트 상태 변경
+                ethereumService.setFundingStatusProduction(funding.getId().toString());
+            }
+            fundingRepository.save(funding);
+            System.out.println("펀딩 상태 종료로 변경 완료");
+
+        }
+    }
+
+    public FundingResponse.fundingList searchFunding(String keyword, Pageable pageable) {
+        List<FundingContent> response = new ArrayList<>();
+
+        List<Funding> fundings = fundingRepository.findByKeywordAndState(keyword, 1, pageable);
+        System.out.println(fundings);
+        for(int i = 0; i < fundings.size(); i++){
+            response.add(this.changeResponseFunding(fundings.get(i)));
+       }
+        return FundingResponse.fundingList.build(response);
     }
 
 

@@ -3,14 +3,18 @@ package com.dangdang.funding.domain;
 import com.dangdang.category.domain.Category;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.member.domain.Maker;
+import com.dangdang.order.domain.OrderHistory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -71,7 +75,6 @@ public class Funding {
     @Column(name = "state", nullable = false)
     private int state = 0;
 
-
     @Column(name = "detail_state", nullable = false)
     private String detailState;
 
@@ -89,4 +92,5 @@ public class Funding {
                 .detailState(detailState)
                 .build();
     }
+
 }

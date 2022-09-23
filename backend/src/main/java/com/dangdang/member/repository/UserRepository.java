@@ -1,5 +1,6 @@
 package com.dangdang.member.repository;
 
+import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,6 +1,7 @@
 package com.dangdang.order.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.repository.FundingRepository;
 import com.dangdang.member.domain.User;
@@ -36,6 +37,8 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final OrderRewardRepository orderRewardRepository;
+
+    private final EthereumService ethereumService;
 
 
     @Transactional(rollbackFor = {NotFoundException.class})
@@ -79,14 +82,8 @@ public class OrderService {
         funding.get().setNowPrice(fundingNowPrice);
         fundingRepository.save(funding.get());
 
-        /*
-        블록체인에 서포터 목록 저장하는 코드 추가 필요합니다.
-        */
-//        if(request.isAnonymous()){
-//
-//        }else{
-//
-//        }
+        // 펀딩 구매 시 입금하는 블록체인 코드
+        ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.getNickname(), user.getPublicKey(), request.isAnonymous(), Integer.toString(totalPrice));
 
         return OrderResponse.Regist.build(true);
 
@@ -127,3 +124,4 @@ public class OrderService {
 
     }
 }
+

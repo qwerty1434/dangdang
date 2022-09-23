@@ -26,7 +26,7 @@ public class MakerController {
 
     @PostMapping("/join")
     @ApiOperation(value="메이커 등록")
-    public void join(@RequestBody MakerJoinRequest maker) {
+    public void join(@RequestBody MakerJoinRequest maker) throws NotFoundException {
         makerService.join(maker);
     }
 
