@@ -4,19 +4,28 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.dto.FundingSimpleInfo;
 import com.dangdang.funding.repository.FundingRepository;
+import com.dangdang.image.domain.FundThumbnail;
+import com.dangdang.image.repository.FundThumbnailRepository;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.*;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.order.domain.OrderHistory;
+import com.dangdang.order.repository.OrderHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 @Transactional
@@ -32,6 +41,8 @@ public class MakerService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final FundingRepository fundingRepository;
+    private final OrderHistoryRepository historyRepository;
+    private final FundThumbnailRepository fundThumbnailRepository;
 
     public void join(MakerJoinRequest input) throws NotFoundException {
 
@@ -87,4 +98,47 @@ public class MakerService {
         return new MakerCompanyInfo(maker.getCompanyName(),maker.getCompanyNumber());
     }
 
+    public TotalFundResponse totalFund(String makerId){
+        Maker maker = makerRepository.findByUserId(makerId);
+        return new TotalFundResponse(maker.getFundingSum());
+    }
+
+    public TotalSupportResponse totalSupport(String makerId){
+
+        List<Funding> fundingList = fundingRepository.findByMakerId(makerId);
+        Set<String> set = new HashSet<>();
+
+        for(Funding f : fundingList){
+            if(!f.getDetailState().equals("펀딩 성공")) continue;
+            List<OrderHistory> histories = historyRepository.findByFundingId(f.getId());
+            System.out.println("histories.size() = " + histories.size());
+            for(OrderHistory h: histories){
+                set.add(h.getUser().getId().toString());
+            }
+        }
+        return new TotalSupportResponse(set.size());
+    }
+
+    public List<FundingListResponse> findFundingList(int state, Pageable pageable){
+        //  토큰으로 가져오기
+        String uuid = "8d146241-e2ca-4950-aac8-55f1135f3473";
+        User user = userRepository.findById(UUID.fromString(uuid)).get();
+
+        List<Funding> fundings = fundingRepository.findByState(state,pageable);
+        List<FundingListResponse> output = new LinkedList<>();
+
+        for(Funding f:fundings){
+            LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            LocalDateTime end = f.getEndDate().toLocalDateTime();
+            int day = (int) ChronoUnit.DAYS.between(start, end);
+
+            FundThumbnail ff = fundThumbnailRepository.findById(f.getId()).get();
+            FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
+                    ff.getImg(), f.getNowPrice(), 1.0*(f.getNowPrice()/ f.getTargetPrice()),
+                    f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
+            output.add(result);
+        }
+
+        return output;
+    }
 }
