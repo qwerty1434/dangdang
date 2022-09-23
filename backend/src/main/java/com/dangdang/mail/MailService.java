@@ -1,5 +1,6 @@
 package com.dangdang.mail;
 
+import com.dangdang.member.dto.AuthNumResponse;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class MailService {
     @Value("${from_email}")
     private String from_email = "";
 
-    public void sendPWMail(String email) {
+    public AuthNumResponse sendPWMail(String email) {
         SimpleMailMessage message = new SimpleMailMessage();
         String authKey="";
         try{
@@ -42,9 +43,11 @@ public class MailService {
 
             message.setText("인증번호는 " + authKey + "입니다.\n인증번호를 입력해주세요.");
             emailSender.send(message);
+            return new AuthNumResponse(authKey);
 
         }catch(Exception e){
             e.printStackTrace();
         }
+        return new AuthNumResponse("error");
     }
 }

@@ -20,6 +20,9 @@ public interface FundingRepository extends JpaRepository<Funding, UUID> {
     List<Funding> findByState(int state, Pageable pageable);
 
     List<Funding> findByCategoryIdAndState(UUID categoryId, int state, Pageable pageable);
+//
+//    @Query(value = "SELECT * FROM funding WHERE state=:state", nativeQuery = true)
+//    List<Funding> findByStateAndSort(@Param("state") int state, Pageable pageable);
 
     @Query(value = "SELECT * FROM funding WHERE `state`=:state order by (now_price/target_price) DESC  ", nativeQuery = true)
     List<Funding> findByPopular( @Param("state") int state, Pageable pageable);
