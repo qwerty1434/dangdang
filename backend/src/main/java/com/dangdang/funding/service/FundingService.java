@@ -64,7 +64,7 @@ public class FundingService {
         System.out.println(maker);
 
         Category category = categoryRepository.findByType(request.getCategory());
-        Funding funding = Funding.FundingCreate(request, maker, category, "승인완료", new LinkedList<OrderHistory>());
+        Funding funding = Funding.FundingCreate(request, maker, category, "승인완료");
         System.out.println(funding+" 저장할 펀딩");
         fundingRepository.save(funding);
         this.RegistReward(request.getRewards(), funding);
@@ -80,7 +80,7 @@ public class FundingService {
 
         Category category = categoryRepository.findByType(request.getCategory());
 
-        Funding funding = Funding.FundingCreate(request, maker, category, "작성중", new LinkedList<OrderHistory>());
+        Funding funding = Funding.FundingCreate(request, maker, category, "작성중");
         fundingRepository.save(funding);
         if(request.getRewards() != null){
             this.RegistReward(request.getRewards(), funding);

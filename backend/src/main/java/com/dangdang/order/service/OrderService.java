@@ -87,15 +87,8 @@ public class OrderService {
 //        }else{
 //
 //        }
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@22");
-        funding.get().addSupporter(orderHistory);
-        funding.get().test();
 
         return OrderResponse.Regist.build(true);
-
-
-
-
     }
 
     // 유저가 마이페이지에서 펀딩 별 본인이 주문한 주문내역을 확인하는 기능

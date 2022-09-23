@@ -78,11 +78,7 @@ public class Funding {
     @Column(name = "detail_state", nullable = false)
     private String detailState;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "funding",cascade = CascadeType.ALL)
-    private List<OrderHistory> supporters = new LinkedList<>();
-
-    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category, String detailState, List<OrderHistory> supporters){
+    public static Funding FundingCreate(FundingRequest.Create request, Maker maker, Category category, String detailState){
         return Funding.builder()
                 .maker(maker)
                 .category(category)
@@ -94,19 +90,7 @@ public class Funding {
                 .endDate(request.getEndDate())
                 .startDate(request.getStartDate())
                 .detailState(detailState)
-                .supporters(supporters)
                 .build();
     }
 
-    public void test(){
-        System.out.println(this.supporters.size());
-    }
-
-    public void addSupporter(OrderHistory orderhistory){
-        supporters.add(orderhistory);
-    }
-
-    public void subSupporter(OrderHistory orderHistory){
-        supporters.remove(orderHistory);
-    }
 }
