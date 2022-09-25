@@ -13,7 +13,8 @@
       <input
         type="text"
         placeholder="예: dangdangfunding@dangdang.com"
-        class="emailinput" />
+        class="emailinput"
+      />
     </div>
 
     <div>
@@ -24,7 +25,8 @@
       <input
         type="text"
         placeholder="이메일로 전달된 인증번호를 입력해 주세요"
-        class="validationinput" />
+        class="validationinput"
+      />
     </div>
     <div>
       <div class="pwtext">비밀번호</div>
@@ -32,7 +34,8 @@
       <input
         type="password"
         placeholder="비밀번호를 입력해 주세요"
-        class="pwinput" />
+        class="pwinput"
+      />
     </div>
 
     <div>
@@ -41,7 +44,8 @@
       <input
         type="password"
         placeholder="비밀번호를 다시 한번 입력해 주세요"
-        class="pwcheckinput" />
+        class="pwcheckinput"
+      />
     </div>
 
     <div>
@@ -52,7 +56,8 @@
       <input
         type="text"
         placeholder="닉네임을 입력해 주세요"
-        class="aliasinput" />
+        class="aliasinput"
+      />
     </div>
     <div>
       <div class="signupbox"></div>
