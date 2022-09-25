@@ -3,8 +3,12 @@
     <div class="background"></div>
 
     <div class="banner"></div>
+    <router-link :to="{ name: 'product' }"
+      ><div class="carousel1"></div
+    ></router-link>
+
     <div class="imminent">마감임박</div>
-    <div class="carousel1"></div>
+
     <div class="to_imminent">더보기</div>
     <div class="popular">인기상품</div>
     <div class="carousel2"></div>
