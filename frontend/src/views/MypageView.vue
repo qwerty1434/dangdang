@@ -11,8 +11,20 @@
     </div>
 
     <div>
-      <div class="profileimg"></div>
-      <div class="profileimgedit"></div>
+      <form method="post" enctype="multipart/form-data">
+        <div>
+          <label for="chooseFile"> Click </label>
+        </div>
+        <input
+          ref="image"
+          @change="uploadImg()"
+          type="file"
+          id="chooseFile"
+          name="chooseFile"
+          accept="image/*"
+          class="profileimg" />
+      </form>
+      <img :src="image" alt="" class="profileimg" />
     </div>
 
     <div>
@@ -45,7 +57,24 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      image: "",
+    };
+  },
+  methods: {
+    uploadImg() {
+      console.log("들어왔다");
+      var image = this.$refs["image"].files[0];
+
+      const url = URL.createObjectURL(image);
+      this.image = url;
+      console.log(url);
+      console.log(this.image);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -109,8 +138,6 @@ export default {};
   border-radius: 50%;
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  background: url("@/assets/ssafy.png");
-  background-size: cover;
 }
 .profileimgedit {
   position: absolute;
