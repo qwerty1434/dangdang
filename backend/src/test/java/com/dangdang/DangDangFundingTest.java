@@ -6,6 +6,7 @@ import com.dangdang.blockchain.service.EthereumService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.web3j.crypto.Credentials;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class DangDangFundingTest {
 //    EthereumService ethereumService;
 //
 //    private final String UUID = "550e8400-e29b-41d4-a716-446655440003";
-//    private final String tempAddress1 = "0x0A50Ca4c71bf88fD4f08907bf7aD30244eFfB118";
+//    private final String tempAddress1 = "0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1";
 //    private final String tempAddress2 = "";
 //
 //    //[5]
@@ -68,7 +69,7 @@ public class DangDangFundingTest {
 //    @Test
 //    public void sendMoneyToManufacture() {
 //        System.out.println("send Money To Manufacture");
-//        ethereumService.sendMoneyToManufacture(UUID, tempAddress1, 450, "테스트 목적");
+//        ethereumService.sendMoneyToManufacture(UUID, 190, "테스트 목적");
 //    }
 //
 //    // [8] 펀딩 남은 금액 조회
@@ -98,12 +99,25 @@ public class DangDangFundingTest {
 //
 //    @Test
 //    public void getWeiBalance() {
-//        String weiBalance = ethereumService.getWeiBalance(PRIVATE_KEY);
+//        String privateKey = "f6e96f416bbaebf1ddd007e635e86a86a4804a8b22eaeac959878567f9fa9722";
+//        String weiBalance = ethereumService.getWeiBalance(privateKey);
 //        System.out.println(weiBalance);
 //    }
 //
 //    @Test
 //    public void generatePrivateKey(){
 //        System.out.println(ethereumService.createAccount());
+//    }
+//
+//    @Test
+//    public void getAddressFromPrivateKey() {
+//        String privateKey = "f6e96f416bbaebf1ddd007e635e86a86a4804a8b22eaeac959878567f9fa9722";
+//        Credentials cs = Credentials.create(privateKey);
+//        System.out.println( cs.getAddress());
+//    }
+//
+//    @Test
+//    public void sendMoneyToTargetAddressFromAdmin(){
+//        ethereumService.sendMoneyToTargetAddressFromAdmin("f6e96f416bbaebf1ddd007e635e86a86a4804a8b22eaeac959878567f9fa9722", 1000);
 //    }
 }

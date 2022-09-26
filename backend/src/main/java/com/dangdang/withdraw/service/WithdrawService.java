@@ -79,7 +79,7 @@ public class WithdrawService {
         }else{
             savedform.setProcess("처리됨");
             withdrawRepository.save(savedform);
-            ethereumService.sendMoneyToManufacture(funding.getId().toString(),"0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1", input.getAmountUsed(), input.getPurpose());
+            ethereumService.sendMoneyToManufacture(funding.getId().toString(), input.getAmountUsed(), input.getPurpose());
         }
 
 
