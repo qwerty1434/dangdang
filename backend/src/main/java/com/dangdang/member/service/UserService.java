@@ -60,8 +60,10 @@ public class UserService {
         User newUser = new User(user.getEmail(),user.getPassword(),user.getNickname(),ethereumService.createAccount());
 
         newUser.setAuthority(Authority.ROLE_USER);
-        UUID userId = userRepository.save(newUser).getId();
-        String accessToken = jwtUtil.createToken(userId.toString());
+        User savedUser = userRepository.save(newUser);
+        String accessToken = jwtUtil.createToken(savedUser.getId().toString());
+        // 회원가입 시 해당 계정으로 관리자가 50000원 입금해주는 코드
+        ethereumService.sendMoneyToTargetAddressFromAdmin(savedUser.getPublicKey(), 50000);
         return LoginResponse.UserInfo.build(newUser.getNickname(), false, newUser.getEmail(), accessToken);
     }
 
