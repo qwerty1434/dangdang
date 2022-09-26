@@ -16,6 +16,10 @@ export default {
 </script>
 
 <style>
+.v-application {
+  font-family: "NanumSquare", sans-serif !important;
+}
+
 @font-face {
   font-family: "NanumSquare";
   font-weight: 400;
