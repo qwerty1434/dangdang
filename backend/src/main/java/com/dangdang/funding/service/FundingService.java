@@ -1,6 +1,7 @@
 package com.dangdang.funding.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.blockchain.dto.UseHistoryResponse;
 import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.category.domain.Category;
 import com.dangdang.category.repository.CategoryRepository;
@@ -18,9 +19,11 @@ import com.dangdang.image.repository.FundThumbnailRepository;
 import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.MakerResponse;
+import com.dangdang.member.dto.TotalSupportResponse;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
+import com.dangdang.member.service.MakerService;
 import com.dangdang.reward.domain.Reward;
 import com.dangdang.reward.dto.RewardResponse;
 import com.dangdang.reward.repository.RewardRepository;
@@ -70,6 +73,8 @@ public class FundingService {
 
     private final JWTUtil jwtUtil;
 
+    private final MakerService makerService;
+
 
     public FundingResponse.Regist RegistFunding(FundingRequest.Create request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         // Header에 담겨있는 토큰으로 찾은 userId 값
@@ -79,7 +84,7 @@ public class FundingService {
         System.out.println(maker);
 
         Category category = categoryRepository.findByType(request.getCategory());
-        Funding funding = Funding.FundingCreate(request, maker, category, "승인완료");
+        Funding funding = Funding.FundingCreate(request, maker, category, "승인 완료");
         System.out.println(funding+" 저장할 펀딩");
         UUID fundingId = fundingRepository.save(funding).getId();
         this.RegistReward(request.getRewards(), funding);
@@ -276,13 +281,11 @@ public class FundingService {
             rewardRes.add(RewardResponse.Res.build(rewards.get(i).getId(), rewards.get(i).getPrice(),rewards.get(i).getTitle(), rewards.get(i).getContent(), rewards.get(i).getSequence()));
         }
 
-          /*
-           펀딩 상세페이지에서 확인하는 메이커 정보 중 서포터 수는 효정님 코드에서 가져와서 넣어줘야 함
-           현재는 서포터 수 0으로 넣고 처리
-         */
-
         Maker maker = funding.get().getMaker();
-        MakerResponse.Res makerRes = MakerResponse.Res.build(maker.getId(), maker.getCompanyNumber(), maker.getCompanyName(), maker.getImg(), maker.getFundingSum(), 0);
+
+        TotalSupportResponse supporters = makerService.totalSupport(maker.getId().toString());
+
+        MakerResponse.Res makerRes = MakerResponse.Res.build(maker.getId(), maker.getCompanyNumber(), maker.getCompanyName(), maker.getImg(), maker.getFundingSum(), supporters.getSupportSum());
 
         return FundingResponse.DetailFunding.build(rewardRes,bodyImgRes,thumbnailsRes,fundingContent, makerRes);
 
@@ -326,6 +329,7 @@ public class FundingService {
             funding.setState(2);
             if(funding.getTargetPrice() > funding.getNowPrice()){
                 funding.setDetailState("펀딩 실패");
+                ethereumService.setFundingStatusFail(funding.getId().toString());
             }else{
                 funding.setDetailState("펀딩 성공");
                 // 컨트랙트 상태 변경
@@ -351,6 +355,16 @@ public class FundingService {
             response.add(this.changeResponseFunding(fundings.get(i)));
        }
         return FundingResponse.fundingList.build(response);
+    }
+
+    public FundingResponse.RaisedListAndRemained RaisedList(String fundingId, HttpServletRequest req) throws NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+
+        List<UseHistoryResponse> useHistory = ethereumService.getUseHistory(fundingId);
+        int totalRemain = ethereumService.checkLeftMoneyInFunding(fundingId,user.get().getPublicKey() );
+        return FundingResponse.RaisedListAndRemained.build(useHistory, totalRemain);
     }
 
 

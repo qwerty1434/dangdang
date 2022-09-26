@@ -1,5 +1,6 @@
 package com.dangdang.funding.dto;
 
+import com.dangdang.blockchain.dto.UseHistoryResponse;
 import com.dangdang.image.domain.BodyImage;
 import com.dangdang.image.domain.FundThumbnail;
 import com.dangdang.image.dto.BodyImgResponse;
@@ -63,6 +64,23 @@ public class FundingResponse {
                     .fundThumbnails(fundThumbnails)
                     .fundingContent(fundingContent)
                     .maker(maker)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class RaisedListAndRemained{
+
+        private List<UseHistoryResponse> useHistory;
+        private int totalRemain;
+
+        public static FundingResponse.RaisedListAndRemained build(List<UseHistoryResponse> useHistory, int totalRemain){
+            return FundingResponse.RaisedListAndRemained.builder()
+                    .useHistory(useHistory)
+                    .totalRemain(totalRemain)
                     .build();
         }
     }

@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,7 @@ public class UserService {
     private final JWTUtil jwtUtil;
 
 
-    public void join(UserJoinRequest user) throws NotFoundException {
+    public LoginResponse.UserInfo join(UserJoinRequest user) throws NotFoundException {
 
         chkEmail(user.getEmail());
         chkNickname(user.getNickname());
@@ -59,7 +60,9 @@ public class UserService {
         User newUser = new User(user.getEmail(),user.getPassword(),user.getNickname(),ethereumService.createAccount());
 
         newUser.setAuthority(Authority.ROLE_USER);
-        userRepository.save(newUser);
+        UUID userId = userRepository.save(newUser).getId();
+        String accessToken = jwtUtil.createToken(userId.toString());
+        return LoginResponse.UserInfo.build(newUser.getNickname(), false, newUser.getEmail(), accessToken);
     }
 
     public void chkEmail(String email) throws NotFoundException {
