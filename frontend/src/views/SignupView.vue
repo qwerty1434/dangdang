@@ -4,16 +4,16 @@
     <h1>this is a signup page</h1>
 
     <div class="signuptext">회원가입</div>
-
     <div>
       <div class="emailtext">이메일</div>
       <div class="emailbox"></div>
-      <div class="validationrequestbox"></div>
+      <div class="validationrequestbox" @click="authEmail()"></div>
       <div class="validationrequesttext">인증번호 보내기</div>
       <input
         type="text"
         placeholder="예: dangdangfunding@dangdang.com"
         class="emailinput"
+        v-model="email"
       />
     </div>
 
@@ -67,9 +67,35 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+export default {
+
+  data() {
+    return {
+      email: "",
+    };
+  },
+  methods:{
+    authEmail() {
+      const url = "http://localhost:8080/api/user/auth-email"
+      console.log("test");
+      axios
+        .post(url, {
+          email: this.email,
+        })
+        .then(({ data }) => {
+          // 서버에서 정상적인 값이 넘어 왔을경우 실행.
+          console.log("mail send successful");
+        }).catch(({data}) => {
+          console.log("error");
+        });
+    },
+
+  }
+};
 </script>
 
+<!-- 이 페이지에만 반영되는 css -->
 <style scoped>
 input[type="password"] {
   font-family: "맑은 고딕", "malgun gothic", "돋움", Dotum, sans-serif;
