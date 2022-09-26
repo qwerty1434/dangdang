@@ -31,8 +31,11 @@ public class UserController {
 
     @PostMapping("/join")
     @ApiOperation(value="당당펀딩(일반) 회원가입", notes = "가입 축하 메일은 현재 안갑니다.")
-    public void join(@RequestBody UserJoinRequest user) throws NotFoundException {
-        userService.join(user);
+    public ResponseEntity<LoginResponse.UserInfo> join(@RequestBody UserJoinRequest user, HttpServletResponse res) throws NotFoundException {
+        LoginResponse.UserInfo userInfo = userService.join(user);
+        String refreshToken = userService.refreshToken(userInfo.getEmail());
+        res.addHeader("Set-Cookie", "refreshToken="+refreshToken+"; path=/; MaxAge=7 * 24 * 60 * 60; SameSite=Lax; HttpOnly");
+        return ResponseEntity.ok().body(userInfo);
     }
 
     @PostMapping("/check/email")
@@ -64,7 +67,7 @@ public class UserController {
         LoginResponse.UserInfo userInfo= userService.login(input);
         String refreshToken = userService.refreshToken(userInfo.getEmail());
         res.addHeader("Set-Cookie", "refreshToken="+refreshToken+"; path=/; MaxAge=7 * 24 * 60 * 60; SameSite=Lax; HttpOnly");
-        return ResponseEntity.ok().body(userService.login(input));
+        return ResponseEntity.ok().body(userInfo);
     }
 
 

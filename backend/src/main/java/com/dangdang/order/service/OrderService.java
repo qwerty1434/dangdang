@@ -5,6 +5,7 @@ import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.repository.FundingRepository;
 import com.dangdang.member.domain.User;
+import com.dangdang.member.exception.InsufficientfundsException;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.UserRepository;
 import com.dangdang.order.domain.OrderHistory;
@@ -46,8 +47,8 @@ public class OrderService {
     private final JWTUtil jwtUtil;
 
 
-    @Transactional(rollbackFor = {NotFoundException.class})
-    public OrderResponse.Regist RegistOrder(OrderRequest.Create request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+    @Transactional(rollbackFor = {NotFoundException.class, InsufficientfundsException.class})
+    public OrderResponse.Regist RegistOrder(OrderRequest.Create request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, InsufficientfundsException {
         // 주문내역 저장
         Optional<Funding> funding = fundingRepository.findById(request.getFundingId());
         if(!funding.isPresent()){
@@ -88,6 +89,13 @@ public class OrderService {
         fundingNowPrice += totalPrice;
         funding.get().setNowPrice(fundingNowPrice);
         fundingRepository.save(funding.get());
+
+        int remainMoney = ethereumService.getWonBalance(user.get().getPublicKey());
+        if(remainMoney < totalPrice){
+            throw new InsufficientfundsException();
+        }
+
+
 
         // 펀딩 구매 시 입금하는 블록체인 코드
         ethereumService.sendMoneyToFunding(String.valueOf(request.getFundingId()), user.get().getNickname(), user.get().getPublicKey(), request.isAnonymous(), totalPrice);

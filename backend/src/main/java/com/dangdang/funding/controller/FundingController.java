@@ -2,10 +2,13 @@ package com.dangdang.funding.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.blockchain.dto.DepositHistoryResponse;
+import com.dangdang.blockchain.dto.UseHistoryResponse;
 import com.dangdang.blockchain.service.EthereumService;
+import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.dto.FundingRequest;
 import com.dangdang.funding.dto.FundingResponse;
 import com.dangdang.funding.service.FundingService;
+import com.dangdang.member.exception.InsufficientfundsException;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.order.dto.OrderRequest;
 import com.dangdang.order.service.OrderService;
@@ -70,7 +73,7 @@ public class FundingController {
 
     @PostMapping("/order")
     @ApiOperation(value="진행중인 펀딩에 참여하는 기능", notes = "리워드를 주문하며 펀딩에 참여하는 기능")
-    public ResponseEntity<?> Order (@RequestBody OrderRequest.Create request,  HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+    public ResponseEntity<?> Order (@RequestBody OrderRequest.Create request,  HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, InsufficientfundsException {
         return ResponseEntity.ok().body(orderService.RegistOrder(request, req));
     }
 
@@ -91,6 +94,15 @@ public class FundingController {
     public ResponseEntity<?> searchFunding (String keyword, Pageable pageable){
         return ResponseEntity.ok().body(fundingService.searchFunding(keyword, pageable));
     }
+    @GetMapping("/usage")
+    @ApiOperation(value="=모금액 사용내역 조회", notes = "펀딩아이디를 입력받아 해당 펀딩의 모금액 사용내역 조회")
+    public ResponseEntity<FundingResponse.RaisedListAndRemained> useRaisedList (String fundingId, HttpServletRequest req) throws NotValidateAccessToken {
+        return ResponseEntity.ok().body(fundingService.RaisedList(fundingId, req));
+    }
+
+
+
+
 
 
 
