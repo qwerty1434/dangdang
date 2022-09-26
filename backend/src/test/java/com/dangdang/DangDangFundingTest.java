@@ -7,12 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Collection;
 import java.util.List;
 
 @SpringBootTest
 public class DangDangFundingTest {
-
+//
 //    private final static String PRIVATE_KEY = EthereumService.ADMIN_PRIVATE_KEY;
 //
 ////    테스트넷
@@ -21,7 +20,7 @@ public class DangDangFundingTest {
 //    @Autowired
 //    EthereumService ethereumService;
 //
-//    private final String UUID = "550e8400-e29b-41d4-a716-446655440002";
+//    private final String UUID = "550e8400-e29b-41d4-a716-446655440003";
 //    private final String tempAddress1 = "0x0A50Ca4c71bf88fD4f08907bf7aD30244eFfB118";
 //    private final String tempAddress2 = "";
 //
@@ -89,6 +88,18 @@ public class DangDangFundingTest {
 //        for (UseHistoryResponse d : useHistory) {
 //            System.out.println(d);
 //        }
+//    }
+//
+//    @Test
+//    public void getWonBalance() {
+//        int wonBalance = ethereumService.getWonBalance(PRIVATE_KEY);
+//        System.out.println(wonBalance);
+//    }
+//
+//    @Test
+//    public void getWeiBalance() {
+//        String weiBalance = ethereumService.getWeiBalance(PRIVATE_KEY);
+//        System.out.println(weiBalance);
 //    }
 //
 //    @Test

@@ -132,14 +132,14 @@ public class EthereumService {
         }
     }
 
-    // [8] 펀딩 남은 금액 조회
-    public int checkLeftMoneyInFunding(String fundingId, String privateKey) {
+    // [8] 펀딩 남은 금액 조회 (해당 동작을 호출하는 사람 기준 privateKey)
+    public int checkLeftMoneyInFunding(String fundingId, String buyerPrivateKey) {
         Function function = new Function("checkLeftMoneyInFund",
                 Arrays.asList(new Utf8String(fundingId)),
                 Arrays.asList(new TypeReference<Uint256>() {
                 }));
         try {
-            String wei = (String) ethCall(function, getAddressFromPrivateKey(privateKey), DANG_DANG_CONTRACT);
+            String wei = (String) ethCall(function, getAddressFromPrivateKey(buyerPrivateKey), DANG_DANG_CONTRACT);
             return changeWeiToWon(wei);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -231,6 +231,28 @@ public class EthereumService {
         return ret;
     }
 
+    // [201] 유저 지갑 잔액 원으로 조회
+    public int getWonBalance(String privateKey) {
+        try {
+            String address = getAddressFromPrivateKey(privateKey);
+            EthGetBalance balanceWei = ADMIN.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+            return changeWeiToWon(balanceWei.getBalance().toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // [201] 유저 지갑 잔액 wei로 조회
+    public String getWeiBalance(String privateKey) {
+        try {
+            String address = getAddressFromPrivateKey(privateKey);
+            EthGetBalance balanceWei = ADMIN.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+            return balanceWei.getBalance().toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private String ethCall(Function function, String address, String contract) throws IOException {
         Transaction transaction = Transaction.createEthCallTransaction(address, contract,
                 FunctionEncoder.encode(function));
@@ -296,12 +318,11 @@ public class EthereumService {
     }
 
     private String changeWonToWei(int won) {
-        //TODO won이 0,1일떄 처리 추가
-        return String.valueOf(won / 10);
+        return String.valueOf(won * 100000000000L);
     }
 
     private int changeWeiToWon(String wei) {
-        return Integer.parseInt(wei) * 10;
+        return Integer.parseInt(String.valueOf(Long.parseLong(wei) / 100000000000L));
     }
 
     public Date changeUnixTimeToDate(String unixTimeStamp) {
