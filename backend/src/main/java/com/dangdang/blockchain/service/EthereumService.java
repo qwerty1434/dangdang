@@ -36,8 +36,10 @@ public class EthereumService {
 //    private final static String URL = "http://127.0.0.1:7545";
 
     public final static Admin ADMIN = Admin.build(new HttpService(URL));
-    public final static String DANG_DANG_CONTRACT = "0x4f553775f834F0a39373B5293b1115FC4b458159";
+    public final static String DANG_DANG_CONTRACT = "0x6B6e70262E92831212e6eaE398CDEa658dd745e7";
     public final static String ADMIN_PRIVATE_KEY = "ed21a9034322bc810c282209ad36730e9c5139aa36ad1346ca3d3f3faaab850c";
+    public final static String FACTORY_ADDRESS = "0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1";
+
     public final static BigInteger GAS_PRICE = BigInteger.valueOf(20000000000L);
     public final static BigInteger GAS_LIMIT = BigInteger.valueOf(6721975L);
 
@@ -118,11 +120,11 @@ public class EthereumService {
     }
 
     // [7] 펀딩 금액 사용
-    public void sendMoneyToManufacture(String fundingId, String factoryAddress, int won, String purpose) {
+    public void sendMoneyToManufacture(String fundingId, int won, String purpose) {
         BigDecimal amount = Convert.toWei(changeWonToWei(won), Convert.Unit.WEI);
 
         Function function = new Function("sendMoneyToProductManufacture",
-                Arrays.asList(new Utf8String(fundingId), new Address(factoryAddress),
+                Arrays.asList(new Utf8String(fundingId), new Address(FACTORY_ADDRESS),
                         new Uint256(new BigInteger(amount.toString())), new Utf8String(purpose)),
                 Collections.emptyList());
         try {
@@ -250,6 +252,27 @@ public class EthereumService {
             return balanceWei.getBalance().toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // [202] admin 계좌로부터 사용자에게 금액 전송 (회원가입시 호출)
+    public void sendMoneyToTargetAddressFromAdmin(String targetPrivateKey, int won){
+        try {
+            Credentials credentials = Credentials.create(ADMIN_PRIVATE_KEY);
+            EthGetTransactionCount ethGetTransactionCount = ADMIN
+                    .ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
+            BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+
+            RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, GAS_PRICE, GAS_LIMIT,
+                    getAddressFromPrivateKey(targetPrivateKey), new BigInteger(changeWonToWei(won)));
+
+            String hexValue = Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, credentials));
+
+            EthSendTransaction ethSendTransaction = ADMIN.ethSendRawTransaction(hexValue).send();
+            String transactionHash = ethSendTransaction.getTransactionHash();
+            System.out.println("transactionHash: " + transactionHash);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
