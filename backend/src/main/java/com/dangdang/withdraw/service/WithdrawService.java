@@ -8,6 +8,7 @@ import com.dangdang.member.domain.Maker;
 import com.dangdang.member.domain.User;
 import com.dangdang.member.dto.CoinAppRequest;
 import com.dangdang.member.dto.MakerInfoResponse;
+import com.dangdang.member.exception.InsufficientfundsException;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.repository.MakerRepository;
 import com.dangdang.member.repository.UserRepository;
@@ -50,7 +51,7 @@ public class WithdrawService {
 
     private final JWTUtil jwtUtil;
 
-    public void coinApplication(CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken {
+    public void coinApplication(CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken, InsufficientfundsException {
 
         System.out.println(input.getPurpose());
 
@@ -62,14 +63,26 @@ public class WithdrawService {
         User user = userRepository.findById(UUID.fromString(userId)).get();
         Funding funding = fundingRepository.findById(UUID.fromString(input.getFundingId())).get();
 
-        System.out.println(input.toString());
-        // 모금액 사용하기 , 현재 공장 주소는 고정값으로 해놓은 상태
-        ethereumService.sendMoneyToManufacture(funding.getId().toString(),"0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1", input.getAmountUsed(), input.getPurpose());
-
         WithdrawForm form = WithdrawForm.builder().id(UUID.fromString(userId)).funding(funding).amountUsed(input.getAmountUsed())
                 .purpose(input.getPurpose()).date(timestamp).build();
 
-        withdrawRepository.save(form);
+        WithdrawForm savedform = withdrawRepository.save(form);
+
+        // 모금액 사용하기 , 현재 공장 주소는 고정값으로 해놓은 상태
+
+        int remain = ethereumService.checkLeftMoneyInFunding(funding.getId().toString(), user.getPublicKey());
+        if(remain < input.getAmountUsed()){
+            savedform.setProcess("반려됨");
+            savedform.setReferReason("잔액 부족");
+            withdrawRepository.save(savedform);
+            throw new InsufficientfundsException();
+        }else{
+            savedform.setProcess("처리됨");
+            withdrawRepository.save(savedform);
+            ethereumService.sendMoneyToManufacture(funding.getId().toString(),"0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1", input.getAmountUsed(), input.getPurpose());
+        }
+
+
     }
     
     public List<WithdrawFormResponse> applicationList(String fundingId){

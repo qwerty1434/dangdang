@@ -3,10 +3,7 @@ package com.dangdang.withdraw.domain;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.withdraw.dto.WithdrawFormRequest;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -21,6 +18,7 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class WithdrawForm {
 
     @Id
