@@ -2,6 +2,7 @@ package com.dangdang.member.controller;
 
 import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.dto.*;
+import com.dangdang.member.exception.InsufficientfundsException;
 import com.dangdang.member.exception.NotValidateAccessToken;
 import com.dangdang.member.service.MakerService;
 import com.dangdang.withdraw.domain.WithdrawForm;
@@ -32,7 +33,7 @@ public class MakerController {
 
     @PostMapping("/coin-app")
     @ApiOperation(value="코인 사용 신청")
-    public void coinApplication(@RequestBody CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken {
+    public void coinApplication(@RequestBody CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken, InsufficientfundsException {
         withdrawService.coinApplication(input, req);
     }
 
