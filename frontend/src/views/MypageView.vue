@@ -13,7 +13,7 @@
     <div>
       <form method="post" enctype="multipart/form-data">
         <div>
-          <label for="chooseFile"> Click </label>
+          <label for="chooseFile" class="profileimgedit"> </label>
         </div>
         <input
           ref="image"
@@ -22,9 +22,9 @@
           id="chooseFile"
           name="chooseFile"
           accept="image/*"
-          class="profileimg" />
+          style="display: none" />
       </form>
-      <img :src="image" alt="" class="profileimg" />
+      <img :src="image" alt="none" class="profileimg" />
     </div>
 
     <div>
@@ -145,6 +145,7 @@ export default {
   height: 62.45px;
   left: 1052px;
   top: 678px;
+  z-index: 300;
 
   background: url("@/assets/edit.png");
 }
