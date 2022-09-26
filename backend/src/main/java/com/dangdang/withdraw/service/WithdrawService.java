@@ -1,6 +1,7 @@
 package com.dangdang.withdraw.service;
 
 import com.dangdang.advice.exceptions.NotFoundException;
+import com.dangdang.blockchain.service.EthereumService;
 import com.dangdang.funding.domain.Funding;
 import com.dangdang.funding.repository.FundingRepository;
 import com.dangdang.member.domain.Maker;
@@ -16,6 +17,7 @@ import com.dangdang.withdraw.domain.WithdrawForm;
 import com.dangdang.withdraw.dto.WithdrawFormResponse;
 import com.dangdang.withdraw.repository.WithdrawRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
@@ -44,9 +46,13 @@ public class WithdrawService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
 
+    private final EthereumService ethereumService;
+
     private final JWTUtil jwtUtil;
 
     public void coinApplication(CoinAppRequest input, HttpServletRequest req) throws NotValidateAccessToken {
+
+        System.out.println(input.getPurpose());
 
         ZonedDateTime datetime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         Timestamp timestamp = Timestamp.valueOf(datetime.toLocalDateTime());
@@ -55,6 +61,10 @@ public class WithdrawService {
         String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
         User user = userRepository.findById(UUID.fromString(userId)).get();
         Funding funding = fundingRepository.findById(UUID.fromString(input.getFundingId())).get();
+
+        System.out.println(input.toString());
+        // 모금액 사용하기 , 현재 공장 주소는 고정값으로 해놓은 상태
+        ethereumService.sendMoneyToManufacture(funding.getId().toString(),"0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1", input.getAmountUsed(), input.getPurpose());
 
         WithdrawForm form = WithdrawForm.builder().id(UUID.fromString(userId)).funding(funding).amountUsed(input.getAmountUsed())
                 .purpose(input.getPurpose()).date(timestamp).build();
