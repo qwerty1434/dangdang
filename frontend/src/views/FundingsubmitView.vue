@@ -3,7 +3,9 @@
     <h1>this is a /funding/submit page</h1>
     <div>
       <div>
-        <div class="categorybox"></div>
+        <select v-model="category" class="categorybox">
+          <option v-for="c in categories" v-bind:key = "c">{{c}}</option>
+        </select>
         <div class="categoryselect"></div>
         <div class="categorybutton"></div>
       </div>
@@ -22,12 +24,36 @@
           placeholder="목표 금액을 입력해주세요" />
       </div>
       <div>
-        <div class="thumbnail1"></div>
-        <div class="thumbnail2"></div>
-        <div class="thumbnail3"></div>
-        <div class="detail1"></div>
-        <div class="detail2"></div>
-        <div class="detail3"></div>
+        <div class="thumbnail1" onclick="onclick=document.all.file0.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file0" id="file0" style="display:none" @change="UploadThumbnail(0)"/>
+          </form>
+        </div>
+        <div class="thumbnail2" onclick="onclick=document.all.file1.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file1" id="file1" style="display:none" @change="UploadThumbnail(1)"/>
+          </form>
+        </div>
+        <div class="thumbnail3" onclick="onclick=document.all.file2.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file2" id="file2" style="display:none" @change="UploadThumbnail(2)"/>
+          </form>
+        </div>
+        <div class="detail1" onclick="onclick=document.all.file3.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file3" id="file3" style="display:none" @change="UploadContentImage(0)"/>
+          </form>
+        </div>
+        <div class="detail2" onclick="onclick=document.all.file4.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file4" id="file4" style="display:none" @change="UploadContentImage(1)"/>
+          </form>
+        </div>
+        <div class="detail3" onclick="onclick=document.all.file5.click()">
+          <form action="upload" id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" ref="file5" id="file5" style="display:none" @change="UploadContentImage(2)"/>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -38,28 +64,29 @@
         <input
           type="text"
           class="rewardtitleinput"
-          placeholder="리워드 제목을 입력해주세요" />
+          placeholder="리워드 제목을 입력해주세요" 
+          v-model="reward.title"/>
       </div>
       <div>
         <div class="rewardcontentbox"></div>
         <input
           type="text"
           class="rewardcontentinput"
-          placeholder="리워드 내용을 입력해주세요" />
+          placeholder="리워드 내용을 입력해주세요"
+          v-model="reward.content" />
       </div>
       <div>
         <div class="rewardpricebox"></div>
         <input
           type="text"
           class="rewardpriceinput"
-          placeholder="리워드에 해당하는 금액을 입력해주세요" />
+          placeholder="리워드에 해당하는 금액을 입력해주세요"
+          v-model="reward.price" />
       </div>
-      <div><div class="rewardaddbutton"></div></div>
+      <div @click="makeReward"><div class="rewardaddbutton"></div></div>
+
       <div>
-        <div class="reward1"></div>
-        <div class="reward2"></div>
-        <div class="reward3"></div>
-        <div class="reward4"></div>
+        <div v-for="(reward,index) in rewards" v-bind:key = "reward" :class="`reward${index+1}`">{{reward}}</div>
       </div>
     </div>
     <!-- 기타정보 -->
@@ -74,7 +101,10 @@
       <!-- 펀딩일정 -->
 
       <div>
-        <div class="calendar"></div>
+        <div class="calendar">
+          <Datepicker v-model="fromDate" inline autoApply style="float:left; "/>
+          <Datepicker v-model="toDate" inline autoApply />
+        </div>
         <div class=""></div>
         <div class=""></div>
         <div class=""></div>
@@ -112,7 +142,134 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import {ref} from "vue";
+
+const serverUrl = "j7a306.p.ssafy.io/api"
+export default {
+  data(){
+    return {
+      thumbnail: [],
+      contentImage: [],
+      url : "",
+      categories : [],
+      category:"",
+      rewards : [],
+      reward:{
+        title:"",
+        content:"",
+        price:"",
+      },
+      fromDate: ref(new Date()),
+      toDate: ref(new Date()),
+    };
+  },
+  components:{
+    Datepicker,
+  },
+
+  created(){
+    // url = 백엔드에서 펀딩의 uuid만 미리 받아오기
+    // category = [];
+    axios.get("https://"+serverUrl+"/category/list",{
+
+    }).then((response) => {
+      this.categories = response.data;
+    }).catch(()=>{
+      console.log("error");
+    });
+
+  },
+  methods:{
+    UploadThumbnail(num) {
+      var s = "file"+num;
+      console.log(s)
+      this.thumbnail[num] = eval(`this.$refs.${s}.files[0]`); // 지금 선택된 파일이 data의 file로 저장되도록
+      console.log(this.thumbnail[num], "파일이 업로드 되었습니다");
+    },
+    UploadContentImage(num) {
+      var s = "file"+(3+num);
+      console.log(s)
+      this.contentImage[num] = eval(`this.$refs.${s}.files[0]`);
+      console.log(this.contentImage[num], "파일이 업로드 되었습니다");
+    },
+    SaveImages(){
+      // 파일 업로드
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
+
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+      for (let index = 0; index < this.thumbnail.length; index++) {
+        // let photoKey = "folder/"+this.file[index].name+".jpg"; 
+        let photoKey = "folder/"+index+".jpg"; 
+
+        S3.upload(
+          {
+            Key: photoKey,
+            Body: this.thumbnail[index],
+            ACL: "public-read",
+          },
+          (err, data) => {
+            if (err) {
+              console.log(err);
+              return alert("에러");
+            } else {
+              console.log(data);
+              this.getFiles();
+            }
+          }
+        );
+      }
+      for (let index = 0; index < this.contentImage.length; index++) {
+        // let photoKey = "folder/"+this.file[index].name+".jpg"; 
+        let photoKey = "folder/"+index+".jpg"; 
+
+        S3.upload(
+          {
+            Key: photoKey,
+            Body: this.contentImage[index],
+            ACL: "public-read",
+          },
+          (err, data) => {
+            if (err) {
+              console.log(err);
+              return alert("에러");
+            } else {
+              console.log(data);
+              this.getFiles();
+            }
+          }
+        );
+      }      
+    },
+
+    makeReward(){
+      if(this.rewards.length >= 4){
+        alert("최대 4개만 가능함")
+      }
+      this.rewards.push(JSON.parse(JSON.stringify(this.reward))); // 깊은 복사를 위해 JSON 활용
+      this.reward.title="";
+      this.reward.content="";
+      this.reward.price="";            
+      console.log(this.rewards)
+    },
+  }
+
+};
+
+
+
 </script>
 
 <style scoped>
