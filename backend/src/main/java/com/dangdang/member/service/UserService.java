@@ -67,10 +67,11 @@ public class UserService {
         return LoginResponse.UserInfo.build(newUser.getNickname(), false, newUser.getEmail(), accessToken);
     }
 
-    public void chkEmail(String email) throws NotFoundException {
-        if(userRepository.findByEmail(email) !=null) {
-            throw new NotFoundException("이미 사용 중인 이메일입니다.");
-        }
+    public boolean chkEmail(String email) throws NotFoundException {
+        // true는 중복 이메일 있는 것, false는 없는 것
+        User user = userRepository.findByEmail(email);
+        if(user!=null) return true;
+        return false;
     }
 
     public boolean chkNickname(String nickname) throws NotFoundException {

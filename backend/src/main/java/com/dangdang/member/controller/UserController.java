@@ -42,8 +42,8 @@ public class UserController {
     @ApiOperation(value="이메일 중복 및 유효 검사")
     public boolean chkEmail(@RequestBody StringRequest inputDto) throws NotFoundException {
         try{
-            userService.chkEmail(inputDto.getStr());
-            return true;
+            boolean flag = userService.chkEmail(inputDto.getStr());
+            return flag;
         } catch (NotFoundException e){
             return false;
         }
@@ -55,8 +55,7 @@ public class UserController {
         // true는 중복 닉 있는 것, false는 없는 것, exception도 없는 것
         try{
             boolean flag = userService.chkNickname(inputDto.getStr());
-            if (flag) return true;
-            return false;
+            return flag;
         } catch (NotFoundException e){
             return false;
         }
