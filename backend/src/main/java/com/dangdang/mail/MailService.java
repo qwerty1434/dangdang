@@ -34,8 +34,7 @@ public class MailService {
         try{
             message.setFrom(from_email);
 
-            //message.setTo(email);
-            message.setTo("leemyo_@naver.com");
+            message.setTo(email);
             message.setSubject("가입 이메일 인증번호입니다.");
 
             //인증키 6자리 랜덤으로 생성 후 초기화
