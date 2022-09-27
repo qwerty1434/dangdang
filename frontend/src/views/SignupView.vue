@@ -7,8 +7,9 @@
     <div>
       <div class="emailtext">이메일</div>
       <div class="emailbox"></div>
-      <div class="validationrequestbox" @click="authEmail()"></div>
-      <div class="validationrequesttext">인증번호 보내기</div>
+      <button @click="checkRealEmail()" class="authNumSendButton">
+        인증번호 보내기
+      </button>
       <input
         type="text"
         placeholder="예: dangdangfunding@dangdang.com"
@@ -20,12 +21,14 @@
     <div>
       <div class="validationtext">인증번호</div>
       <div class="validationbox"></div>
-      <div class="validationchecktext">인증번호 확인</div>
-      <div class="validationcheckbox"></div>
+      <button @click="checkAuthNum()" class="authNumCheckButton">
+        인증번호 확인
+      </button>
       <input
         type="text"
         placeholder="이메일로 전달된 인증번호를 입력해 주세요"
         class="validationinput"
+        v-model="inputAuth"
       />
     </div>
     <div>
@@ -35,6 +38,7 @@
         type="password"
         placeholder="비밀번호를 입력해 주세요"
         class="pwinput"
+        v-model="pw"
       />
     </div>
 
@@ -45,53 +49,169 @@
         type="password"
         placeholder="비밀번호를 다시 한번 입력해 주세요"
         class="pwcheckinput"
+        v-model="pwCheck"
       />
     </div>
 
     <div>
       <div class="aliastext">닉네임</div>
       <div class="aliasbox"></div>
-      <div class="aliasisuniquetext">중복 확인</div>
-      <div class="aliasisuniquebox"></div>
+      <button @click="checkNickname()" class="nickCheckButton">
+        중복 확인
+      </button>
       <input
         type="text"
         placeholder="닉네임을 입력해 주세요"
         class="aliasinput"
+        v-model="inputNick"
       />
     </div>
     <div>
-      <div class="signupbox"></div>
-      <div class="signupboxtext">가입하기</div>
+      <button @click="signup()" class="signupButton">가입하기</button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+const instance = axios.create({
+  baseURL: "/",
+  headers: {
+    Authrozation: "test",
+  },
+});
 export default {
-
   data() {
     return {
       email: "",
+      checkEmail: "",
+      authNum: "",
+      isCheckEmail: true,
+      isCheckAuthNum: false,
+      inputAuth: "",
+      pw: "",
+      pwCheck: "",
+      inputNick: "",
+      checkNick: "",
+      isCheckNick: true,
+      flag: false,
+      staticUrl: "http://localhost:8080",
     };
   },
-  methods:{
+  methods: {
+    checkRealEmail() {
+      const url = this.staticUrl + "/api/user/check/email";
+      axios
+        .post(url, {
+          str: this.email,
+        })
+        .then(({ data }) => {
+          // true는 중복 이메일 있는 것, false는 없는 것
+          this.isCheckEmail = data;
+          this.isCheckAuthNum = false;
+          this.isCheckNick = true;
+          this.authNum = "";
+          this.checkEmail = "";
+          this.checkNick = "";
+          //이메일 형식인지 확인
+          if (this.isCheckEmail) {
+            alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요.");
+          } else {
+            this.checkEmail = this.email;
+            this.authEmail();
+          }
+        })
+        .catch(({ data }) => {
+          alert("이메일을 다시 입력해주세요.");
+        });
+    },
     authEmail() {
-      const url = "http://localhost:8080/api/user/auth-email"
-      console.log("test");
+      const url = this.staticUrl + "/api/user/auth-email";
       axios
         .post(url, {
           email: this.email,
         })
         .then(({ data }) => {
           // 서버에서 정상적인 값이 넘어 왔을경우 실행.
-          console.log("mail send successful");
-        }).catch(({data}) => {
-          console.log("error");
+          this.isValidEmail = data;
+          this.authNum = data.authNum;
+          alert(
+            "입력하신 이메일로 인증 번호를 보냈습니다. 확인 후 입력해주세요."
+          );
+        })
+        .catch(({ data }) => {
+          alert("이메일 재입력 필요");
         });
-    },
 
-  }
+      // /check/email 도 해야함
+    },
+    checkAuthNum() {
+      if (this.authNum == this.inputAuth) {
+        this.isCheckAuthNum = true;
+        alert("인증되었습니다.");
+      } else {
+        alert("인증 번호를 다시 입력해주세요.");
+      }
+    },
+    checkNickname() {
+      const url = this.staticUrl + "/api/user/check/nick";
+      if (this.inputNick == "") {
+        alert("닉네임을 입력해주세요.");
+      } else {
+        axios
+          .post(url, {
+            str: this.inputNick,
+          })
+          .then(({ data }) => {
+            // true는 중복 닉 있는 것, false는 없는 것, exception도 없는 것
+            this.isCheckNick = data;
+            if (this.isCheckNick) {
+              alert("이미 존재하는 닉네임입니다.");
+            } else {
+              this.checkNick = this.inputNick;
+              alert("사용 가능한 닉네임입니다.");
+            }
+          })
+          .catch(({ data }) => {
+            alert("닉네임 재입력 필요");
+          });
+      }
+    },
+    signup() {
+      const url = this.staticUrl + "/api/user/join";
+      this.flag = false;
+      if (this.isCheckEmail || this.email != this.checkEmail) {
+        alert("이메일 인증이 되지 않았거나 인증한 이메일이 수정되었습니다.");
+        this.flag = true;
+      }
+      if (!this.isCheckAuthNum) {
+        alert("인증번호를 다시 확인해주세요.");
+        this.flag = true;
+      }
+      if (this.pw != this.pwCheck) {
+        alert("비밀번호와 확인을 위해 입력받은 비밀번호가 다릅니다.");
+        this.flag = true;
+      }
+      if (this.isCheckNick || this.checkNick != this.inputNick) {
+        alert("닉네임 중복 확인을 해주세요.");
+        this.flag = true;
+      }
+      if (!this.flag) {
+        axios
+          .post(url, {
+            email: this.checkEmail,
+            password: this.pw,
+            nickname: this.checkNick,
+          })
+          .then(({ data }) => {
+            console.log(data);
+          })
+          .catch(({ data }) => {
+            alert("닉네임 재입력 필요");
+          });
+      }
+    },
+  },
 };
 </script>
 
@@ -111,6 +231,92 @@ input[type="password"]::placeholder {
 
   background: #ffffff;
 }
+.authNumSendButton {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 1202px;
+  top: 424px;
+
+  border: 0.5px solid #000000;
+  border-radius: 5px;
+  background: #ffffff;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  text-align: center;
+
+  color: #000000;
+}
+.authNumCheckButton {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 1202px;
+  top: 508px;
+
+  border: 0.5px solid #000000;
+  border-radius: 5px;
+  background: #ffffff;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  text-align: center;
+
+  color: #000000;
+}
+.nickCheckButton {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 1202px;
+  top: 760px;
+
+  border: 0.5px solid #000000;
+  border-radius: 5px;
+  background: #ffffff;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  text-align: center;
+
+  color: #000000;
+}
+.signupButton {
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 891px;
+  top: 876px;
+
+  background: #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #ffffff;
+}
+
 .signuptext {
   position: absolute;
   width: 300px;
@@ -274,30 +480,6 @@ input[type="password"]::placeholder {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
-.validationcheckbox {
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 140px;
-  height: 52px;
-  left: 1202px;
-  top: 508px;
-
-  border: 0.5px solid #000000;
-  border-radius: 5px;
-}
-.aliasisuniquebox {
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 140px;
-  height: 52px;
-  left: 1202px;
-  top: 760px;
-
-  border: 0.5px solid #000000;
-  border-radius: 5px;
-}
 .validationrequesttext {
   position: absolute;
   width: 120px;
@@ -313,64 +495,6 @@ input[type="password"]::placeholder {
   text-align: center;
 
   color: #000000;
-}
-.validationchecktext {
-  position: absolute;
-  width: 120px;
-  height: 20px;
-  left: 1212px;
-  top: 524px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 20px;
-  text-align: center;
-
-  color: #000000;
-}
-.aliasisuniquetext {
-  position: absolute;
-  width: 120px;
-  height: 20px;
-  left: 1212px;
-  top: 776px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 20px;
-  text-align: center;
-
-  color: #000000;
-}
-.signupbox {
-  position: absolute;
-  width: 140px;
-  height: 52px;
-  left: 891px;
-  top: 876px;
-
-  background: #62b878;
-  border-radius: 5px;
-}
-.signupboxtext {
-  position: absolute;
-  width: 120px;
-  height: 20px;
-  left: 900px;
-  top: 892px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 23px;
-  text-align: center;
-
-  color: #ffffff;
 }
 .emailinput {
   position: absolute;
