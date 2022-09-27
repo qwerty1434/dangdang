@@ -43,20 +43,22 @@ public class UserController {
     public boolean chkEmail(@RequestBody StringRequest inputDto) throws NotFoundException {
         try{
             userService.chkEmail(inputDto.getStr());
-            return false;
-        } catch (NotFoundException e){
             return true;
+        } catch (NotFoundException e){
+            return false;
         }
     }
 
     @PostMapping("/check/nick")
     @ApiOperation(value="닉네임 중복 검사")
     public boolean chkNickname(@RequestBody StringRequest inputDto) throws NotFoundException {
+        // true는 중복 닉 있는 것, false는 없는 것, exception도 없는 것
         try{
-            userService.chkNickname(inputDto.getStr());
+            boolean flag = userService.chkNickname(inputDto.getStr());
+            if (flag) return true;
             return false;
         } catch (NotFoundException e){
-            return true;
+            return false;
         }
     }
 

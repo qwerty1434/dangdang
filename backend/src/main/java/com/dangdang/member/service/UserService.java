@@ -73,10 +73,11 @@ public class UserService {
         }
     }
 
-    public void chkNickname(String nickname) throws NotFoundException {
-        if(userRepository.findByNickname(nickname) !=null) {
-            throw new NotFoundException("이미 사용 중인 닉네임입니다.");
-        }
+    public boolean chkNickname(String nickname) throws NotFoundException {
+        // true는 중복 닉 있는 것, false는 없는 것
+        User user = userRepository.findByNickname(nickname);
+        if(user!=null) return true;
+        return false;
     }
 
     public void vaildUserId(String userId) throws NotFoundException {
