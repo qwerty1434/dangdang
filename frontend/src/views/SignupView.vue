@@ -95,9 +95,12 @@ export default {
       checkNick: "",
       isCheckNick: true,
       flag: false,
+      isClick: false,
+      joinUser: { email: "", isAdmin: false, nickname: "", accessToken: "" },
       staticUrl: "http://localhost:8080",
     };
   },
+  created() {},
   methods: {
     checkRealEmail() {
       const url = this.staticUrl + "/api/user/check/email";
@@ -196,7 +199,8 @@ export default {
         alert("닉네임 중복 확인을 해주세요.");
         this.flag = true;
       }
-      if (!this.flag) {
+      if (!this.flag && !this.isClick) {
+        this.isClick = true;
         axios
           .post(url, {
             email: this.checkEmail,
@@ -205,16 +209,22 @@ export default {
           })
           .then(({ data }) => {
             console.log(data);
+            this.joinUser.isAdmin = data.admin;
+            this.joinUser.nickname = data.nickname;
+            this.joinUser.email = data.email;
+            this.joinUser.accessToken = data.accessToken;
+            this.$store.commit("joinUser", this.joinUser);
+            // this.$router.push("/");
+            this.$router.go(-1);
           })
           .catch(({ data }) => {
-            alert("닉네임 재입력 필요");
+            alert("회원 가입에 실패했습니다.");
           });
       }
     },
   },
 };
 </script>
-
 <!-- 이 페이지에만 반영되는 css -->
 <style scoped>
 input[type="password"] {
