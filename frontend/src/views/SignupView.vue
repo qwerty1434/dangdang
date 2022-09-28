@@ -316,6 +316,7 @@ input[type="password"]::placeholder {
 
   background: #62b878;
   border-radius: 5px;
+  border: 0;
 
   font-family: "NanumSquare";
   font-style: normal;
