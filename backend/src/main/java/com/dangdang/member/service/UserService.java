@@ -60,21 +60,25 @@ public class UserService {
         User newUser = new User(user.getEmail(),user.getPassword(),user.getNickname(),ethereumService.createAccount());
 
         newUser.setAuthority(Authority.ROLE_USER);
-        UUID userId = userRepository.save(newUser).getId();
-        String accessToken = jwtUtil.createToken(userId.toString());
+        User savedUser = userRepository.save(newUser);
+        String accessToken = jwtUtil.createToken(savedUser.getId().toString());
+        // 회원가입 시 해당 계정으로 관리자가 50000원 입금해주는 코드
+        ethereumService.sendMoneyToTargetAddressFromAdmin(savedUser.getPublicKey(), 50000);
         return LoginResponse.UserInfo.build(newUser.getNickname(), false, newUser.getEmail(), accessToken);
     }
 
-    public void chkEmail(String email) throws NotFoundException {
-        if(userRepository.findByEmail(email) !=null) {
-            throw new NotFoundException("이미 사용 중인 이메일입니다.");
-        }
+    public boolean chkEmail(String email) throws NotFoundException {
+        // true는 중복 이메일 있는 것, false는 없는 것
+        User user = userRepository.findByEmail(email);
+        if(user!=null) return true;
+        return false;
     }
 
-    public void chkNickname(String nickname) throws NotFoundException {
-        if(userRepository.findByNickname(nickname) !=null) {
-            throw new NotFoundException("이미 사용 중인 닉네임입니다.");
-        }
+    public boolean chkNickname(String nickname) throws NotFoundException {
+        // true는 중복 닉 있는 것, false는 없는 것
+        User user = userRepository.findByNickname(nickname);
+        if(user!=null) return true;
+        return false;
     }
 
     public void vaildUserId(String userId) throws NotFoundException {
@@ -202,5 +206,27 @@ public class UserService {
             output.add(result);
         }
         return output;
+    }
+
+    public boolean changeNick(nickRequest request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        // true는 중복 이메일 있는 것, false는 없는 것
+        if(this.chkNickname(request.getNickname())) {
+            return false;
+        }else{
+            user.get().setNickname(request.getNickname());
+            userRepository.save(user.get());
+            return true;
+        }
+    }
+
+    public CheckCoinResponse checkRemainCoins(HttpServletRequest req) throws NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        return CheckCoinResponse.build(ethereumService.getWonBalance(user.get().getPublicKey()));
+
     }
 }

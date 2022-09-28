@@ -42,21 +42,22 @@ public class UserController {
     @ApiOperation(value="이메일 중복 및 유효 검사")
     public boolean chkEmail(@RequestBody StringRequest inputDto) throws NotFoundException {
         try{
-            userService.chkEmail(inputDto.getStr());
-            return false;
+            boolean flag = userService.chkEmail(inputDto.getStr());
+            return flag;
         } catch (NotFoundException e){
-            return true;
+            return false;
         }
     }
 
     @PostMapping("/check/nick")
     @ApiOperation(value="닉네임 중복 검사")
     public boolean chkNickname(@RequestBody StringRequest inputDto) throws NotFoundException {
+        // true는 중복 닉 있는 것, false는 없는 것, exception도 없는 것
         try{
-            userService.chkNickname(inputDto.getStr());
-            return false;
+            boolean flag = userService.chkNickname(inputDto.getStr());
+            return flag;
         } catch (NotFoundException e){
-            return true;
+            return false;
         }
     }
 
@@ -111,4 +112,17 @@ public class UserController {
         return userService.findFundingList(state, pageable, req);
     }
 
+    @PatchMapping("/change/nick")
+    @ApiOperation(value = "유저 닉네임 변경", notes = "유저의 닉네임을 변경하는 api로 중복되는 닉네임이 있을 시 false로 반환")
+    public boolean changeNick(@RequestBody nickRequest request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return userService.changeNick(request, req);
+    }
+
+    @GetMapping("/checkcoin")
+    @ApiOperation(value = "유저의 남은 잔액 확인", notes = "유저 마이페이지에 남은 잔액 표시")
+    public ResponseEntity<CheckCoinResponse> checkRemainCoin(HttpServletRequest req) throws NotValidateAccessToken {
+        return ResponseEntity.ok().body(userService.checkRemainCoins(req));
+    }
+
 }
+
