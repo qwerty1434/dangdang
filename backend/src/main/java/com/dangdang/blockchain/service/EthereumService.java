@@ -32,11 +32,11 @@ import java.util.*;
 @Service
 public class EthereumService {
 
-    private final static String URL = "https://ropsten.infura.io/v3/bf3b9c7878494afe9a5b37dd08f7a24a";
+    private final static String URL = "https://goerli.infura.io/v3/bf3b9c7878494afe9a5b37dd08f7a24a";
 //    private final static String URL = "http://127.0.0.1:7545";
 
     public final static Admin ADMIN = Admin.build(new HttpService(URL));
-    public final static String DANG_DANG_CONTRACT = "0x6B6e70262E92831212e6eaE398CDEa658dd745e7";
+    public final static String DANG_DANG_CONTRACT = "0xbCc2f929eD099d07A6556632A7a4359282b3Ab2C";
     public final static String ADMIN_PRIVATE_KEY = "ed21a9034322bc810c282209ad36730e9c5139aa36ad1346ca3d3f3faaab850c";
     public final static String FACTORY_ADDRESS = "0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1";
 
