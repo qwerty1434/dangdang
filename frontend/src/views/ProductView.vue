@@ -1,33 +1,36 @@
 <template>
   <div>
     <div class="banner"></div>
-    <div class="fundingtitle">유패드 미니 뭐라뭐라 긴 제목</div>
+    <div class="fundingtitle"> {{fundingDetail.fundingContent.title}} </div>
     <div class="storybutton">스토리</div>
     <div class="supporterbutton">서포터</div>
     <div class="accountbutton">통장내역</div>
 
-    <div class="components"></div>
+    <div class="components">
+      <!-- <FundingParticipation :user=supporters[0] /> -->
+      <!-- <FundingParticipation v-for="(item, i) in supporters" :user=supporters[i] :key="i"/> -->
+    </div>
 
-    <div class="due">종료 {nn}일 전</div>
+    <div class="due">종료 {{fundingDetail.fundingContent.remainDays}}일 전</div>
     <div>
       <progress
         id="progress"
-        value="50"
+        value={{fundingDetail.fundingContent.achieveRate}}
         min="0"
         max="100"
         class="progressbar"
       ></progress>
     </div>
-    <div class="complete">{nnn}% 달성</div>
-    <div class="funded">{nnn} 원 펀딩</div>
-    <div class="supporter">{nnnn} 명의 서포터</div>
+    <div class="complete">{{fundingDetail.fundingContent.achieveRate}}% 달성</div>
+    <div class="funded">{{fundingDetail.fundingContent.nowPrice}} 원 펀딩</div>
+    <div class="supporter">{{supporters.length}} 명의 서포터</div>
     <button class="joinfunding">펀딩 참여</button>
     <div class="makertext">메이커 정보</div>
-    <div class="maker">{메이커이름}</div>
+    <div class="maker">{{fundingDetail.maker.companyName}}</div>
     <div class="makerprofilepic"></div>
-    <div class="makercompany">{사업자회사이름}</div>
-    <div class="cumulativesupporter">누적서포터 {nnnnn} 명</div>
-    <div class="fundingdone">완료한 펀딩 {nnnnn} 개</div>
+    <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
+    <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
+    <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
     <div class="reward1"></div>
     <div class="reward2"></div>
     <div class="reward3"></div>
@@ -36,7 +39,41 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import FundingParticipation from "../components/FundingParticipation.vue";
+
+export default {
+  name:"Test",
+  components: {
+    FundingParticipation: FundingParticipation,
+  },
+  data() {
+    return {
+       fundingDetail: {},
+       supporters: [],
+    }
+  },
+  created() {
+    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
+    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
+
+    axios
+      .get(detailUrl, {
+      })
+      .then(({ data }) => {
+        console.log(data);
+        this.fundingDetail = data;
+      })
+
+    axios
+      .get(supporterUrl, {
+      })
+      .then(({ data }) => {
+        console.log(data);
+        this.supporters = data;
+      })
+  }
+};
 </script>
 
 <style scoped>

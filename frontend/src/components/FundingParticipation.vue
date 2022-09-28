@@ -1,14 +1,22 @@
 <template>
   <div>
-    <div class="time">1분 전</div>
-    <div class="detail">AA님이 450,000원 펀딩으로 참여하셨습니다.</div>
+    <div class="time">{{user.time}}</div>
+    <div class="detail">{{user.nickname}}님이 {{user.won}}원 펀딩으로 참여하셨습니다.</div>
   </div>
 </template>
 
 <script>
-export default {
-  name: "FundingParticipation",
-};
+  export default {
+    name: "FundingParticipation",
+    data() {
+      return {
+
+      };
+    },
+    props : {
+      user: Object,
+    }
+  };
 </script>
 
 <style scoped>
