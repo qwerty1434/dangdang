@@ -112,5 +112,17 @@ public class UserController {
         return userService.findFundingList(state, pageable, req);
     }
 
+    @PatchMapping("/change/nick")
+    @ApiOperation(value = "유저 닉네임 변경", notes = "유저의 닉네임을 변경하는 api로 중복되는 닉네임이 있을 시 false로 반환")
+    public boolean changeNick(@RequestBody nickRequest request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return userService.changeNick(request, req);
+    }
+
+    @GetMapping("/checkcoin")
+    @ApiOperation(value = "유저의 남은 잔액 확인", notes = "유저 마이페이지에 남은 잔액 표시")
+    public ResponseEntity<CheckCoinResponse> checkRemainCoin(HttpServletRequest req) throws NotValidateAccessToken {
+        return ResponseEntity.ok().body(userService.checkRemainCoins(req));
+    }
+
 }
 
