@@ -207,4 +207,26 @@ public class UserService {
         }
         return output;
     }
+
+    public boolean changeNick(nickRequest request, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        // true는 중복 이메일 있는 것, false는 없는 것
+        if(this.chkNickname(request.getNickname())) {
+            return false;
+        }else{
+            user.get().setNickname(request.getNickname());
+            userRepository.save(user.get());
+            return true;
+        }
+    }
+
+    public CheckCoinResponse checkRemainCoins(HttpServletRequest req) throws NotValidateAccessToken {
+        // Header에 담겨있는 토큰으로 찾은 userId 값
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Optional<User> user = userRepository.findById(UUID.fromString(userId));
+        return CheckCoinResponse.build(ethereumService.getWonBalance(user.get().getPublicKey()));
+
+    }
 }
