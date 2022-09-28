@@ -112,7 +112,6 @@ public class MakerService {
         for(Funding f : fundingList){
             if(!f.getDetailState().equals("펀딩 성공")) continue;
             List<OrderHistory> histories = historyRepository.findByFundingId(f.getId());
-            System.out.println("histories.size() = " + histories.size());
             for(OrderHistory h: histories){
                 set.add(h.getUser().getId().toString());
             }
@@ -127,8 +126,7 @@ public class MakerService {
 
         List<Funding> fundings = fundingRepository.findByState(input.getState(),pageable);
         List<FundingListResponse> output = new LinkedList<>();
-
-        for(Funding f:fundings){
+        for(Funding f: fundings){
             LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             LocalDateTime end = f.getEndDate().toLocalDateTime();
             int day = (int) ChronoUnit.DAYS.between(start, end);
@@ -139,7 +137,7 @@ public class MakerService {
                 if(img.getSequence()==0) ff=img;
             }
             FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
-                    ff.getImg(), f.getNowPrice(), (1.0*f.getNowPrice()/ f.getTargetPrice()),
+                    ff.getImg(), f.getNowPrice(), (f.getNowPrice()*100/ f.getTargetPrice()),
                     f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
             output.add(result);
         }

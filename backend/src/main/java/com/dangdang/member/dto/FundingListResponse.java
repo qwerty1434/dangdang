@@ -17,7 +17,7 @@ public class FundingListResponse {
     private String companyName;
     private String img;
     private int nowPrice;
-    private Double achieveRate;
+    private int achieveRate;
     private Timestamp endDate;
     private String detailState;
     private int remainDays;
