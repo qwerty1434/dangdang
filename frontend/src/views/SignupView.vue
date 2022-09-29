@@ -97,7 +97,9 @@ export default {
       flag: false,
       isClick: false,
       joinUser: { email: "", isAdmin: false, nickname: "", accessToken: "" },
-      staticUrl: "http://localhost:8080",
+      // staticUrl: "http://localhost:8080",
+      // serverUrl: "https://j7a306.p.ssafy.io",
+      staticUrl: "https://j7a306.p.ssafy.io",
     };
   },
   created() {},

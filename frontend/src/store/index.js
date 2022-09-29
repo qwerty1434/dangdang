@@ -16,6 +16,12 @@ export default createStore({
       state.user.nickname = payload.nickname;
       state.Authorization = 'Bearer '+ payload.accessToken;
     },
+    logout(state){
+      state.user.email = "";
+      state.user.isAdmin = "";
+      state.user.nickname = "";
+      state.Authorization = "";
+    },
     SET_CHANGENICK(state, payload){
       state.user.nickname = payload
     },
