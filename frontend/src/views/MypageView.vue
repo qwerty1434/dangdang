@@ -103,7 +103,7 @@ export default {
       {
        headers: {
         // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
+        Authorization: this.Authorization
       }
       })
       .then(({data}) => {
@@ -128,7 +128,7 @@ export default {
       {
        headers: {
         // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
+        Authorization: this.Authorization
       }
       })
       .then(({data}) => {

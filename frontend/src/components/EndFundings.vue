@@ -91,8 +91,7 @@ export default {
           page : this.nowPage,
           size : 4
         },headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + this.Authorization
+        Authorization: this.Authorization
       },
     })
       .then(({data}) => {
@@ -135,8 +134,7 @@ export default {
           page : this.nowPage,
           size : 4
         },headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + this.Authorization
+        Authorization: this.Authorization
       },
     })
       .then(({data}) => {
