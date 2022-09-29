@@ -1,6 +1,9 @@
 import { createStore } from "vuex";
+import Vue from "vue";
+import createPersistedState from "vuex-persistedstate"
 
 export default createStore({
+  plugins: [createPersistedState()],
   state: {
     Authorization: "",
     user: { isAdmin: false, email: "", nickname: "" },

@@ -214,8 +214,15 @@ export default {
             this.joinUser.email = data.email;
             this.joinUser.accessToken = data.accessToken;
             this.$store.commit("joinUser", this.joinUser);
+            console.log("page 이동 전")
+            console.log(this.$store);
             // this.$router.push("/");
             this.$router.go(-1);
+            console.log("page 이동 후 ")
+            console.log(this.$store);
+            console.log(this.$store.state);
+            console.log("this.$store.state.Authorization");
+            console.log(this.$store.state.Authorization);
           })
           .catch(({ data }) => {
             alert("회원 가입에 실패했습니다.");
