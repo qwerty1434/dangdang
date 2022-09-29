@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="banner"></div>
-    <div class="fundingtitle">유패드 미니 뭐라뭐라 긴 제목</div>
+    <div class="fundingtitle">{{fundingDetail.fundingContent.title}}</div>
     <router-link :to="{ path: '/product/story' }">
       <div class="storybutton">스토리</div>
     </router-link>
