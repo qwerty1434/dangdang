@@ -16,6 +16,10 @@ export default createStore({
       state.user.nickname = payload.nickname;
       state.Authorization = payload.accessToken;
     },
+    SET_CHANGENICK(state, payload){
+      state.user.nickname = payload
+    },
+
   },
   actions: {},
   modules: {},
