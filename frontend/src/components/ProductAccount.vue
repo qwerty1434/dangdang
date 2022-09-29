@@ -26,39 +26,34 @@ export default {
   data(){
     return {
       fundingDetail: {},
+      fundingId: "",
 
-      history : {
-        "useHistory": [
-          {
-            "address": "0x37e27e5f784cf0a7a7ffe722980bcdc8d5d188b1",
-            "spendMoney": 190,
-            "leftMoney": 4410,
-            "time": "2022-09-29T01:42:24.000+00:00",
-            "purpose": "테스트 목적"
-          },
-          {
-            "address": "0x37e27e5f784cf0a7a7ffe722980bcdc8d5d188b1",
-            "spendMoney": 210,
-            "leftMoney": 4200,
-            "time": "2022-09-29T01:43:00.000+00:00",
-            "purpose": "테스트 목적2"
-          }
-        ],
-        "totalRemain": 4200
-      },
+      history : {},
     }
   },
 
   created() {
-    const UseUrl = "http://localhost:8080/api/funding/supporter?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
+    this.fundingId = this.$route.query.id;
+
+    const UsageUrl = "http://localhost:8080/api/funding/usage?fundingId="+ this.fundingId
+    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
+    var headers = {"Authorization": "Bearer " + this.$store.state.Authorization}
+    console.log(headers);
+    console.log(this.$store.state.Authorization);
     axios
       .get(detailUrl, {
       })
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
         this.fundingDetail = data;
       })
+    axios
+    .get(UsageUrl, {"headers":headers})
+    .then(({ data }) => {
+      console.log("get history" );
+      console.log(data);
+      this.history = data;
+    })
   }
 };
 </script>

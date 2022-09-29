@@ -2,14 +2,13 @@
   <div>
     <div class="banner"></div>
     <div class="fundingtitle">{{fundingDetail.fundingContent.title}}</div>
-    <router-link :to="{ path: '/product/story' }">
+    <router-link :to="{ path: '/product/story' , query: {id: fundingId}}">
       <div class="storybutton">스토리</div>
     </router-link>
-
-    <router-link :to="{ path: '/product/supporter' }">
+    <router-link :to="{ path: '/product/supporter' , query: {id: fundingId}}">
       <div class="supporterbutton">서포터</div>
     </router-link>
-    <router-link :to="{ path: '/product/account' }">
+    <router-link :to="{ path: '/product/account' , query: {id: fundingId}}">
       <div class="accountbutton">통장내역</div>
     </router-link>
 
@@ -56,12 +55,14 @@ export default {
     return {
        fundingDetail: {},
        supporters: [],
+       fundingId: "",
     }
   },
   created() {
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
-    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
-
+    this.fundingId = this.$route.query.id;
+    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=" + this.fundingId
+    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId=" + this.fundingId
+   
     axios
       .get(detailUrl, {
       })

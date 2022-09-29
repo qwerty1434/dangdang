@@ -19,12 +19,7 @@ export default {
     },
 
     methods:{
-        getUserNickname: function () {
-        if (this.user.anonymous == true) {
-          return "익명";
-        }
-        return this.user.nickname;
-      },
+   
     },
 
     props : {

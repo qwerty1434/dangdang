@@ -3,9 +3,9 @@
     <div class="background"></div>
 
     <div class="banner"></div>
-    <router-link :to="{ path: '/product/story' }"
-      ><div class="carousel1"></div
-    ></router-link>
+    <router-link :to="{ path: '/product/story' , query: {id: '05bf3602-242c-458d-9dba-75d0782f9402'}}">
+      <div class="carousel1"></div>
+    </router-link>
 
     <div class="imminent">마감임박</div>
 

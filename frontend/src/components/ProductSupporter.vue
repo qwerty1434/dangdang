@@ -28,15 +28,17 @@ export default {
     return {
        fundingDetail: {},
        supporters: [],
+       fundingId: "",
     }
   },
   created() {
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
-    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId=05bf3602-242c-458d-9dba-75d0782f9402"
+    this.fundingId = this.$route.query.id;
+    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
+    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId="+ this.fundingId
+    var headers = {"Authorization":this.$store.state.Authorization}
 
     axios
-      .get(detailUrl, {
-      })
+      .get(detailUrl, {"headers":headers})
       .then(({ data }) => {
         console.log(data);
         this.fundingDetail = data;
