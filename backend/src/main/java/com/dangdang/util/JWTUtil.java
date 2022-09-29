@@ -30,7 +30,8 @@ public class JWTUtil {
 
     private static final String HEADER_AUTH = "Authorization";
 
-    private long tokenValidTime = 1000L * 60 * 60; // 60분
+    //FIXME 1분으로 변경 필요
+    private long tokenValidTime = 1000L * 60 * 60 * 24 * 7; // 60분
     private long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7일
 
     @PostConstruct
