@@ -29,7 +29,7 @@
 
     <div>
       <div class="aliastext">닉네임</div>
-      <input type="text" class="alias" style="border:none" placeholder="남궁싸피" v-model="nick">
+      <input type="text" class="alias" style="border:none" :placeholder="this.user.nickname" v-model="nick">
       <div @click="changeNickname()" class="aliasedit"></div>
     </div>
 
@@ -110,6 +110,7 @@ export default {
         this.isCheckNick = data;
         if(this.isCheckNick){
           // state의 유저의 닉네임 변경
+          this.$store.commit("SET_CHANGENICK", this.nick);
           console.log("change nickname successful")
         }else{
           alert("이미 사용중인 닉네임입니다.")
