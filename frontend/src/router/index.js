@@ -32,6 +32,16 @@ const routes = [
         name: "story",
         component: () => import("@/components/ProductStory.vue"),
       },
+      {
+        path: "supporter",
+        name: "supporter",
+        component: () => import("@/components/ProductSupporter.vue"),
+      },
+      {
+        path: "account",
+        name: "account",
+        component: () => import("@/components/ProductAccount.vue"),
+      },
     ],
   },
   {

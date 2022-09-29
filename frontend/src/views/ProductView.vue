@@ -1,14 +1,20 @@
 <template>
   <div>
     <div class="banner"></div>
-    <div class="fundingtitle"> {{fundingDetail.fundingContent.title}} </div>
-    <div class="storybutton">스토리</div>
-    <div class="supporterbutton">서포터</div>
-    <div class="accountbutton">통장내역</div>
+    <div class="fundingtitle">유패드 미니 뭐라뭐라 긴 제목</div>
+    <router-link :to="{ path: '/product/story' }">
+      <div class="storybutton">스토리</div>
+    </router-link>
+
+    <router-link :to="{ path: '/product/supporter' }">
+      <div class="supporterbutton">서포터</div>
+    </router-link>
+    <router-link :to="{ path: '/product/account' }">
+      <div class="accountbutton">통장내역</div>
+    </router-link>
 
     <div class="components">
-      <!-- <FundingParticipation :user=supporters[0] /> -->
-      <!-- <FundingParticipation v-for="(item, i) in supporters" :user=supporters[i] :key="i"/> -->
+      <router-view />
     </div>
 
     <div class="due">종료 {{fundingDetail.fundingContent.remainDays}}일 전</div>
@@ -18,8 +24,7 @@
         value={{fundingDetail.fundingContent.achieveRate}}
         min="0"
         max="100"
-        class="progressbar"
-      ></progress>
+        class="progressbar"></progress>
     </div>
     <div class="complete">{{fundingDetail.fundingContent.achieveRate}}% 달성</div>
     <div class="funded">{{fundingDetail.fundingContent.nowPrice}} 원 펀딩</div>
@@ -78,6 +83,7 @@ export default {
 
 <style scoped>
 .components {
+  position: absolute;
   left: 400px;
   top: 540px;
 }
