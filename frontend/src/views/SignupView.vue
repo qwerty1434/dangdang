@@ -213,8 +213,8 @@ export default {
             this.joinUser.nickname = data.nickname;
             this.joinUser.email = data.email;
             this.joinUser.accessToken = data.accessToken;
-            this.$store.commit("joinUser", this.joinUser);
-            // this.$router.push("/");
+            this.$store.commit("registUser", this.joinUser);
+            console.log(this.$store);
             this.$router.go(-1);
           })
           .catch(({ data }) => {
@@ -316,6 +316,7 @@ input[type="password"]::placeholder {
 
   background: #62b878;
   border-radius: 5px;
+  border: 0;
 
   font-family: "NanumSquare";
   font-style: normal;
