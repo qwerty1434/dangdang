@@ -3,7 +3,7 @@
     <div class="background"></div>
 
     <div class="banner"></div>
-    <router-link :to="{ name: 'product' }"
+    <router-link :to="{ path: '/product/story' }"
       ><div class="carousel1"></div
     ></router-link>
 
