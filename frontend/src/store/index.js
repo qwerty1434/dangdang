@@ -21,7 +21,11 @@ export default createStore({
       state.user.isAdmin = "";
       state.user.nickname = "";
       state.Authorization = "";
-    }
+    },
+    SET_CHANGENICK(state, payload){
+      state.user.nickname = payload
+    },
+
   },
   actions: {},
   modules: {},
