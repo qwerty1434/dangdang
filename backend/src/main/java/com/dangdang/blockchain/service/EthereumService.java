@@ -2,6 +2,7 @@ package com.dangdang.blockchain.service;
 
 import com.dangdang.blockchain.dto.DepositHistoryResponse;
 import com.dangdang.blockchain.dto.UseHistoryResponse;
+import io.reactivex.disposables.Disposable;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
@@ -188,7 +189,7 @@ public class EthereumService {
         filter.addSingleTopic(topic);
         filter.addOptionalTopics(Hash.sha3String(fundingId));
 
-        web3j.ethLogFlowable(filter).subscribe(log -> {
+        Disposable subscribe =  web3j.ethLogFlowable(filter).subscribe(log -> {
             List<Type> nonIndexedValues = FunctionReturnDecoder.decode(log.getData(), event.getNonIndexedParameters());
 
             String address = nonIndexedValues.get(0).getValue().toString();
@@ -198,6 +199,7 @@ public class EthereumService {
             String isAnonymous = nonIndexedValues.get(4).getValue().toString();
             ret.add(new DepositHistoryResponse(address, won, new Timestamp(date.getTime()), nickname, Boolean.parseBoolean(isAnonymous)));
         });
+        subscribe.dispose();
         return ret;
     }
 
@@ -219,7 +221,7 @@ public class EthereumService {
         filter.addSingleTopic(topic);
         filter.addOptionalTopics(Hash.sha3String(fundingId));
 
-        web3j.ethLogFlowable(filter).subscribe(log -> {
+        Disposable subscribe = web3j.ethLogFlowable(filter).subscribe(log -> {
             List<Type> nonIndexedValues = FunctionReturnDecoder.decode(log.getData(), event.getNonIndexedParameters());
 
             String factoryAddress = nonIndexedValues.get(0).getValue().toString();
@@ -230,11 +232,14 @@ public class EthereumService {
 
             ret.add(new UseHistoryResponse(factoryAddress, spendMoney, leftMoney, new Timestamp(date.getTime()), purpose));
         });
+        subscribe.dispose();
+
         return ret;
     }
 
     // [201] 유저 지갑 잔액 원으로 조회
     public int getWonBalance(String privateKey) {
+        System.out.println("_______ [201]__________");
         try {
             String address = getAddressFromPrivateKey(privateKey);
             EthGetBalance balanceWei = ADMIN.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
@@ -246,6 +251,8 @@ public class EthereumService {
 
     // [201] 유저 지갑 잔액 wei로 조회
     public String getWeiBalance(String privateKey) {
+        System.out.println("_______ [201]__________");
+
         try {
             String address = getAddressFromPrivateKey(privateKey);
             EthGetBalance balanceWei = ADMIN.ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
@@ -257,6 +264,8 @@ public class EthereumService {
 
     // [202] admin 계좌로부터 사용자에게 금액 전송 (회원가입시 호출)
     public void sendMoneyToTargetAddressFromAdmin(String targetPrivateKey, int won){
+        System.out.println("_______ [202]__________");
+
         try {
             Credentials credentials = Credentials.create(ADMIN_PRIVATE_KEY);
             EthGetTransactionCount ethGetTransactionCount = ADMIN
@@ -277,6 +286,8 @@ public class EthereumService {
     }
 
     private String ethCall(Function function, String address, String contract) throws IOException {
+        System.out.println("_______ eth call __________");
+
         Transaction transaction = Transaction.createEthCallTransaction(address, contract,
                 FunctionEncoder.encode(function));
         EthCall ethCall = ADMIN.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
@@ -286,6 +297,8 @@ public class EthereumService {
     }
 
     private String ethSendRawTransaction(Function function, String privateKey, String contract) throws IOException {
+        System.out.println("_______ RAW TRAN__________");
+
         EthGetTransactionCount ethGetTransactionCount = ADMIN.ethGetTransactionCount(
                 getAddressFromPrivateKey(privateKey), DefaultBlockParameterName.PENDING).send();
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
@@ -307,6 +320,8 @@ public class EthereumService {
     }
 
     private void ethSendRawTransactionWithWei(Function function, String privateKey, String contract, String wei) throws IOException {
+        System.out.println("_______ [RAW W WEI]__________");
+
         EthGetTransactionCount ethGetTransactionCount = ADMIN.ethGetTransactionCount(
                 getAddressFromPrivateKey(privateKey), DefaultBlockParameterName.LATEST).send();
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
@@ -320,6 +335,8 @@ public class EthereumService {
     }
 
     private TransactionReceipt getReceipt(String transactionHash) throws IOException {
+        System.out.println("_______ [getReceipt]__________");
+
         EthGetTransactionReceipt transactionReceipt = ADMIN.ethGetTransactionReceipt(transactionHash).send();
         if (transactionReceipt.getTransactionReceipt().isPresent()) {
             System.out.println("transactionReceipt.getResult().getContractAddress() = " +
