@@ -9,9 +9,11 @@
     <div class="searchbar"></div>
     <div class="searchbutton"></div>
     <div class="searchtext">검색</div>
-    <router-link :to="{ name: 'login' }" class="login">로그인</router-link>
+    <router-link v-if="this.$store.state.Authorization" :to="{ name: '' }" class="login" @click="logout()">로그아웃</router-link>
+    <router-link v-else :to="{ name: 'login' }" class="login">로그인</router-link>
     <div class="bar1">|</div>
-    <router-link :to="{ name: 'signup' }" class="signup">회원가입</router-link>
+    <router-link v-if="this.$store.state.Authorization" :to="{ name: 'mypage' }" class="signup">마이페이지</router-link>
+    <router-link v-else :to="{ name: 'signup' }" class="signup">회원가입</router-link>
     <div class="bar2">|</div>
     <div class="category">카테고리</div>
     <router-link :to="{ name: 'plan' }" class="plan">펀딩예정</router-link>
@@ -35,6 +37,18 @@
 <script>
 export default {
   name: "NavBar",
+  data() {
+    return{
+      
+    }
+  },
+  methods: {
+    logout(){
+      this.$store.commit("logout");
+      alert("로그아웃 되었습니다.");
+    }
+  },
+
 };
 </script>
 
