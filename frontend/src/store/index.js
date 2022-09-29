@@ -10,7 +10,7 @@ export default createStore({
   },
   getters: {},
   mutations: {
-    joinUser(state, payload) {
+    registUser(state, payload) {
       state.user.email = payload.email;
       state.user.isAdmin = payload.isAdmin;
       state.user.nickname = payload.nickname;
