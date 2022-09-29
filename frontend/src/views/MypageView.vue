@@ -30,13 +30,13 @@
 
     <div>
       <div class="aliastext">닉네임</div>
-      <div class="alias">남궁싸피</div>
-      <div class="aliasedit"></div>
+      <input type="text" class="alias" style="border:none" :placeholder="this.user.nickname" v-model="nick">
+      <div @click="changeNickname()" class="aliasedit"></div>
     </div>
 
     <div>
       <div class="balancetext">잔고</div>
-      <div class="balance">300000</div>
+      <div class="balance">{{remainCoin}}</div>
       <div class="balanceunit">SSF</div>
     </div>
 
@@ -51,18 +51,39 @@
     </div>
 
     <div class="borderline"></div>
-    <div class="fundinghistory">펀딩 내역</div>
-    <div class="carousel"></div>
+    <div style="display:flex; justify-content: space-between; width: 1000px; margin: auto; margin-top: 1100px;">
+      <div  class="fundinghistory">진행 중 펀딩</div>
+      <div  class="fundinghistory">종료 된 펀딩</div>
+    </div>
     <div class="background"></div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import {mapState} from 'vuex';
 export default {
+  
   data() {
     return {
       image: "",
+      nick: "",
+      isCheckNick: true,
+      remainCoin: 0,
+      nowPage: 0,
+      fundings: [],
+      state: 1,
+      nextfundings: [],
     };
+  },
+  computed:{
+    ...mapState(
+      ["user", "Authorization"]
+    )
+
+  },
+  created(){
+    this.getUserRemainCoin();
   },
   methods: {
     uploadImg() {
@@ -73,6 +94,52 @@ export default {
       this.image = url;
       console.log(url);
       console.log(this.image);
+    },
+    changeNickname(){
+      console.log(this.nick)
+      const url = "http://localhost:8080/api/user/change/nick"
+      axios.patch(url, {
+        nickname: this.nick,
+      },
+      {
+       headers: {
+        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
+        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
+      }
+      })
+      .then(({data}) => {
+        this.isCheckNick = data;
+        if(this.isCheckNick){
+          // state의 유저의 닉네임 변경
+          this.$store.commit("SET_CHANGENICK", this.nick);
+          console.log("change nickname successful")
+        }else{
+          alert("이미 사용중인 닉네임입니다.")
+          this.nick = "";
+        }
+      }).catch((err)=> {
+      
+        console.log(err)
+        
+      })
+    },
+    getUserRemainCoin(){
+      const url = "http://localhost:8080/api/user/checkcoin"
+      axios.get(url, 
+      {
+       headers: {
+        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
+        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
+      }
+      })
+      .then(({data}) => {
+        console.log(data)
+        this.remainCoin = data.won;
+      }).catch((err)=> {
+      
+        console.log(err)
+        
+      })
     },
   },
 };
@@ -187,6 +254,7 @@ export default {
   height: 62.45px;
   left: 1128px;
   top: 809px;
+  cursor: pointer;
 
   background: url("@/assets/edit.png");
 }
@@ -302,14 +370,15 @@ export default {
     rgba(0, 0, 0, 0) 100%
   );
 }
-.fundinghistory {
-  position: absolute;
+.fundinghistory{
   width: 200px;
   height: 28px;
   left: 259px;
-  top: 1160px;
+  cursor: pointer;
 
-  background: rgba(98, 184, 120, 0.5);
+  
+
+  /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
   font-family: "NanumSquare";
   font-style: normal;
@@ -335,5 +404,127 @@ export default {
   z-index: -5;
 
   background: #ffffff;
+}
+.thumbnail {
+  width: 300px;
+  height: 400px;
+  left: 0px;
+  top: 0px;
+  box-sizing: border-box;
+}
+.title {
+  width: 300px;
+  height: 20px;
+  left: 0px;
+  top: 406px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #000000;
+}
+.category {
+  width: 160px;
+  height: 14px;
+  left: 0px;
+  top: 436px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: #000000;
+}
+.makername {
+  width: 160px;
+  height: 14px;
+  left: 120px;
+  top: 436px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: right;
+
+  color: #000000;
+}
+.progressbar {
+  width: 300px;
+  height: 20px;
+  left: 0px;
+  top: 458px;
+
+  background: #67be7e;
+}
+.bars {
+  width: 300px;
+  height: 20px;
+  left: 0px;
+  top: 458px;
+
+  background: #f7f7f7;
+}
+.percentage {
+  width: 60px;
+  height: 14px;
+  left: 0px;
+  top: 484px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: #000000;
+}
+.total {
+  width: 140px;
+  height: 14px;
+  left: 60px;
+  top: 484px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+
+  color: #000000;
+}
+.remain {
+  width: 100px;
+  height: 14px;
+  left: 200px;
+  top: 484px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: right;
+
+  color: #000000;
+}
+#fundingList{
+  display: flex ;
+  flex-flow: wrap;
+  justify-content: space-between;
+  /* gap: 10px 1%; */
+  width: 1320px;
+
+  margin-top: 70px;
+
+}
+.onpoint{
+  cursor: pointer;
 }
 </style>
