@@ -14,7 +14,7 @@ export default createStore({
       state.user.email = payload.email;
       state.user.isAdmin = payload.isAdmin;
       state.user.nickname = payload.nickname;
-      state.Authorization = payload.accessToken;
+      state.Authorization = 'Bearer '+ payload.accessToken;
     },
   },
   actions: {},
