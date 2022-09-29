@@ -3,21 +3,18 @@
     <div class="background"></div>
     <div class="logintext">로그인</div>
     <div class="loginbox"></div>
-    <input type="text" placeholder="아이디를 입력해주세요" class="logininput" />
+    <input type="text" placeholder="아이디를 입력해주세요" class="logininput" v-model="email"/>
     <div class="passwordbox"></div>
     <input
       type="password"
       placeholder="비밀번호를 입력해주세요"
-      class="pwinput" />
+      class="pwinput"
+      v-model="pw" 
+      />
     <div>
-      <div class="loginbutton"></div>
-      <div class="loginboxtext">로그인</div>
+      <button @click="login()" class="loginBtn">로그인</button>
     </div>
-    <router-link :to="{ name: 'signup' }">
-      <div class="signupbutton"></div>
-
-      <div class="signuptext">회원가입</div>
-    </router-link>
+      <button type="button" @click="join()" class="joinBtn">회원가입</button>
 
     <div class="findid">아이디 찾기</div>
     <div class="findpw">비밀번호 찾기</div>
@@ -27,7 +24,70 @@
 </template>
 
 <script>
-export default {};
+  import axios from "axios";
+  const instance = axios.create({
+    baseURL: "/",
+    headers: {
+      Authrozation: "test",
+    },
+  });
+export default {
+  data() {
+    return{
+      email:"",
+      pw:"",
+      isClick:false,
+      isInputId:false,
+      isInputPw:false,
+      user: { email: "", isAdmin: false, nickname: "", accessToken: "" },
+      staticUrl: "http://localhost:8080",
+    }
+  },
+  methods: {
+    login(){
+      const url = this.staticUrl + "/api/user/login";
+      console.log("1");
+      if(this.email==""){
+        alert("이메일을 입력해주세요.");
+        this.isInputId = false;
+      } else { this.isInputId = true; }
+      if(this.email!="" && this.pw==""){
+        alert("비밀번호를 입력해주세요.");
+        this.isInputPw = false;
+      } else { this.isInputPw = true; }
+      if(!this.isClick && this.isInputId && this.isInputPw){
+        axios
+          .post(url, {
+            email: this.email,
+            password: this.pw,
+          })
+          .then(({ data }) => {
+            //이메일 형식인지 확인
+              this.isClick=true;
+              console.log(data);
+              this.user.isAdmin = data.admin;
+              this.user.nickname = data.nickname;
+              this.user.email = data.email;
+              this.user.accessToken = data.accessToken;
+              this.$store.commit("registUser", this.user);
+              console.log("page 이동 전");
+              console.log(this.$store.state);
+              this.$router.go(-1);
+              console.log("page 이동 후");
+              console.log(this.$store.state);
+          })
+          .catch(({ data }) => {
+            alert("이메일과 비밀번호를 다시 확인해주세요.");
+          });
+      }
+      
+    },
+    join(){
+      this.$router.push({ path: 'signup' });
+    },
+  },
+
+};
 </script>
 
 <style scoped>
@@ -44,6 +104,48 @@ input[type="password"]::placeholder {
   z-index: -5;
 
   background: #ffffff;
+}
+.loginBtn{
+  position: absolute;
+  width: 420px;
+  height: 64px;
+  left: 750px;
+  top: 720px;
+  border: 0;
+
+  background: #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #ffffff;
+}
+.joinBtn{
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 420px;
+  height: 64px;
+  left: 750px;
+  top: 800px;
+
+  background: #ffffff;
+  border: 1px solid #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #62b878;
 }
 .logintext {
   position: absolute;
@@ -92,22 +194,6 @@ input[type="password"]::placeholder {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
-.loginboxtext {
-  position: absolute;
-  width: 150px;
-  height: 20px;
-  left: 885px;
-  top: 742px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 23px;
-  text-align: center;
-
-  color: #ffffff;
-}
 .passwordbox {
   box-sizing: border-box;
 
@@ -137,46 +223,6 @@ input[type="password"]::placeholder {
   border: none;
   background: none;
   outline: none;
-}
-.loginbutton {
-  position: absolute;
-  width: 420px;
-  height: 64px;
-  left: 750px;
-  top: 720px;
-
-  background: #62b878;
-  border-radius: 5px;
-}
-
-.signupbutton {
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 420px;
-  height: 64px;
-  left: 750px;
-  top: 800px;
-
-  background: #ffffff;
-  border: 1px solid #62b878;
-  border-radius: 5px;
-}
-.signuptext {
-  position: absolute;
-  width: 150px;
-  height: 20px;
-  left: 885px;
-  top: 822px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 23px;
-  text-align: center;
-
-  color: #62b878;
 }
 .findid {
   position: absolute;
