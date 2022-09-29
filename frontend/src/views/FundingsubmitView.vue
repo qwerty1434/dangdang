@@ -163,7 +163,10 @@
           v-bind:key="reward"
           :class="`reward${index + 1}`"
         >
-          {{ reward }}
+          <div @click="deleteReward(index)">{{index}} 삭제</div>
+          <div>제목: {{ reward.title }}</div>
+          <div>내용: {{ reward.content }}</div>
+          <div>가격: {{ reward.price }}</div>
         </div>
       </div>
     </div>
@@ -190,7 +193,7 @@
       </div>
       <!-- 변경사항 취소 임시저장 등록 버튼 -->
       <div>
-        <button @click="a()" class="revert">변경사항취소</button>
+        <button @click="clearData()" class="revert">변경사항취소</button>
         <button @click="b()" class="tempsave">임시저장</button>
         <button @click="submitData()" class="submit">등록하기</button>
       </div>
@@ -299,8 +302,8 @@ export default {
       document.getElementsByClassName(className)[0].style.backgroundImage =
         "url('" + contentUrl + "')";
     },
-    SaveImages() {
-      console.log("이미지 저장 시작");
+    async SaveImages() {
+      console.log("이미지 저장 시작")
       // 파일 업로드
       AWS.config.update({
         region: this.bucketRegion,
@@ -320,42 +323,49 @@ export default {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = this.uuid + "/thumbnails" + index + ".jpg";
 
-        S3.upload(
+        await S3.upload(
           {
             Key: photoKey,
             Body: this.thumbnailUrl[index].img,
             ACL: "public-read",
-          },
-          (err, data) => {
-            if (err) {
-              console.log(err);
-              return alert("에러");
-            } else {
-              console.log("Here");
-              this.thumbnailUrl[index].img = data.Location;
-            }
-          }
-        );
+          }).promise().then((data)=>{
+            console.log("hello")
+            console.log(data.Location);
+            this.thumbnailUrl[index].img = data.Location;            
+          }).catch((err)=>{
+            conosle.log(err)
+            console.log("world")
+          });
       }
       for (let index = 0; index < this.contentImageUrl.length; index++) {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = this.uuid + "/contents" + index + ".jpg";
-
-        S3.upload(
+        await S3.upload(
           {
             Key: photoKey,
             Body: this.contentImageUrl[index].img,
             ACL: "public-read",
-          },
-          (err, data) => {
-            if (err) {
-              console.log(err);
-              return alert("에러");
-            } else {
-              this.contentImageUrl[index].img = data.Location;
-            }
-          }
-        );
+          }).promise().then((data)=>{
+            this.contentImageUrl[index].img = data.Location;      
+          }).catch((err)=>{
+            conosle.log(err)
+            console.log("world")
+          });
+        // await S3.upload(
+        //   {
+        //     Key: photoKey,
+        //     Body: this.contentImageUrl[index].img,
+        //     ACL: "public-read",
+        //   },
+        //   (err, data) => {
+        //     if (err) {
+        //       console.log(err);
+        //       return alert("에러");
+        //     } else {
+        //       this.contentImageUrl[index].img = data.Location;
+        //     }
+        //   }
+        // );
       }
       console.log("이미지 저장 끝");
     },
@@ -380,10 +390,40 @@ export default {
       );
     },
 
-    submitData() {
-      this.SaveImages();
-      console.log(this.thumbnailUrl); // 변경 안된 상태
+    async submitData() {
+      console.log("saveimages함수 시작 전: "+ this.thumbnailUrl[0].img)
+      await this.SaveImages();
+      console.log("saveimages함수 시작 후: " + this.thumbnailUrl[0].img)
+      var result = {
+        "category":this.category,
+        "title":this.title,
+        "targetPrice":this.targetPrice,
+        "projectIntroduction":"",
+        "startDate":null, // this.fromDate,
+        "endDate":null, //this.toDate,
+        "rewards":this.rewards,
+        "thumbnails":this.thumbnailUrl,
+        "bodyImgs":this.contentImageUrl,
+      }
+      var headers = {"Authorization":this.$store.state.Authorization} 
+      console.log(result);
+      console.log(this.$store.state.Authorization)
+
+      // axios.post("https://"+serverUrl+"/funding/regist",result,{"headers":headers}).then((response)=>{
+      axios.post("http://"+"localhost:8080/api"+"/funding/regist",result,{"headers":headers}).then((response)=>{
+        console.log(response);
+      }).catch(()=>{
+        console.log("error");
+      })
     },
+
+    clearData(){
+      // 페이지 새로고침
+      this.$router.go();
+    },
+    deleteReward(index){
+      this.rewards.splice(index,1);
+    }
   },
 };
 </script>
