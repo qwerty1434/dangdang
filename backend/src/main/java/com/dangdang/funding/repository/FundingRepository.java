@@ -39,4 +39,7 @@ public interface FundingRepository extends JpaRepository<Funding, UUID> {
 
     @Query(value = "SELECT * FROM funding WHERE `state`=:state and `title` like %:keyword% order by `start_date` Desc ", nativeQuery = true)
     List<Funding> findByKeywordAndState(String keyword, int state, Pageable pageable);
+
+    @Query(value = "SELECT * FROM funding WHERE state=:state and id in :idList", nativeQuery = true)
+    List<Funding> findAllById(int state, Pageable pageable, List<String> idList);
 }

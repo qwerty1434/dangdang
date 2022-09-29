@@ -176,7 +176,7 @@ public class UserService {
         return userRepository.findById(UUID.fromString(userId));
     }
 
-    public List<FundingListResponse> findFundingList(String state, Pageable pageable, HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
+    public List<FundingListResponse> findFundingList(int state, Pageable pageable, HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
         String uuid = jwtUtil.getUserIdByHeaderAccessToken(req);
         User user = userRepository.findById(UUID.fromString(uuid)).get();
         if(user==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
@@ -185,12 +185,15 @@ public class UserService {
         List<FundingListResponse> output = new LinkedList<>();
         Set<String> set = new HashSet<>();
 
-        for(OrderHistory o: histories){
+        for(OrderHistory o: histories) {
             UUID fundingId = o.getFunding().getId();
-            if(set.contains(fundingId.toString())) continue;
+            if (set.contains(fundingId.toString())) continue;
             set.add(fundingId.toString());
+        }
 
-            Funding f = fundingRepository.findById(fundingId).get();
+        List<String> list = new ArrayList<>(set);
+        List<Funding> fundingList = fundingRepository.findAllById(state,pageable,list);
+        for(Funding f: fundingList){
             LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             LocalDateTime end = f.getEndDate().toLocalDateTime();
             int day = (int) ChronoUnit.DAYS.between(start, end);
@@ -201,10 +204,11 @@ public class UserService {
                 if(img.getSequence()==0) ff=img;
             }
             FundingListResponse result = new FundingListResponse(f.getId().toString(), f.getTitle(), f.getCompany(),
-                    ff.getImg(), f.getNowPrice(), (1.0*f.getNowPrice()/ f.getTargetPrice()),
+                    ff.getImg(), f.getNowPrice(), (f.getNowPrice()*100/ f.getTargetPrice()),
                     f.getEndDate(),f.getDetailState(), day, f.getCategory().getType());
             output.add(result);
         }
+
         return output;
     }
 
