@@ -2,6 +2,7 @@
   <div>
     <nav-bar></nav-bar>
     <funding-card class="farfar"></funding-card>
+    <end-fundings class="checkEnd"></end-fundings>
   </div>
   <router-view />
 </template>
@@ -9,11 +10,13 @@
 <script>
 import NavBar from "@/components/NavBar.vue";
 import FundingCard from "@/components/FundingCard.vue";
+import EndFundings from "@/components/EndFundings.vue";
 export default {
   name: "app",
   components: {
     NavBar,
     FundingCard,
+    EndFundings,
   },
 };
 </script>
@@ -46,5 +49,9 @@ export default {
   position: absolute;
   left: 400px;
   top: 4000px;
+}
+.checkEnd{
+  position: absolute;
+  top: 3000px;
 }
 </style>

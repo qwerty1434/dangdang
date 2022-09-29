@@ -51,62 +51,9 @@
 
     <div class="borderline"></div>
     <div style="display:flex; justify-content: space-between; width: 1000px; margin: auto; margin-top: 1100px;">
-      <div class="fundinghistory" @click="processfunding()">진행 중 펀딩</div>
-      <div class="fundinghistory" @click="endfunding()">종료 된 펀딩</div>
+      <div  class="fundinghistory">진행 중 펀딩</div>
+      <div  class="fundinghistory">종료 된 펀딩</div>
     </div>
-    <div class="fundings" style="display:flex; justify-content: space-between; width: 1500px; margin:auto;">
-         <img
-         @click="left()"
-        class="onpoint"
-        src="@/assets/left.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
-        alt=""
-      />
-
-    <div id="fundingList">
-      
-      <div v-for="funding in fundings" :key="funding.id" >
-      <div class="thumbnail">
-      <img
-        :src="funding.img"
-        style="width: 300px; height: 400px; box-sizing: border-box"
-        alt=""
-      />
-
-    </div>
-    <div class="title" style="margin-top:5px">{{funding.title}}</div>
-    <div style="display:flex; justify-content: space-between; width: 300px; margin-top:5px">
-      <div class="category">{{funding.category}}</div>
-      <div class="makername" >{{funding.companyName}}</div>
-    </div>
-    <progress
-      id="progress"
-      :value="funding.achieveRate*100"
-      min="0"
-      max="100"
-      class="progressbar"
-      style="margin-top : 5px"
-    ></progress>
-    <div style="display:flex; justify-content: space-between; margin-top:5px">
-    <div class="percentage">{{funding.achieveRate*100}}%</div>
-    <div class="total">{{funding.nowPrice}}원(코인)</div>
-    <div class="remain">{{funding.remainDays}}일 남음</div>
-    </div>
-    </div>
-
-    </div>
-    <img
-        class="onpoint"
-        src="@/assets/right.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
-        alt=""
-        @click="right()"
-      />
-
-    </div>
- 
-    
-
     <div class="background"></div>
   </div>
 </template>
@@ -114,8 +61,6 @@
 <script>
 import axios from "axios";
 import {mapState} from 'vuex';
-
-
 export default {
   
   data() {
@@ -138,7 +83,6 @@ export default {
   },
   created(){
     this.getUserRemainCoin();
-    this.getFundings();
   },
   methods: {
     uploadImg() {
@@ -195,84 +139,6 @@ export default {
         
       })
     },
-    getFundings(){
-      const url = "http://localhost:8080/api/user/funding-list"
-      axios.get(url, {
-        params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
-      },
-    })
-      .then(({data}) => {
-        this.fundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-    },
-    left(){
-      this.nowPage = this.nowPage -1;
-      if(this.nowPage <0){
-        this.nowPage = 0;
-      }
-      console.log(this.nowPage);
-      this.getFundings()
-    },
-    right(){
-      this.nowPage = this.nowPage + 1;
-      console.log(this.nowPage)
-      if(this.fundings.length == 4){
-        this.checknext()
-        if(this.nextfundings.length != 0){
-            this.getFundings()
-        }else{
-          this.nowPage = this.nowPage-1;
-        }
-        
-      }else{
-        this.nowPage = this.nowPage - 1;
-      }
-    },
-    processfunding(){
-      this.state = 1;
-      this.nowPage = 0;
-      this.getFundings()
-
-    },
-    endfunding(){
-      this.state = 2;
-      this.nowPage = 0;
-      this.getFundings()
-
-    },
-    checknext(){
-      const url = "http://localhost:8080/api/user/funding-list"
-      axios.get(url, {
-        params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: 'Bearer ' + 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MzBiOTI5Zi1iYzJhLTQ5ZmEtYjM1OC0yZjg3NmRhZTZhZDgiLCJpYXQiOjE2NjQ0MTIzMTEsImV4cCI6MTY2NDQ5ODcxMX0.plOeTBDm_XFyHw-1U2qlRfoaY07VtBaZScqDlkZ3ktM'
-      },
-    })
-      .then(({data}) => {
-        this.nextfundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-
-    }
   },
 };
 </script>
@@ -502,7 +368,7 @@ export default {
     rgba(0, 0, 0, 0) 100%
   );
 }
-.fundinghistory {
+.fundinghistory{
   width: 200px;
   height: 28px;
   left: 259px;
@@ -510,7 +376,7 @@ export default {
 
   
 
-  background: rgba(98, 184, 120, 0.5);
+  /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
   font-family: "NanumSquare";
   font-style: normal;
