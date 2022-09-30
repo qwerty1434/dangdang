@@ -269,7 +269,7 @@ export default {
   created() {
     this.createUuid(); // uuid생성
     axios
-      .get("https://" + serverUrl + "/category/list", {})
+      .get("http://localhost:8080/api/category/list", {})
       .then((response) => {
         this.categories = response.data;
       })
@@ -439,16 +439,17 @@ export default {
         bodyImgs: this.contentImageUrl,
       };
       var headers = { Authorization: this.$store.state.Authorization };
+      console.log(this.$store.state.Authorization);
       console.log(result);
 
+      // axios
+      //   .post("https://" + serverUrl + "/funding/regist", result, {
+      //     headers: headers,
+      //   })
       axios
-        .post("https://" + serverUrl + "/funding/regist", result, {
+        .post("http://" + "localhost:8080/api" + "/funding/regist", result, {
           headers: headers,
         })
-        // axios
-        //   .post("http://" + "localhost:8080/api" + "/funding/regist", result, {
-        //     headers: headers,
-        //   })
         .then((response) => {
           console.log(response);
         })
