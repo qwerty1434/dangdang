@@ -29,12 +29,14 @@ export default {
        fundingDetail: {},
        supporters: [],
        fundingId: "",
+       staticUrl: "http://localhost:8080",
+       serverUrl: "https://j7a306.p.ssafy.io", 
     }
   },
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
-    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId="+ this.fundingId
+    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
+    const supporterUrl = this.staticUrl + "api/funding/supporter?fundingId=" + this.fundingId
     var headers = {"Authorization":this.$store.state.Authorization}
 
     axios

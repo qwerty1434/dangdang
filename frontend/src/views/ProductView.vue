@@ -35,33 +35,38 @@
     <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
     <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
     <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
+    
+    <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i" />
+<!-- 
     <div class="reward1"></div>
     <div class="reward2"></div>
     <div class="reward3"></div>
-    <div class="reward4"></div>
+    <div class="reward4"></div> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import FundingParticipation from "../components/FundingParticipation.vue";
+import RewardBox from "../components/RewardBox.vue";
 
 export default {
   name:"Test",
   components: {
-    FundingParticipation: FundingParticipation,
+    RewardBox: RewardBox,
   },
   data() {
     return {
        fundingDetail: {},
        supporters: [],
        fundingId: "",
+       staticUrl: "http://localhost:8080",
+       serverUrl: "https://j7a306.p.ssafy.io", 
     }
   },
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId=" + this.fundingId
-    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId=" + this.fundingId
+    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
+    const supporterUrl = this.staticUrl + "api/funding/supporter?fundingId=" + this.fundingId
    
     axios
       .get(detailUrl, {
@@ -356,7 +361,6 @@ export default {
   height: 216px;
   left: 1304px;
   top: 1220px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward2 {
   position: absolute;
@@ -364,7 +368,6 @@ export default {
   height: 216px;
   left: 1304px;
   top: 1454px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward3 {
   position: absolute;
@@ -372,7 +375,6 @@ export default {
   height: 216px;
   left: 1304px;
   top: 1688px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward4 {
   position: absolute;
@@ -380,6 +382,5 @@ export default {
   height: 216px;
   left: 1304px;
   top: 1922px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 </style>

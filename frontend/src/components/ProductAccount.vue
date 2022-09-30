@@ -27,7 +27,8 @@ export default {
     return {
       fundingDetail: {},
       fundingId: "",
-
+      staticUrl: "http://localhost:8080",
+      serverUrl: "https://j7a306.p.ssafy.io", 
       history : {},
     }
   },
@@ -35,8 +36,8 @@ export default {
   created() {
     this.fundingId = this.$route.query.id;
 
-    const UsageUrl = "http://localhost:8080/api/funding/usage?fundingId="+ this.fundingId
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
+    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
+    const supporterUrl = this.staticUrl + "api/funding/supporter?fundingId=" + this.fundingId
     var headers = {"Authorization": "Bearer " + this.$store.state.Authorization}
     console.log(headers);
     console.log(this.$store.state.Authorization);
