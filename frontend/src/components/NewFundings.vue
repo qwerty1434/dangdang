@@ -11,7 +11,7 @@
 
     <div id="fundingList">
       
-      <div v-for="funding in newfundings" :key="funding.id" >
+      <div v-for="funding in newfundings" :key="funding.id" style="margin-right:30px">
       <div class="thumbnail">
       <img
          :src="funding.img"
@@ -264,7 +264,7 @@ export default {
 #fundingList{
   display: flex ;
   flex-flow: wrap;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* gap: 10px 1%; */
   width: 1320px;
 

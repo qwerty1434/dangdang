@@ -11,7 +11,7 @@
 
     <div id="fundingList">
       
-      <div v-for="funding in fundings" :key="funding.id" >
+      <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
       <img
          @click="checkOrder()"
         class="cart"
@@ -323,7 +323,7 @@ export default {
 #fundingList{
   display: flex ;
   flex-flow: wrap;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* gap: 10px 1%; */
   width: 1320px;
 
