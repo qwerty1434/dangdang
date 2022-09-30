@@ -163,7 +163,7 @@
           v-bind:key="reward"
           :class="`reward${index + 1}`"
         >
-          <div @click="deleteReward(index)">{{index}} 삭제</div>
+          <div @click="deleteReward(index)">{{ index }} 삭제</div>
           <div>제목: {{ reward.title }}</div>
           <div>내용: {{ reward.content }}</div>
           <div>가격: {{ reward.price }}</div>
@@ -303,7 +303,7 @@ export default {
         "url('" + contentUrl + "')";
     },
     async SaveImages() {
-      console.log("이미지 저장 시작")
+      console.log("이미지 저장 시작");
       // 파일 업로드
       AWS.config.update({
         region: this.bucketRegion,
@@ -323,33 +323,37 @@ export default {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = this.uuid + "/thumbnails" + index + ".jpg";
 
-        await S3.upload(
-          {
-            Key: photoKey,
-            Body: this.thumbnailUrl[index].img,
-            ACL: "public-read",
-          }).promise().then((data)=>{
-            console.log("hello")
+        await S3.upload({
+          Key: photoKey,
+          Body: this.thumbnailUrl[index].img,
+          ACL: "public-read",
+        })
+          .promise()
+          .then((data) => {
+            console.log("hello");
             console.log(data.Location);
-            this.thumbnailUrl[index].img = data.Location;            
-          }).catch((err)=>{
-            conosle.log(err)
-            console.log("world")
+            this.thumbnailUrl[index].img = data.Location;
+          })
+          .catch((err) => {
+            conosle.log(err);
+            console.log("world");
           });
       }
       for (let index = 0; index < this.contentImageUrl.length; index++) {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = this.uuid + "/contents" + index + ".jpg";
-        await S3.upload(
-          {
-            Key: photoKey,
-            Body: this.contentImageUrl[index].img,
-            ACL: "public-read",
-          }).promise().then((data)=>{
-            this.contentImageUrl[index].img = data.Location;      
-          }).catch((err)=>{
-            conosle.log(err)
-            console.log("world")
+        await S3.upload({
+          Key: photoKey,
+          Body: this.contentImageUrl[index].img,
+          ACL: "public-read",
+        })
+          .promise()
+          .then((data) => {
+            this.contentImageUrl[index].img = data.Location;
+          })
+          .catch((err) => {
+            conosle.log(err);
+            console.log("world");
           });
         // await S3.upload(
         //   {
@@ -390,40 +394,76 @@ export default {
       );
     },
 
-    async submitData() {
-      console.log("saveimages함수 시작 전: "+ this.thumbnailUrl[0].img)
-      await this.SaveImages();
-      console.log("saveimages함수 시작 후: " + this.thumbnailUrl[0].img)
-      var result = {
-        "category":this.category,
-        "title":this.title,
-        "targetPrice":this.targetPrice,
-        "projectIntroduction":"",
-        "startDate":null, // this.fromDate,
-        "endDate":null, //this.toDate,
-        "rewards":this.rewards,
-        "thumbnails":this.thumbnailUrl,
-        "bodyImgs":this.contentImageUrl,
+    changeDateFormat(a) {
+      var b = String(a).split(" ");
+      var month;
+      if (b[1] == "Jan") {
+        month = "01";
+      } else if (b[1] == "Feb") {
+        month = "02";
+      } else if (b[1] == "Mar") {
+        month = "03";
+      } else if (b[1] == "Apr") {
+        month = "04";
+      } else if (b[1] == "May") {
+        month = "05";
+      } else if (b[1] == "Jun") {
+        month = "06";
+      } else if (b[1] == "Jul") {
+        month = "07";
+      } else if (b[1] == "Aug") {
+        month = "08";
+      } else if (b[1] == "Sep") {
+        month = "09";
+      } else if (b[1] == "Oct") {
+        month = "10";
+      } else if (b[1] == "Nov") {
+        month = "11";
+      } else if (b[1] == "Dec") {
+        month = "12";
       }
-      var headers = {"Authorization":this.$store.state.Authorization} 
-      console.log(result);
-      console.log(this.$store.state.Authorization)
-
-      // axios.post("https://"+serverUrl+"/funding/regist",result,{"headers":headers}).then((response)=>{
-      axios.post("http://"+"localhost:8080/api"+"/funding/regist",result,{"headers":headers}).then((response)=>{
-        console.log(response);
-      }).catch(()=>{
-        console.log("error");
-      })
+      return b[3] + "-" + month + "-" + b[2] + " " + b[4];
     },
 
-    clearData(){
+    async submitData() {
+      await this.SaveImages();
+      var result = {
+        category: this.category,
+        title: this.title,
+        targetPrice: this.targetPrice,
+        projectIntroduction: "",
+        startDate: this.changeDateFormat(this.fromDate), // this.fromDate,
+        endDate: this.changeDateFormat(this.toDate), //this.toDate,
+        rewards: this.rewards,
+        thumbnails: this.thumbnailUrl,
+        bodyImgs: this.contentImageUrl,
+      };
+      var headers = { Authorization: this.$store.state.Authorization };
+      console.log(result);
+
+      axios
+        .post("https://" + serverUrl + "/funding/regist", result, {
+          headers: headers,
+        })
+        // axios
+        //   .post("http://" + "localhost:8080/api" + "/funding/regist", result, {
+        //     headers: headers,
+        //   })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    },
+
+    clearData() {
       // 페이지 새로고침
       this.$router.go();
     },
-    deleteReward(index){
-      this.rewards.splice(index,1);
-    }
+    deleteReward(index) {
+      this.rewards.splice(index, 1);
+    },
   },
 };
 </script>
