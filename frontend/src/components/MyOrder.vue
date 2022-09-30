@@ -23,12 +23,15 @@
       <div class="rewardnumber4">{리워드 가격}원 / {n}개</div>
     </div>
     <div class="rewardsum">총 참여 금액 : {nnnnn} 원</div>
+     <button class="goback">뒤로가기</button>
   </div>
-  <button class="goback">뒤로가기</button>
+ 
 </template>
 
 <script>
-export default {};
+export default {
+  name: "MyOrder",
+};
 </script>
 
 <style scoped>

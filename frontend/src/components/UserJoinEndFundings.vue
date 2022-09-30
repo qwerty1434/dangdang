@@ -12,6 +12,13 @@
     <div id="fundingList">
       
       <div v-for="funding in fundings" :key="funding.id" >
+      <img
+         @click="checkOrder()"
+        class="cart"
+        src="@/assets/장바구니.png"
+        style="width: 30px; height: 30px; box-sizing: border-box; "
+        alt=""
+      />
       <div class="thumbnail">
       <img
         :src="funding.img"
@@ -62,7 +69,7 @@ import {mapState} from 'vuex';
 
 
 export default {
-    name: "EndFundings",
+    name: "UserJoinEndFundings",
   
   data() {
     return {
@@ -325,5 +332,12 @@ export default {
 }
 .onpoint{
   cursor: pointer;
+}
+.cart{
+  cursor: pointer;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 250px;
+
 }
 </style>
