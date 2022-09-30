@@ -1,15 +1,14 @@
 <template>
   <div>
     <div class="banner"></div>
-    <div class="fundingtitle">유패드 미니 뭐라뭐라 긴 제목</div>
-    <router-link :to="{ path: '/product/story' }">
+    <div class="fundingtitle">{{fundingDetail.fundingContent.title}}</div>
+    <router-link :to="{ path: '/product/story' , query: {id: fundingId}}">
       <div class="storybutton">스토리</div>
     </router-link>
-
-    <router-link :to="{ path: '/product/supporter' }">
+    <router-link :to="{ path: '/product/supporter' , query: {id: fundingId}}">
       <div class="supporterbutton">서포터</div>
     </router-link>
-    <router-link :to="{ path: '/product/account' }">
+    <router-link :to="{ path: '/product/account' , query: {id: fundingId}}">
       <div class="accountbutton">통장내역</div>
     </router-link>
 
@@ -17,34 +16,75 @@
       <router-view />
     </div>
 
-    <div class="due">종료 {nn}일 전</div>
+    <div class="due">종료 {{fundingDetail.fundingContent.remainDays}}일 전</div>
     <div>
       <progress
         id="progress"
-        value="50"
+        value={{fundingDetail.fundingContent.achieveRate}}
         min="0"
         max="100"
         class="progressbar"></progress>
     </div>
-    <div class="complete">{nnn}% 달성</div>
-    <div class="funded">{nnn} 원 펀딩</div>
-    <div class="supporter">{nnnn} 명의 서포터</div>
+    <div class="complete">{{fundingDetail.fundingContent.achieveRate}}% 달성</div>
+    <div class="funded">{{fundingDetail.fundingContent.nowPrice}} 원 펀딩</div>
+    <div class="supporter">{{supporters.length}} 명의 서포터</div>
     <button class="joinfunding">펀딩 참여</button>
     <div class="makertext">메이커 정보</div>
-    <div class="maker">{메이커이름}</div>
+    <div class="maker">{{fundingDetail.maker.companyName}}</div>
     <div class="makerprofilepic"></div>
-    <div class="makercompany">{사업자회사이름}</div>
-    <div class="cumulativesupporter">누적서포터 {nnnnn} 명</div>
-    <div class="fundingdone">완료한 펀딩 {nnnnn} 개</div>
+    <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
+    <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
+    <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
+    
+    <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i" />
+<!-- 
     <div class="reward1"></div>
     <div class="reward2"></div>
     <div class="reward3"></div>
-    <div class="reward4"></div>
+    <div class="reward4"></div> -->
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import RewardBox from "../components/RewardBox.vue";
+
+export default {
+  name:"Test",
+  components: {
+    RewardBox: RewardBox,
+  },
+  data() {
+    return {
+       fundingDetail: {},
+       supporters: [],
+       fundingId: "",
+       staticUrl: "http://localhost:8080",
+       serverUrl: "https://j7a306.p.ssafy.io", 
+    }
+  },
+  created() {
+    this.fundingId = this.$route.query.id;
+    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
+    const supporterUrl = this.staticUrl + "api/funding/supporter?fundingId=" + this.fundingId
+   
+    axios
+      .get(detailUrl, {
+      })
+      .then(({ data }) => {
+        console.log(data);
+        this.fundingDetail = data;
+      })
+
+    axios
+      .get(supporterUrl, {
+      })
+      .then(({ data }) => {
+        console.log(data);
+        this.supporters = data;
+      })
+  }
+};
 </script>
 
 <style scoped>
@@ -321,7 +361,6 @@ export default {};
   height: 216px;
   left: 1304px;
   top: 1220px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward2 {
   position: absolute;
@@ -329,7 +368,6 @@ export default {};
   height: 216px;
   left: 1304px;
   top: 1454px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward3 {
   position: absolute;
@@ -337,7 +375,6 @@ export default {};
   height: 216px;
   left: 1304px;
   top: 1688px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 .reward4 {
   position: absolute;
@@ -345,6 +382,5 @@ export default {};
   height: 216px;
   left: 1304px;
   top: 1922px;
-  background: url("@/assets/제품페이지모듈.png");
 }
 </style>

@@ -1,11 +1,22 @@
 <template>
   <div>
+     {{fundingId}} 이미지 뿌리기
     <div class="mockup"></div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      fundingId:"",
+    }
+  
+  },
+  created() {
+    this.fundingId = this.$route.query.id;
+  }
+};
 </script>
 
 <style>

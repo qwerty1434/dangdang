@@ -2,10 +2,12 @@
   <div>
     <div class="headline">서포터</div>
     <div class="supportercount">
-      현재 이 프로젝트에 {931}명의 참여가 이루어졌습니다.
+      현재 이 프로젝트에 {{supporters.length}}명의 참여가 이루어졌습니다.
     </div>
     <div>
-      <div class="supporterjoin"></div>
+      <div class="supporterjoin">
+        <FundingParticipation v-for="(item, i) in supporters" :user=supporters[i] :key="i"/>
+      </div>
     </div>
 
     <div class=""></div>
@@ -15,12 +17,46 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import FundingParticipation from "../components/FundingParticipation.vue";
+
+export default {
+  components: {
+    FundingParticipation: FundingParticipation,
+  },
+   data() {
+    return {
+       fundingDetail: {},
+       supporters: [],
+       fundingId: "",
+    }
+  },
+  created() {
+    this.fundingId = this.$route.query.id;
+    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
+    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId="+ this.fundingId
+    var headers = {"Authorization":this.$store.state.Authorization}
+
+    axios
+      .get(detailUrl, {"headers":headers})
+      .then(({ data }) => {
+        console.log(data);
+        this.fundingDetail = data;
+      })
+
+    axios
+      .get(supporterUrl, {
+      })
+      .then(({ data }) => {
+        console.log(data);
+        this.supporters = data;
+      })
+  }
+};
 </script>
 
 <style scoped>
 .headline {
-  position: absolute;
   width: 860px;
   height: 90px;
   left: 400px;
@@ -37,8 +73,6 @@ export default {};
 
 .supportercount {
   /* 현재 이 프로젝트에 {931}명의 참여가 이루어졌습니다. */
-
-  position: absolute;
   width: 860px;
   height: 82px;
   left: 400px;
@@ -55,7 +89,6 @@ export default {};
 
 .supporterjoin {
   /* supporterjoin 컴포넌트 */
-  position: absolute;
   width: 860px;
   height: 72px;
   left: 400px;

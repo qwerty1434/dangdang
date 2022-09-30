@@ -1,17 +1,20 @@
 <template>
   <div>
     <div class="outline"></div>
-    <div class="rewardname">유패드 미니</div>
-    <div class="rewardprice">400,000 펀딩</div>
+    <div class="rewardname">{{reward.title}}</div>
+    <div class="rewardprice">{{reward.price}} 펀딩</div>
     <div class="rewarddetail">
-      유패드 미니는 어쩌고 저쩌고 유구한 전통을 가졌니 마니. 3대째 내려오는
-      비법웨이퍼로 눅진하게 찍어낸 반도체가 포인트.
+     {{reward.content}}
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+      props : {
+      reward: Object,
+    }
+};
 </script>
 
 <style scoped>
