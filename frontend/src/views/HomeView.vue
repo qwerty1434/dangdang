@@ -16,11 +16,20 @@
     <div class="fresh">신규상품</div>
     <div class="carousel3"></div>
     <div class="to_fresh">더보기</div>
+   
+     
+  
+    
+
+     
   </div>
 </template>
 
 <script>
-export default {};
+
+export default {
+  name: "HomeView",
+};
 </script>
 
 <style scoped>
@@ -161,4 +170,5 @@ export default {};
 
   color: rgba(0, 0, 0, 0.5);
 }
+
 </style>

@@ -1,28 +1,17 @@
 <template>
   <div>
     <nav-bar></nav-bar>
-    <my-order class="checkOrder"></my-order>
-    <!-- <user-join-on-fundings class="checkEnd"></user-join-on-fundings> -->
-    <user-join-end-fundings class="checkEnd"></user-join-end-fundings>
+    <router-view />
   </div>
-  <router-view />
 </template>
 
 <script>
 import NavBar from "@/components/NavBar.vue";
-import FundingCard from "@/components/FundingCard.vue";
-import MyOrder from './components/MyOrder.vue';
-import UserJoinOnFundings from './components/UserJoinOnFundings.vue';
-import UserJoinEndFundings from './components/UserJoinEndFundings.vue';
 
 export default {
   name: "app",
   components: {
     NavBar,
-    FundingCard,
-    MyOrder,
-    UserJoinOnFundings,
-    UserJoinEndFundings,
   },
 };
 </script>
@@ -55,13 +44,5 @@ export default {
   position: absolute;
   left: 400px;
   top: 4000px;
-}
-.checkEnd{
-  position: absolute;
-  top: 4000px;
-}
-.checkOrder{
-  position: absolute;
-  top: 3000px;
 }
 </style>
