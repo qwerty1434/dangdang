@@ -22,7 +22,8 @@
           id="chooseFile"
           name="chooseFile"
           accept="image/*"
-          style="display: none" />
+          style="display: none"
+        />
       </form>
       <img :src="image" alt="none" class="profileimg" />
     </div>

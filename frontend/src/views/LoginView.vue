@@ -59,7 +59,7 @@ export default {
       } else { this.isInputPw = true; }
       if(!this.isClick && this.isInputId && this.isInputPw){
         axios
-          .post(url, {
+          instance.post(url, {
             email: this.email,
             password: this.pw,
           })
