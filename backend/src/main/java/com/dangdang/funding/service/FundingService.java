@@ -198,9 +198,8 @@ public class FundingService {
         int achieveRate = (int)(funding.getNowPrice() / (double)funding.getTargetPrice() * 100);
         FundThumbnail thumbnail = fundThumbnailRepository.findByFundingIdAndSequence(funding.getId().toString(), 0);
         String img = thumbnail.getImg();
-        LocalDateTime start = funding.getStartDate().toLocalDateTime();
         LocalDateTime end = funding.getEndDate().toLocalDateTime();
-        int day = (int)ChronoUnit.DAYS.between(start, end);
+        int day = (int)ChronoUnit.DAYS.between(LocalDateTime.now(), end);
         String categoryType = funding.getCategory().getType();
         FundingContent fundingContent = FundingContent.Create(funding, achieveRate, img , day , categoryType);
         return fundingContent;
