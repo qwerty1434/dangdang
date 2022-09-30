@@ -2,6 +2,8 @@ package com.dangdang.member.service;
 
 import com.dangdang.member.dto.BusinessRequest;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -51,8 +53,7 @@ public class BusinessService {
         return result;
     }
 
-    public void getInfo(BusinessRequest input) throws IOException {
-        JSONObject object = this.makeJSON(input);
+    public JSONObject getInfo(JSONObject object) throws IOException, ParseException {
 
         String apiUrl = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=" + env.getProperty("bns_service_apikey");
         URL url = null;
@@ -117,8 +118,22 @@ public class BusinessService {
             }
         }
 
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(buffer.toString());
+        JSONObject jsonObj = (JSONObject) obj;
 
-        System.out.println("결과 : " + buffer.toString());
+        return jsonObj;
+    }
+
+    public String parseJSON(BusinessRequest input) throws IOException, ParseException {
+        JSONObject object = this.makeJSON(input);
+        JSONObject obj = this.getInfo(object);
+        JSONArray jArray = (JSONArray) obj.get("data");
+
+        JSONObject jObj = (JSONObject) jArray.get(1);
+        String valid = (String) jObj.get("valid");
+
+        return valid;
     }
 
 }

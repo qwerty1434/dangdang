@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,8 +81,11 @@ public class MakerController {
 
     @PostMapping("/apitest")
     @ApiOperation(value="사업자 관련 정보 test")
-    public void apiTest(@RequestBody BusinessRequest input) throws IOException {
-        businessService.getInfo(input);
+    public void apiTest(@RequestBody BusinessRequest input) throws IOException, ParseException {
+        String valid = businessService.parseJSON(input);
+
+
+
     }
 
 }
