@@ -4,16 +4,19 @@ import com.dangdang.advice.exceptions.NotFoundException;
 import com.dangdang.member.dto.*;
 import com.dangdang.member.exception.InsufficientfundsException;
 import com.dangdang.member.exception.NotValidateAccessToken;
+import com.dangdang.member.service.BusinessService;
 import com.dangdang.member.service.MakerService;
-import com.dangdang.withdraw.domain.WithdrawForm;
 import com.dangdang.withdraw.dto.WithdrawFormResponse;
 import com.dangdang.withdraw.service.WithdrawService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,6 +27,7 @@ public class MakerController {
 
     private final MakerService makerService;
     private final WithdrawService withdrawService;
+    private final BusinessService businessService;
 
     @PostMapping("/join")
     @ApiOperation(value="메이커 등록")
@@ -72,6 +76,12 @@ public class MakerController {
     public List<FundingListResponse> findFundingList(
             @RequestBody MakerFundingListRequest input, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         return makerService.findFundingList(input, pageable, req);
+    }
+
+    @PostMapping("/apitest")
+    @ApiOperation(value="사업자 관련 정보 test")
+    public void apiTest(@RequestBody BusinessRequest input) throws IOException {
+        businessService.getInfo(input);
     }
 
 }
