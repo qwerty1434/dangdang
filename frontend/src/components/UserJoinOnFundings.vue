@@ -10,8 +10,15 @@
       />
 
     <div id="fundingList">
-      
       <div v-for="funding in fundings" :key="funding.id" >
+        <img
+         @click="checkOrder()"
+        class="cart"
+        src="@/assets/장바구니.png"
+        style="width: 30px; height: 30px; box-sizing: border-box; "
+        alt=""
+      />
+      <my-order></my-order>
       <div class="thumbnail">
       <img
         :src="funding.img"
@@ -60,10 +67,11 @@
 <script>
 import axios from "axios";
 import {mapState} from 'vuex';
+import MyOrder from '@/components/MyOrder.vue';
 
 
 export default {
-    name: "OnFundings",
+    name: "UserJoinOnFundings",
   
   data() {
     return {
@@ -74,9 +82,13 @@ export default {
       nextfundings: [],
     };
   },
+  components: {
+    MyOrder
+  },
   computed:{
     ...mapState(
-      ["user", "Authorization"]
+ 
+    MyOrder     ["user", "Authorization"]
     )
 
   },
@@ -326,5 +338,12 @@ export default {
 }
 .onpoint{
   cursor: pointer;
+}
+.cart{
+  cursor: pointer;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 250px;
+
 }
 </style>
