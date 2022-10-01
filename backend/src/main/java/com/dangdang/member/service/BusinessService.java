@@ -2,6 +2,7 @@ package com.dangdang.member.service;
 
 import com.dangdang.member.dto.BusinessRequest;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,6 +89,7 @@ public class BusinessService {
             buffer = new StringBuilder();
             if(urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK)
             {
+                System.out.println();
                 bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
                 while((readLine = bufferedReader.readLine()) != null)
                 {
@@ -127,12 +129,13 @@ public class BusinessService {
 
     public String parseJSON(BusinessRequest input) throws IOException, ParseException {
         JSONObject object = this.makeJSON(input);
+        System.out.println(object.toString());
         JSONObject obj = this.getInfo(object);
+        System.out.println(obj.toString());
         JSONArray jArray = (JSONArray) obj.get("data");
-
-        JSONObject jObj = (JSONObject) jArray.get(1);
+        System.out.println(jArray);
+        JSONObject jObj = (JSONObject) jArray.get(0);
         String valid = (String) jObj.get("valid");
-
         return valid;
     }
 

@@ -13,6 +13,10 @@ public class MakerJoinRequest {
 
     private String companyName;
 
+    private String openDay;
+
+    private String managerName;
+
     private String img;
 
 }

@@ -28,12 +28,16 @@ public class MakerController {
 
     private final MakerService makerService;
     private final WithdrawService withdrawService;
-    private final BusinessService businessService;
 
     @PostMapping("/join")
     @ApiOperation(value="메이커 등록")
-    public void join(@RequestBody MakerJoinRequest maker, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
-        makerService.join(maker, req);
+    public boolean join(@RequestBody MakerJoinRequest maker, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
+        try{
+            makerService.join(maker, req);
+        } catch(Exception e){
+            return false;
+        }
+        return true;
     }
 
     @PostMapping("/coin-app")
@@ -77,15 +81,6 @@ public class MakerController {
     public List<FundingListResponse> findFundingList(
             @RequestBody MakerFundingListRequest input, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         return makerService.findFundingList(input, pageable, req);
-    }
-
-    @PostMapping("/apitest")
-    @ApiOperation(value="사업자 관련 정보 test")
-    public void apiTest(@RequestBody BusinessRequest input) throws IOException, ParseException {
-        String valid = businessService.parseJSON(input);
-
-
-
     }
 
 }
