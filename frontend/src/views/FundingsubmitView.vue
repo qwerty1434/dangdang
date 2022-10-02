@@ -284,9 +284,9 @@ export default {
       var className = "thumbnail" + (num + 1);
       const thumbUrl = URL.createObjectURL(data);
       this.thumbnail.sequence = num;
-      this.thumbnail.img = thumbUrl; // 지금 선택된 파일이 data의 file로 저장되도록
-
-      this.thumbnailUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
+      this.thumbnail.img = data;
+      // this.thumbnailUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
+      this.thumbnailUrl[num] = this.thumbnail;
       document.getElementsByClassName(className)[0].style.backgroundImage =
         "url('" + thumbUrl + "')";
     },
@@ -296,9 +296,8 @@ export default {
       var className = "detail" + (num + 1);
       const contentUrl = URL.createObjectURL(data);
       this.contentImage.sequence = num;
-      this.contentImage.img = contentUrl;
-
-      this.contentImageUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
+      this.contentImage.img = data;
+      this.contentImageUrl[num] = this.contentImage;
       document.getElementsByClassName(className)[0].style.backgroundImage =
         "url('" + contentUrl + "')";
     },
@@ -320,9 +319,8 @@ export default {
       });
 
       for (let index = 0; index < this.thumbnailUrl.length; index++) {
-        // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = "funding/" + this.uuid + "/thumbnails/" + index + ".jpg";
-
+        console.log(this.thumbnailUrl[index].img);
         await S3.upload({
           Key: photoKey,
           Body: this.thumbnailUrl[index].img,
@@ -335,12 +333,11 @@ export default {
             this.thumbnailUrl[index].img = data.Location;
           })
           .catch((err) => {
-            conosle.log(err);
+            console.log(err);
             console.log("world");
           });
       }
       for (let index = 0; index < this.contentImageUrl.length; index++) {
-        // let photoKey = "folder/"+this.file[index].name+".jpg";
         let photoKey = "funding/" + this.uuid + "/contents/" + index + ".jpg";
         await S3.upload({
           Key: photoKey,
