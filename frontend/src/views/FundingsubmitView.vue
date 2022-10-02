@@ -3,7 +3,9 @@
     <h1>this is a /funding/submit page</h1>
     <div>
       <div>
-        <div class="categorybox"></div>
+        <select v-model="category" class="categorybox">
+          <option v-for="c in categories" v-bind:key="c">{{ c }}</option>
+        </select>
         <div class="categoryselect"></div>
         <div class="categorybutton"></div>
       </div>
@@ -12,22 +14,115 @@
         <input
           type="text"
           class="fundingtitleinput"
-          placeholder="제목을 입력해주세요" />
+          placeholder="제목을 입력해주세요"
+          v-model="title"
+        />
       </div>
       <div>
         <div class="goalbox"></div>
         <input
           type="text"
           class="goalinput"
-          placeholder="목표 금액을 입력해주세요" />
+          placeholder="목표 금액을 입력해주세요"
+          v-model="targetPrice"
+        />
       </div>
       <div>
-        <div class="thumbnail1"></div>
-        <div class="thumbnail2"></div>
-        <div class="thumbnail3"></div>
-        <div class="detail1"></div>
-        <div class="detail2"></div>
-        <div class="detail3"></div>
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file0" class="thumbnail1"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file0"
+              id="file0"
+              accept="image/*"
+              style="display: none"
+              @change="UploadThumbnail(0)"
+            />
+          </form>
+        </div>
+
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file1" class="thumbnail2"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file1"
+              id="file1"
+              accept="image/*"
+              style="display: none"
+              @change="UploadThumbnail(1)"
+            />
+          </form>
+        </div>
+
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file2" class="thumbnail3"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file2"
+              id="file2"
+              accept="image/*"
+              style="display: none"
+              @change="UploadThumbnail(2)"
+            />
+          </form>
+        </div>
+
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file3" class="detail1"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file3"
+              id="file3"
+              accept="image/*"
+              style="display: none"
+              @change="UploadContentImage(0)"
+            />
+          </form>
+        </div>
+
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file4" class="detail2"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file4"
+              id="file4"
+              accept="image/*"
+              style="display: none"
+              @change="UploadContentImage(1)"
+            />
+          </form>
+        </div>
+
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file5" class="detail3"> </label>
+            </div>
+            <input
+              type="file"
+              ref="file5"
+              id="file5"
+              accept="image/*"
+              style="display: none"
+              @change="UploadContentImage(2)"
+            />
+          </form>
+        </div>
       </div>
     </div>
 
@@ -38,28 +133,41 @@
         <input
           type="text"
           class="rewardtitleinput"
-          placeholder="리워드 제목을 입력해주세요" />
+          placeholder="리워드 제목을 입력해주세요"
+          v-model="reward.title"
+        />
       </div>
       <div>
         <div class="rewardcontentbox"></div>
         <input
           type="text"
           class="rewardcontentinput"
-          placeholder="리워드 내용을 입력해주세요" />
+          placeholder="리워드 내용을 입력해주세요"
+          v-model="reward.content"
+        />
       </div>
       <div>
         <div class="rewardpricebox"></div>
         <input
           type="text"
           class="rewardpriceinput"
-          placeholder="리워드에 해당하는 금액을 입력해주세요" />
+          placeholder="리워드에 해당하는 금액을 입력해주세요"
+          v-model="reward.price"
+        />
       </div>
-      <div><div class="rewardaddbutton"></div></div>
+      <button @click="makeReward()" class="rewardaddbutton">리워드 추가</button>
+
       <div>
-        <div class="reward1"></div>
-        <div class="reward2"></div>
-        <div class="reward3"></div>
-        <div class="reward4"></div>
+        <div
+          v-for="(reward, index) in rewards"
+          v-bind:key="reward"
+          :class="`reward${index + 1}`"
+        >
+          <div @click="deleteReward(index)">{{ index }} 삭제</div>
+          <div>제목: {{ reward.title }}</div>
+          <div>내용: {{ reward.content }}</div>
+          <div>가격: {{ reward.price }}</div>
+        </div>
       </div>
     </div>
     <!-- 기타정보 -->
@@ -74,7 +182,10 @@
       <!-- 펀딩일정 -->
 
       <div>
-        <div class="calendar"></div>
+        <div class="calendar">
+          <Datepicker v-model="fromDate" inline autoApply style="float: left" />
+          <Datepicker v-model="toDate" inline autoApply />
+        </div>
         <div class=""></div>
         <div class=""></div>
         <div class=""></div>
@@ -82,9 +193,9 @@
       </div>
       <!-- 변경사항 취소 임시저장 등록 버튼 -->
       <div>
-        <div class="revert"></div>
-        <div class="tempsave"></div>
-        <div class="submit"></div>
+        <button @click="clearData()" class="revert">변경사항취소</button>
+        <button @click="b()" class="tempsave">임시저장</button>
+        <button @click="submitData()" class="submit">등록하기</button>
       </div>
     </div>
     <div>
@@ -103,16 +214,259 @@
       <div class="m">펀딩 일정</div>
       <div class="n">썸네일</div>
       <div class="o">본문</div>
-      <div class="p">리워드추가</div>
-      <div class="q">변경사항취소</div>
+      <!-- <div class="p">리워드추가</div> -->
+      <!-- <div class="q">변경사항취소</div>
       <div class="r">임시저장</div>
-      <div class="s">등록하기</div>
+      <div class="s">등록하기</div> -->
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import { ref } from "vue";
+import AWS from "aws-sdk";
+
+const serverUrl = "j7a306.p.ssafy.io/api";
+export default {
+  data() {
+    return {
+      // 글로벌 변수로 빼는거 추천 + 정보를 숨기는 걸 추천
+      albumBucketName: "dangdang-bucket",
+      bucketRegion: "ap-northeast-2",
+      IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
+      uuid: "",
+      title: "",
+      targetPrice: "",
+      thumbnail: {
+        img: "",
+        sequence: "",
+      },
+      thumbnailUrl: [],
+      contentImage: {
+        img: "",
+        sequence: "",
+      },
+      contentImageUrl: [],
+      categories: [],
+      category: "",
+      rewards: [],
+      reward: {
+        title: "",
+        content: "",
+        price: "",
+      },
+      fromDate: ref(new Date()),
+      toDate: ref(new Date()),
+    };
+  },
+  components: {
+    Datepicker,
+  },
+
+  created() {
+    this.createUuid(); // uuid생성
+    axios
+      .get("https://" + serverUrl + "/category/list", {})
+      .then((response) => {
+        this.categories = response.data;
+      })
+      .catch(() => {
+        console.log("error");
+      });
+  },
+  methods: {
+    UploadThumbnail(num) {
+      var s = "file" + num;
+      var data = eval(`this.$refs.${s}.files[0]`);
+      var className = "thumbnail" + (num + 1);
+      const thumbUrl = URL.createObjectURL(data);
+      this.thumbnail.sequence = num;
+      this.thumbnail.img = thumbUrl; // 지금 선택된 파일이 data의 file로 저장되도록
+
+      this.thumbnailUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
+      document.getElementsByClassName(className)[0].style.backgroundImage =
+        "url('" + thumbUrl + "')";
+    },
+    UploadContentImage(num) {
+      var s = "file" + (3 + num);
+      var data = eval(`this.$refs.${s}.files[0]`);
+      var className = "detail" + (num + 1);
+      const contentUrl = URL.createObjectURL(data);
+      this.contentImage.sequence = num;
+      this.contentImage.img = contentUrl;
+
+      this.contentImageUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
+      document.getElementsByClassName(className)[0].style.backgroundImage =
+        "url('" + contentUrl + "')";
+    },
+    async SaveImages() {
+      console.log("이미지 저장 시작");
+      // 파일 업로드
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
+
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+
+      for (let index = 0; index < this.thumbnailUrl.length; index++) {
+        // let photoKey = "folder/"+this.file[index].name+".jpg";
+        let photoKey = "funding/" + this.uuid + "/thumbnails/" + index + ".jpg";
+
+        await S3.upload({
+          Key: photoKey,
+          Body: this.thumbnailUrl[index].img,
+          ACL: "public-read",
+        })
+          .promise()
+          .then((data) => {
+            console.log("hello");
+            console.log(data.Location);
+            this.thumbnailUrl[index].img = data.Location;
+          })
+          .catch((err) => {
+            conosle.log(err);
+            console.log("world");
+          });
+      }
+      for (let index = 0; index < this.contentImageUrl.length; index++) {
+        // let photoKey = "folder/"+this.file[index].name+".jpg";
+        let photoKey = "funding/" + this.uuid + "/contents/" + index + ".jpg";
+        await S3.upload({
+          Key: photoKey,
+          Body: this.contentImageUrl[index].img,
+          ACL: "public-read",
+        })
+          .promise()
+          .then((data) => {
+            this.contentImageUrl[index].img = data.Location;
+          })
+          .catch((err) => {
+            conosle.log(err);
+            console.log("world");
+          });
+        // await S3.upload(
+        //   {
+        //     Key: photoKey,
+        //     Body: this.contentImageUrl[index].img,
+        //     ACL: "public-read",
+        //   },
+        //   (err, data) => {
+        //     if (err) {
+        //       console.log(err);
+        //       return alert("에러");
+        //     } else {
+        //       this.contentImageUrl[index].img = data.Location;
+        //     }
+        //   }
+        // );
+      }
+      console.log("이미지 저장 끝");
+    },
+
+    makeReward() {
+      if (this.rewards.length >= 4) {
+        alert("최대 4개만 가능함");
+      }
+      this.rewards.push(JSON.parse(JSON.stringify(this.reward))); // 깊은 복사를 위해 JSON 활용
+      this.reward.title = "";
+      this.reward.content = "";
+      this.reward.price = "";
+      console.log(this.rewards);
+    },
+
+    createUuid() {
+      this.uuid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+        (
+          c ^
+          (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+        ).toString(16)
+      );
+    },
+
+    changeDateFormat(a) {
+      var b = String(a).split(" ");
+      var month;
+      if (b[1] == "Jan") {
+        month = "01";
+      } else if (b[1] == "Feb") {
+        month = "02";
+      } else if (b[1] == "Mar") {
+        month = "03";
+      } else if (b[1] == "Apr") {
+        month = "04";
+      } else if (b[1] == "May") {
+        month = "05";
+      } else if (b[1] == "Jun") {
+        month = "06";
+      } else if (b[1] == "Jul") {
+        month = "07";
+      } else if (b[1] == "Aug") {
+        month = "08";
+      } else if (b[1] == "Sep") {
+        month = "09";
+      } else if (b[1] == "Oct") {
+        month = "10";
+      } else if (b[1] == "Nov") {
+        month = "11";
+      } else if (b[1] == "Dec") {
+        month = "12";
+      }
+      return b[3] + "-" + month + "-" + b[2] + " " + b[4];
+    },
+
+    async submitData() {
+      await this.SaveImages();
+      var result = {
+        category: this.category,
+        title: this.title,
+        targetPrice: this.targetPrice,
+        projectIntroduction: "",
+        startDate: this.changeDateFormat(this.fromDate), // this.fromDate,
+        endDate: this.changeDateFormat(this.toDate), //this.toDate,
+        rewards: this.rewards,
+        thumbnails: this.thumbnailUrl,
+        bodyImgs: this.contentImageUrl,
+      };
+      var headers = { Authorization: this.$store.state.Authorization };
+      console.log(this.$store.state.Authorization);
+      console.log(result);
+
+      axios
+        .post("https://" + serverUrl + "/funding/regist", result, {
+          headers: headers,
+        })
+        // axios
+        //   .post("http://" + "localhost:8080/api" + "/funding/regist", result, {
+        //     headers: headers,
+        //   })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    },
+
+    clearData() {
+      // 페이지 새로고침
+      this.$router.go();
+    },
+    deleteReward(index) {
+      this.rewards.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -194,6 +548,7 @@ export default {};
   left: 670px;
   top: 818px;
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .thumbnail2 {
   position: absolute;
@@ -202,6 +557,7 @@ export default {};
   left: 811px;
   top: 818px;
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .thumbnail3 {
   position: absolute;
@@ -210,6 +566,7 @@ export default {};
   left: 952px;
   top: 818px;
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .detail1 {
   position: absolute;
@@ -219,6 +576,7 @@ export default {};
   top: 818px;
 
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .detail2 {
   position: absolute;
@@ -227,6 +585,7 @@ export default {};
   left: 1311px;
   top: 818px;
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .detail3 {
   position: absolute;
@@ -236,6 +595,7 @@ export default {};
   top: 818px;
 
   background: url("@/assets/picture.png");
+  background-size: 100% 100%;
 }
 .rewardtitlebox {
   box-sizing: border-box;
@@ -811,5 +1171,27 @@ export default {};
   text-align: center;
 
   color: #000000;
+}
+.profileimg {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  left: 806px;
+  top: 438px;
+  /* border-radius: 50%; */
+  border: 1px solid #000000;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.profileimgedit {
+  position: absolute;
+  width: 60px;
+  height: 62.45px;
+  left: 1052px;
+  top: 678px;
+  z-index: 300;
+
+  background: url("@/assets/edit.png");
 }
 </style>

@@ -11,14 +11,7 @@
 
     <div id="fundingList">
       
-      <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
-      <img
-         @click="checkOrder()"
-        class="cart"
-        src="@/assets/장바구니.png"
-        style="width: 30px; height: 30px; box-sizing: border-box; "
-        alt=""
-      />
+      <div v-for="funding in deadlinefundings" :key="funding.id" style="margin-right:30px" >
       <div class="thumbnail">
       <img
         :src="funding.img"
@@ -34,15 +27,16 @@
     </div>
     <progress
       id="progress"
-      :value="funding.achieveRate*100"
+      :value="funding.achieveRate"
       min="0"
       max="100"
       class="progressbar"
       style="margin-top : 5px"
     ></progress>
-    <div style="display:flex; justify-content: space-between; margin-top:5px; width: 300px">
-       <div class="percentage">{{funding.achieveRate*100}}%</div>
-       <div class="total">{{funding.nowPrice}}원(코인)</div>
+    <div style="display:flex; justify-content: space-between; margin-top:5px">
+    <div class="percentage">{{funding.achieveRate*100}}%</div>
+    <div class="total">{{funding.nowPrice}}원(코인)</div>
+    <div class="remain">{{funding.remainDays}}일 남음</div>
     </div>
     </div>
 
@@ -65,44 +59,35 @@
 
 <script>
 import axios from "axios";
-import {mapState} from 'vuex';
 
 
 export default {
-    name: "UserJoinEndFundings",
+    name: "DeadLineFundings",
   
   data() {
     return {
-      image: "",
-      nowPage: 0,
-      fundings: [],
-      state: 2,
-      nextfundings: [],
+      deadlinenowPage: 0,
+      deadlinefundings: [],
+      deadlinenextfundings: [],
     };
-  },
-  computed:{
-    ...mapState(
-      ["user", "Authorization"]
-    )
-
   },
   created(){
     this.getFundings();
   },
   methods: {
     getFundings(){
-      const url = "http://localhost:8080/api/user/funding-list"
+      this.checknext(this.deadlinenowPage+1);
+      const url = "http://localhost:8080/api/funding/search"
       axios.get(url, {
         params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        Authorization: this.Authorization
-      },
+          page : this.deadlinenowPage,
+          size : 4,
+          sort : "endDate",
+          type : "endedAt"
+        }
     })
       .then(({data}) => {
-        this.fundings = data;
+        this.deadlinefundings = data.fundingList;
         console.log(data)
       }).catch((err)=> {
       
@@ -111,41 +96,38 @@ export default {
       })
     },
     left(){
-      this.nowPage = this.nowPage -1;
-      if(this.nowPage <0){
-        this.nowPage = 0;
+      this.deadlinenowPage = this.deadlinenowPage -1;
+      if(this.deadlinenowPage <0){
+        this.deadlinenowPage = 0;
       }
-      console.log(this.nowPage);
+      console.log(this.deadlinenowPage);
       this.getFundings()
     },
     right(){
-      this.nowPage = this.nowPage + 1;
-      console.log(this.nowPage)
-      if(this.fundings.length == 4){
-        this.checknext()
-        if(this.nextfundings.length != 0){
+      this.deadlinenowPage = this.deadlinenowPage + 1;
+      if(this.deadlinefundings.length == 4){
+        if(this.deadlinenextfundings.length != 0){
             this.getFundings()
         }else{
-          this.nowPage = this.nowPage-1;
+          this.deadlinenowPage = this.deadlinenowPage-1;
         }
         
       }else{
-        this.nowPage = this.nowPage - 1;
+        this.deadlinenowPage = this.deadlinenowPage - 1;
       }
     },
-    checknext(){
-      const url = "http://localhost:8080/api/user/funding-list"
+    checknext(next){
+      const url = "http://localhost:8080/api/funding/search"
       axios.get(url, {
         params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        Authorization: this.Authorization
-      },
+          page : next,
+          size : 4,
+          sort : "endDate",
+          type : "endedAt"
+        },
     })
       .then(({data}) => {
-        this.nextfundings = data;
+        this.deadlinenextfundings = data.fundingList;
         console.log(data)
       }).catch((err)=> {
       
@@ -161,48 +143,6 @@ export default {
 <style scoped>
 
 
-.aliastext {
-  position: absolute;
-  width: 200px;
-  height: 40px;
-  left: 608px;
-  top: 820px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 40px;
-  line-height: 45px;
-
-  color: #000000;
-}
-.fundinghistory{
-  width: 200px;
-  height: 28px;
-  left: 259px;
-  cursor: pointer;
-
-  
-
-  /* background: rgba(98, 184, 120, 0.5); */
-  /* 텍스트 */
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 28px;
-  line-height: 32px;
-  text-align: center;
-
-  color: #000000;
-}
-.carousel {
-  position: absolute;
-  width: 1380px;
-  height: 490px;
-  left: 276px;
-  top: 1360px;
-  background: url("@/assets/캐러셀1.png");
-}
 .background {
   float: left top;
   width: 1920px;
@@ -292,7 +232,7 @@ export default {
   color: #000000;
 }
 .total {
- 
+  width: 140px;
   height: 14px;
   left: 60px;
   top: 484px;
@@ -332,12 +272,5 @@ export default {
 }
 .onpoint{
   cursor: pointer;
-}
-.cart{
-  cursor: pointer;
-  position: absolute;
-  margin-top: 20px;
-  margin-left: 250px;
-
 }
 </style>

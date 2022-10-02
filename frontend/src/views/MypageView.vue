@@ -22,20 +22,27 @@
           id="chooseFile"
           name="chooseFile"
           accept="image/*"
-          style="display: none" />
+          style="display: none"
+        />
       </form>
       <img :src="image" alt="none" class="profileimg" />
     </div>
 
     <div>
       <div class="aliastext">닉네임</div>
-      <input type="text" class="alias" style="border:none" :placeholder="this.user.nickname" v-model="nick">
+      <input
+        type="text"
+        class="alias"
+        style="border: none"
+        :placeholder="this.user.nickname"
+        v-model="nick"
+      />
       <div @click="changeNickname()" class="aliasedit"></div>
     </div>
 
     <div>
       <div class="balancetext">잔고</div>
-      <div class="balance">{{remainCoin}}</div>
+      <div class="balance">{{ remainCoin }}</div>
       <div class="balanceunit">SSF</div>
     </div>
 
@@ -50,9 +57,17 @@
     </div>
 
     <div class="borderline"></div>
-    <div style="display:flex; justify-content: space-between; width: 1000px; margin: auto; margin-top: 1100px;">
-      <div  class="fundinghistory">진행 중 펀딩</div>
-      <div  class="fundinghistory">종료 된 펀딩</div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        width: 1000px;
+        margin: auto;
+        margin-top: 1100px;
+      "
+    >
+      <div class="fundinghistory">진행 중 펀딩</div>
+      <div class="fundinghistory">종료 된 펀딩</div>
     </div>
     <div class="background"></div>
   </div>
@@ -60,11 +75,16 @@
 
 <script>
 import axios from "axios";
-import {mapState} from 'vuex';
+import { mapState } from "vuex";
+import AWS from "aws-sdk";
+
+const serverUrl = "j7a306.p.ssafy.io/api";
 export default {
-  
   data() {
     return {
+      albumBucketName: "dangdang-bucket",
+      bucketRegion: "ap-northeast-2",
+      IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
       image: "",
       nick: "",
       isCheckNick: true,
@@ -75,70 +95,138 @@ export default {
       nextfundings: [],
     };
   },
-  computed:{
-    ...mapState(
-      ["user", "Authorization"]
-    )
-
+  computed: {
+    ...mapState(["user", "Authorization"]),
   },
-  created(){
+  created() {
     this.getUserRemainCoin();
+    this.getFiles();
   },
   methods: {
     uploadImg() {
-      console.log("들어왔다");
-      var image = this.$refs["image"].files[0];
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
 
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+      const fileName = this.$refs["image"].files[0].name;
+      const fileArr = fileName.split(".");
+      const fileExtension = fileArr[fileArr.length - 1];
+      let photoKey =
+        "user/" + this.user.email + "/profile/supporter/" + "0." + "jpg";
+      S3.upload({
+        Key: photoKey,
+        Body: this.$refs["image"].files[0],
+        ACL: "public-read",
+      })
+        .promise()
+        .then((data) => {
+          this.image = data.Location;
+        })
+        .catch((err) => {
+          conosle.log(err);
+        });
+
+      // 이게 있으면 유저 입장에서는 빨리 바뀐다고 느껴짐 근데 빨리 바꿧다고 생각하고 페이지를 벗어나버리면 문제가 생김
+      var image = this.$refs["image"].files[0];
       const url = URL.createObjectURL(image);
       this.image = url;
-      console.log(url);
-      console.log(this.image);
     },
-    changeNickname(){
-      console.log(this.nick)
-      const url = "http://localhost:8080/api/user/change/nick"
-      axios.patch(url, {
-        nickname: this.nick,
-      },
-      {
-       headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: this.Authorization
-      }
-      })
-      .then(({data}) => {
-        this.isCheckNick = data;
-        if(this.isCheckNick){
-          // state의 유저의 닉네임 변경
-          this.$store.commit("SET_CHANGENICK", this.nick);
-          console.log("change nickname successful")
-        }else{
-          alert("이미 사용중인 닉네임입니다.")
-          this.nick = "";
+
+    getFiles() {
+      // 파일 불러오기
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
+
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+
+      console.log("start");
+      S3.listObjects(
+        {
+          Prefix: "user/" + this.user.email + "/profile/supporter",
+        },
+        (err, data) => {
+          if (err) {
+            return alert("에러");
+          } else {
+            try {
+              console.log(data);
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
+                data.Contents[0].Key;
+            } catch (err) {
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
+            }
+          }
         }
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
+      );
     },
-    getUserRemainCoin(){
-      const url = "http://localhost:8080/api/user/checkcoin"
-      axios.get(url, 
-      {
-       headers: {
-        // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
-        Authorization: this.Authorization
-      }
-      })
-      .then(({data}) => {
-        console.log(data)
-        this.remainCoin = data.won;
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
+
+    changeNickname() {
+      console.log(this.nick);
+      const url = "https://" + serverUrl + "/user/change/nick";
+      axios
+        .patch(
+          url,
+          {
+            nickname: this.nick,
+          },
+          {
+            headers: {
+              // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
+              Authorization: this.Authorization,
+            },
+          }
+        )
+        .then(({ data }) => {
+          this.isCheckNick = data;
+          if (this.isCheckNick) {
+            // state의 유저의 닉네임 변경
+            this.$store.commit("SET_CHANGENICK", this.nick);
+            console.log("change nickname successful");
+          } else {
+            alert("이미 사용중인 닉네임입니다.");
+            this.nick = "";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getUserRemainCoin() {
+      const url = "https://" + serverUrl + "/user/checkcoin";
+      axios
+        .get(url, {
+          headers: {
+            // 토큰도 state에서 user 정보 가져와서 쓰도록 수정해야함
+            Authorization: this.Authorization,
+          },
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.remainCoin = data.won;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
@@ -369,13 +457,11 @@ export default {
     rgba(0, 0, 0, 0) 100%
   );
 }
-.fundinghistory{
+.fundinghistory {
   width: 200px;
   height: 28px;
   left: 259px;
   cursor: pointer;
-
-  
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
@@ -513,17 +599,16 @@ export default {
 
   color: #000000;
 }
-#fundingList{
-  display: flex ;
+#fundingList {
+  display: flex;
   flex-flow: wrap;
   justify-content: space-between;
   /* gap: 10px 1%; */
   width: 1320px;
 
   margin-top: 70px;
-
 }
-.onpoint{
+.onpoint {
   cursor: pointer;
 }
 </style>
