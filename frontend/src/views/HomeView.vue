@@ -3,7 +3,7 @@
     <div class="background"></div>
 
     <div class="banner"></div>
-    <router-link :to="{ path: '/product/story' , query: {id: '05bf3602-242c-458d-9dba-75d0782f9402'}}">
+    <router-link :to="{ path: '/product/story' , query: {id: '11e1ec14-7069-4d66-ab74-a933f1785ff8'}}">
       <div class="carousel1"></div>
     </router-link>
 

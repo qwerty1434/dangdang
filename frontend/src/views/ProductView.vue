@@ -20,7 +20,7 @@
     <div>
       <progress
         id="progress"
-        value={{fundingDetail.fundingContent.achieveRate}}
+        v-bind:value=fundingDetail.fundingContent.achieveRate
         min="0"
         max="100"
         class="progressbar"></progress>
@@ -28,7 +28,9 @@
     <div class="complete">{{fundingDetail.fundingContent.achieveRate}}% 달성</div>
     <div class="funded">{{fundingDetail.fundingContent.nowPrice}} 원 펀딩</div>
     <div class="supporter">{{supporters.length}} 명의 서포터</div>
-    <button class="joinfunding">펀딩 참여</button>
+    <router-link :to="{ path: '/product/purchase' , query: {id: fundingId}}">
+      <button class="joinfunding">펀딩 참여</button>
+    </router-link>    
     <div class="makertext">메이커 정보</div>
     <div class="maker">{{fundingDetail.maker.companyName}}</div>
     <div class="makerprofilepic"></div>
@@ -37,11 +39,7 @@
     <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
     
     <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i" />
-<!-- 
-    <div class="reward1"></div>
-    <div class="reward2"></div>
-    <div class="reward3"></div>
-    <div class="reward4"></div> -->
+
   </div>
 </template>
 
@@ -56,17 +54,18 @@ export default {
   },
   data() {
     return {
-       fundingDetail: {},
-       supporters: [],
-       fundingId: "",
-       staticUrl: "http://localhost:8080",
-       serverUrl: "https://j7a306.p.ssafy.io", 
+      fundingDetail: {},
+      supporters: [],
+      fundingId: "",
+      // staticUrl: "http://localhost:8080",
+      staticUrl: "https://j7a306.p.ssafy.io",
+
     }
   },
   created() {
     this.fundingId = this.$route.query.id;
     const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
-    const supporterUrl = this.staticUrl + "api/funding/supporter?fundingId=" + this.fundingId
+    const supporterUrl = this.staticUrl + "/api/funding/supporter?fundingId=" + this.fundingId
    
     axios
       .get(detailUrl, {

@@ -27,16 +27,15 @@ export default {
     return {
       fundingDetail: {},
       fundingId: "",
-
       history : {},
     }
   },
 
   created() {
     this.fundingId = this.$route.query.id;
+    const UsageUrl =   "https://j7a306.p.ssafy.io/api/funding/usage?fundingId="+ this.fundingId
+    const detailUrl =  "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
 
-    const UsageUrl = "http://localhost:8080/api/funding/usage?fundingId="+ this.fundingId
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
     var headers = {"Authorization": "Bearer " + this.$store.state.Authorization}
     console.log(headers);
     console.log(this.$store.state.Authorization);
@@ -47,7 +46,8 @@ export default {
         // console.log(data);
         this.fundingDetail = data;
       })
-    axios
+   
+   axios
     .get(UsageUrl, {"headers":headers})
     .then(({ data }) => {
       console.log("get history" );
