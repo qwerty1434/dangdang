@@ -41,8 +41,8 @@ public class EthereumService {
     public final static String ADMIN_PRIVATE_KEY = "ed21a9034322bc810c282209ad36730e9c5139aa36ad1346ca3d3f3faaab850c";
     public final static String FACTORY_ADDRESS = "0x37e27e5F784CF0A7a7ffe722980bcdc8D5d188b1";
 
-    public final static BigInteger GAS_PRICE = BigInteger.valueOf(20000000000L);
-    public final static BigInteger GAS_LIMIT = BigInteger.valueOf(6721975L);
+    public final static BigInteger GAS_PRICE = Convert.toWei("1", Convert.Unit.GWEI).toBigInteger();
+    public final static BigInteger GAS_LIMIT = BigInteger.valueOf(3000000);
 
     //    테스트넷
     //    private final static String PRIVATE_KEY = "ed21a9034322bc810c282209ad36730e9c5139aa36ad1346ca3d3f3faaab850c";
