@@ -11,8 +11,21 @@
     </div>
 
     <div>
-      <div class="profileimg"></div>
-      <div class="profileimgedit"></div>
+      <form method="post" enctype="multipart/form-data">
+        <div>
+          <label for="chooseFile" class="profileimgedit"> </label>
+        </div>
+        <input
+          ref="image"
+          @change="uploadImg()"
+          type="file"
+          id="chooseFile"
+          name="chooseFile"
+          accept="image/*"
+          style="display: none"
+        />
+      </form>
+      <img :src="image" alt="none" class="profileimg" />
     </div>
 
     <div>
@@ -26,7 +39,8 @@
       <input
         type="text"
         class="registrationinput"
-        placeholder="사업자 등록번호" />
+        placeholder="사업자 등록번호"
+      />
     </div>
 
     <div>
@@ -54,7 +68,105 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+import { mapState } from "vuex";
+import AWS from "aws-sdk";
+
+const serverUrl = "j7a306.p.ssafy.io/api";
+export default {
+  data() {
+    return {
+      albumBucketName: "dangdang-bucket",
+      bucketRegion: "ap-northeast-2",
+      IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
+      image: "",
+    };
+  },
+  computed: {
+    ...mapState(["user", "Authorization"]),
+  },
+  created() {
+    this.getFiles();
+  },
+  methods: {
+    uploadImg() {
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
+
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+      const fileName = this.$refs["image"].files[0].name;
+      const fileArr = fileName.split(".");
+      const fileExtension = fileArr[fileArr.length - 1];
+      let photoKey =
+        "user/" + this.user.email + "/profile/maker/" + "0." + "jpg";
+      S3.upload({
+        Key: photoKey,
+        Body: this.$refs["image"].files[0],
+        ACL: "public-read",
+      })
+        .promise()
+        .then((data) => {
+          this.image = data.Location;
+        })
+        .catch((err) => {
+          conosle.log(err);
+        });
+
+      // 이게 있으면 유저 입장에서는 빨리 바뀐다고 느껴짐 근데 빨리 바꿧다고 생각하고 페이지를 벗어나버리면 문제가 생김
+      var image = this.$refs["image"].files[0];
+      const url = URL.createObjectURL(image);
+      this.image = url;
+    },
+
+    getFiles() {
+      // 파일 불러오기
+      AWS.config.update({
+        region: this.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.IdentityPoolId,
+        }),
+      });
+
+      const S3 = new AWS.S3({
+        apiVersion: "2012-10-17",
+        params: {
+          Bucket: this.albumBucketName,
+        },
+      });
+
+      console.log("start");
+      S3.listObjects(
+        {
+          Prefix: "user/" + this.user.email + "/profile/maker",
+        },
+        (err, data) => {
+          if (err) {
+            return alert("에러");
+          } else {
+            console.log(data);
+            try {
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
+                data.Contents[0].Key;
+            } catch (err) {
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
+            }
+          }
+        }
+      );
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -118,7 +230,6 @@ export default {};
   border-radius: 50%;
   border: 1px solid #000000;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  background: url("@/assets/seaotter.png");
   background-size: cover;
 }
 .profileimgedit {
