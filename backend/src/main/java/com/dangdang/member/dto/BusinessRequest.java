@@ -7,14 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MakerJoinRequest {
-
-    private String companyNumber;
+public class BusinessRequest {
+    private String companyNo;
     private String companyName;
     private String openDay;
-
     private String managerName;
-
-    private String img;
-
 }

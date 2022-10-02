@@ -16,6 +16,7 @@ import com.dangdang.order.domain.OrderHistory;
 import com.dangdang.order.repository.OrderHistoryRepository;
 import com.dangdang.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +24,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
+import static org.mapstruct.MappingConstants.NULL;
 
 @Service
 @Transactional
@@ -46,28 +50,26 @@ public class MakerService {
     private final FundingRepository fundingRepository;
     private final OrderHistoryRepository historyRepository;
     private final FundThumbnailRepository fundThumbnailRepository;
-
+    private final BusinessService businessService;
     private final JWTUtil jwtUtil;
 
-    public void join(MakerJoinRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+    public void join(BusinessRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
 
 
         // Header에 담겨있는 토큰으로 찾은 userId 값
         String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
         Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
-        /*
-        사업자 등록 여부 등도 확인 해서 넣을 예정
-        현재 생각하고 있는 방식
-        1. 사업자 등록 여부와 관련 정보 추출 api 작성
-        2. 프론트에서 해당 정보 받고, 메이커 등록 시 관련 정보 body에 담아서 전송
-        3. 백이 받아서 다시 확인 후 메이커 생성
-         */
-
-        // 메이커 생성 시 하나의 사업자번호를 한명만 등록하게 했었는지 파악 후 예외처리 추가
-        Maker maker = Maker.builder().user(user.get()).companyNumber(input.getCompanyNumber())
-                .companyName(input.getCompanyName()).img(input.getImg()).fundingSum(0L).build();
-        makerRepository.save(maker);
+        BusinessRequest b_input = new BusinessRequest(input.getCompanyNo(),
+                input.getCompanyName(), input.getOpenDay(), input.getManagerName());
+        String valid = businessService.parseJSON(b_input);
+        if(valid.equals("01")) {
+            Maker maker = Maker.builder().user(user.get()).companyNumber(input.getCompanyNo())
+                    .companyName(input.getCompanyName()).img("").fundingSum(0L).build();
+            makerRepository.save(maker);
+        } else {
+            throw new NotFoundException("등록되지 않은 사업자 정보입니다.");
+        }
     }
 
     public MakerInfoResponse pjtInfo(String makerId) throws NotFoundException {
@@ -144,4 +146,22 @@ public class MakerService {
 
         return output;
     }
+
+    public void changeImg(MakerUrlRequest input, HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
+        String uuid = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Maker maker = makerRepository.findByUserId(uuid);
+        if(maker==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+
+        maker.setImg(input.getImgUrl());
+        makerRepository.save(maker);
+    }
+
+    public void changeMyImg(MakerEmailUrlRequest input) throws NotValidateAccessToken, NotFoundException {
+        User user = userRepository.findByEmail(input.getEmail());
+        Maker maker = makerRepository.findByUserId(user.getId().toString());
+        if(maker==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+        maker.setImg(input.getImgUrl());
+        makerRepository.save(maker);
+    }
+
 }

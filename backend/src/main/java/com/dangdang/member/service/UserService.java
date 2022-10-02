@@ -233,4 +233,9 @@ public class UserService {
         return CheckCoinResponse.build(ethereumService.getWonBalance(user.get().getPublicKey()));
 
     }
+
+    public UUIDResponse findmyId(HttpServletRequest req) throws NotValidateAccessToken {
+        String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
+        return new UUIDResponse(userId);
+    }
 }
