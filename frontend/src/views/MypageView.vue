@@ -121,7 +121,7 @@ export default {
       const fileArr = fileName.split(".");
       const fileExtension = fileArr[fileArr.length - 1];
       let photoKey =
-        this.Authorization + "/profile/supporter" + "0." + fileExtension;
+        "user/" + this.Authorization + "/profile/supporter/" + "0." + "jpg";
       S3.upload({
         Key: photoKey,
         Body: this.$refs["image"].files[0],
@@ -160,15 +160,21 @@ export default {
       console.log("start");
       S3.listObjects(
         {
-          Prefix: this.Authorization + "/profile/",
+          Prefix: "user/" + this.Authorization + "/profile/supporter",
         },
         (err, data) => {
           if (err) {
             return alert("에러");
           } else {
-            this.image =
-              "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-              data.Contents[0].Key;
+            try {
+              console.log(data);
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
+                data.Contents[0].Key;
+            } catch (err) {
+              this.image =
+                "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
+            }
           }
         }
       );
