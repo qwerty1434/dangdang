@@ -98,7 +98,7 @@ export default {
     },
 
     orderFunding: function () {
-      var headers = {"Authorization":this.$store.state.Authorization}
+      var headers = { Authorization: this.$store.state.Authorization };
 
       const url = this.staticUrl + "/api/funding/order";
       axios
@@ -112,6 +112,10 @@ export default {
       }, {"headers":headers})
       .then(({data}) => {
         console.log(data);
+        if(data){
+          alert("펀딩 구매가 완료되었습니다.");
+          this.$router.go(-1);
+        }
       })
     },
   },
