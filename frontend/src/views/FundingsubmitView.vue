@@ -321,7 +321,7 @@ export default {
 
       for (let index = 0; index < this.thumbnailUrl.length; index++) {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
-        let photoKey = this.uuid + "/thumbnails" + index + ".jpg";
+        let photoKey = "funding/" + this.uuid + "/thumbnails/" + index + ".jpg";
 
         await S3.upload({
           Key: photoKey,
@@ -341,7 +341,7 @@ export default {
       }
       for (let index = 0; index < this.contentImageUrl.length; index++) {
         // let photoKey = "folder/"+this.file[index].name+".jpg";
-        let photoKey = this.uuid + "/contents" + index + ".jpg";
+        let photoKey = "funding/" + this.uuid + "/contents/" + index + ".jpg";
         await S3.upload({
           Key: photoKey,
           Body: this.contentImageUrl[index].img,
