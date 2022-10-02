@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 public class MakerJoinRequest {
 
     private String companyNumber;
-
     private String companyName;
-
     private String openDay;
 
     private String managerName;

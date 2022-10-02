@@ -31,7 +31,7 @@ public class MakerController {
 
     @PostMapping("/join")
     @ApiOperation(value="메이커 등록")
-    public boolean join(@RequestBody MakerJoinRequest maker, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
+    public boolean join(@RequestBody BusinessRequest maker, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
         try{
             makerService.join(maker, req);
         } catch(Exception e){
@@ -82,5 +82,28 @@ public class MakerController {
             @RequestBody MakerFundingListRequest input, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         return makerService.findFundingList(input, pageable, req);
     }
+
+    @PostMapping("/change/img")
+    @ApiOperation(value="메이커 프로필 이미지 변경 및 생성(헤더, imgUrl 필요), 성공 시 return true, 실패 시 return false")
+    public boolean changeImgFindByToken(@RequestBody MakerUrlRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        try{
+            makerService.changeImg(input, req);
+            return true;
+        } catch(Exception e){
+            return false;
+        }
+    }
+
+    @PostMapping("/change/img-by-email")
+    @ApiOperation(value="메이커 프로필 이미지 변경 및 생성(email, imgUrl 필요), 성공 시 return true, 실패 시 return false")
+    public boolean changeImgFindByEmail(@RequestBody MakerEmailUrlRequest input) throws NotFoundException, NotValidateAccessToken {
+        try{
+            makerService.changeMyImg(input);
+            return true;
+        } catch(Exception e){
+            return false;
+        }
+    }
+
 
 }

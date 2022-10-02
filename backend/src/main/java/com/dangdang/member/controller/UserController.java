@@ -124,5 +124,10 @@ public class UserController {
         return ResponseEntity.ok().body(userService.checkRemainCoins(req));
     }
 
-}
+    @GetMapping("/find/my-id")
+    @ApiOperation(value="토큰에서 내 uuid 가져오기. 필요할거같네용. 토큰만 보내주세용")
+    public ResponseEntity<UUIDResponse> findFundingList(HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return ResponseEntity.ok().body(userService.findmyId(req));
+    }
 
+}

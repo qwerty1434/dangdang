@@ -32,6 +32,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static org.mapstruct.MappingConstants.NULL;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -51,19 +53,19 @@ public class MakerService {
     private final BusinessService businessService;
     private final JWTUtil jwtUtil;
 
-    public void join(MakerJoinRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
+    public void join(BusinessRequest input, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken, IOException, ParseException {
 
 
         // Header에 담겨있는 토큰으로 찾은 userId 값
         String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
         Optional<User> user = userRepository.findById(UUID.fromString(userId));
 
-        BusinessRequest b_input = new BusinessRequest(input.getCompanyNumber(),
+        BusinessRequest b_input = new BusinessRequest(input.getCompanyNo(),
                 input.getCompanyName(), input.getOpenDay(), input.getManagerName());
         String valid = businessService.parseJSON(b_input);
         if(valid.equals("01")) {
-            Maker maker = Maker.builder().user(user.get()).companyNumber(input.getCompanyNumber())
-                    .companyName(input.getCompanyName()).img(input.getImg()).fundingSum(0L).build();
+            Maker maker = Maker.builder().user(user.get()).companyNumber(input.getCompanyNo())
+                    .companyName(input.getCompanyName()).img("").fundingSum(0L).build();
             makerRepository.save(maker);
         } else {
             throw new NotFoundException("등록되지 않은 사업자 정보입니다.");
@@ -144,4 +146,22 @@ public class MakerService {
 
         return output;
     }
+
+    public void changeImg(MakerUrlRequest input, HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
+        String uuid = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Maker maker = makerRepository.findByUserId(uuid);
+        if(maker==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+
+        maker.setImg(input.getImgUrl());
+        makerRepository.save(maker);
+    }
+
+    public void changeMyImg(MakerEmailUrlRequest input) throws NotValidateAccessToken, NotFoundException {
+        User user = userRepository.findByEmail(input.getEmail());
+        Maker maker = makerRepository.findByUserId(user.getId().toString());
+        if(maker==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+        maker.setImg(input.getImgUrl());
+        makerRepository.save(maker);
+    }
+
 }
