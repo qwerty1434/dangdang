@@ -121,7 +121,7 @@ export default {
       const fileArr = fileName.split(".");
       const fileExtension = fileArr[fileArr.length - 1];
       let photoKey =
-        "user/" + this.Authorization + "/profile/supporter/" + "0." + "jpg";
+        "user/" + this.user.email + "/profile/supporter/" + "0." + "jpg";
       S3.upload({
         Key: photoKey,
         Body: this.$refs["image"].files[0],
@@ -160,7 +160,7 @@ export default {
       console.log("start");
       S3.listObjects(
         {
-          Prefix: "user/" + this.Authorization + "/profile/supporter",
+          Prefix: "user/" + this.user.email + "/profile/supporter",
         },
         (err, data) => {
           if (err) {

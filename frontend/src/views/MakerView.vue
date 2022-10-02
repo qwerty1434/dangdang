@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapState } from "vuex";
 import AWS from "aws-sdk";
 
 const serverUrl = "j7a306.p.ssafy.io/api";
@@ -79,6 +81,9 @@ export default {
       IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
       image: "",
     };
+  },
+  computed: {
+    ...mapState(["user", "Authorization"]),
   },
   created() {
     this.getFiles();
@@ -102,7 +107,7 @@ export default {
       const fileArr = fileName.split(".");
       const fileExtension = fileArr[fileArr.length - 1];
       let photoKey =
-        "user/" + this.Authorization + "/profile/maker/" + "0." + "jpg";
+        "user/" + this.user.email + "/profile/maker/" + "0." + "jpg";
       S3.upload({
         Key: photoKey,
         Body: this.$refs["image"].files[0],
@@ -141,12 +146,13 @@ export default {
       console.log("start");
       S3.listObjects(
         {
-          Prefix: "user/" + this.Authorization + "/profile/maker",
+          Prefix: "user/" + this.user.email + "/profile/maker",
         },
         (err, data) => {
           if (err) {
             return alert("에러");
           } else {
+            console.log(data);
             try {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
