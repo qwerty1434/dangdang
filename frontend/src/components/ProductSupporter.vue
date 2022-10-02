@@ -33,14 +33,13 @@ export default {
   },
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl = "http://localhost:8080/api/funding/detail?fundingId="+ this.fundingId
-    const supporterUrl = "http://localhost:8080/api/funding/supporter?fundingId="+ this.fundingId
-    var headers = {"Authorization":this.$store.state.Authorization}
+    const detailUrl = "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
+    const supporterUrl = "https://j7a306.p.ssafy.io/api/funding/supporter?fundingId="+ this.fundingId
+    var headers = { Authorization: this.$store.state.Authorization };
 
     axios
       .get(detailUrl, {"headers":headers})
       .then(({ data }) => {
-        console.log(data);
         this.fundingDetail = data;
       })
 
