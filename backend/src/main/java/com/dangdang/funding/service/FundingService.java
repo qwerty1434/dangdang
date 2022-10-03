@@ -245,11 +245,13 @@ public class FundingService {
         List<Funding> fundings = null;
         if(type.equals("popular")){
             fundings = fundingRepository.findByPopular(1, pageable);
+        }else {
+            fundings = fundingRepository.findByState(1, pageable);
         }
-        fundings = fundingRepository.findByState(1, pageable);
         for(int i = 0; i < fundings.size(); i++){
             response.add(this.changeResponseFunding(fundings.get(i)));
         }
+        System.out.println(pageable.getPageSize());
 
         return FundingResponse.fundingList.build(response);
 
