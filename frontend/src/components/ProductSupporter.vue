@@ -19,37 +19,44 @@
 <script>
 import axios from "axios";
 import FundingParticipation from "../components/FundingParticipation.vue";
+import {mapState} from 'vuex';
 
 export default {
   components: {
     FundingParticipation: FundingParticipation,
   },
-   data() {
+  data() {
     return {
-       fundingDetail: {},
-       supporters: [],
+      //  fundingDetail: {},
+      //  supporters: [],
        fundingId: "",
     }
   },
+  computed:{
+    ...mapState(
+      ["fundingDetail", "supporters"]
+    )
+
+  },
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl = "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
-    const supporterUrl = "https://j7a306.p.ssafy.io/api/funding/supporter?fundingId="+ this.fundingId
-    var headers = { Authorization: this.$store.state.Authorization };
+    // const detailUrl = "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
+    // const supporterUrl = "https://j7a306.p.ssafy.io/api/funding/supporter?fundingId="+ this.fundingId
+    // var headers = { Authorization: this.$store.state.Authorization };
 
-    axios
-      .get(detailUrl, {"headers":headers})
-      .then(({ data }) => {
-        this.fundingDetail = data;
-      })
+    // axios
+    //   .get(detailUrl, {"headers":headers})
+    //   .then(({ data }) => {
+    //     this.fundingDetail = data;
+    //   })
 
-    axios
-      .get(supporterUrl, {
-      })
-      .then(({ data }) => {
-        console.log(data);
-        this.supporters = data;
-      })
+    // axios
+    //   .get(supporterUrl, {
+    //   })
+    //   .then(({ data }) => {
+    //     console.log(data);
+    //     this.supporters = data;
+    //   })
   }
 };
 </script>

@@ -46,6 +46,7 @@
 <script>
 import axios from "axios";
 import RewardBox from "../components/RewardBox.vue";
+import {mapState} from 'vuex';
 
 export default {
   name:"Test",
@@ -54,33 +55,45 @@ export default {
   },
   data() {
     return {
-      fundingDetail: {},
-      supporters: [],
       fundingId: "",
       // staticUrl: "http://localhost:8080",
       staticUrl: "https://j7a306.p.ssafy.io",
 
     }
   },
+  computed:{
+    ...mapState(
+      ["fundingDetail", "supporters", "history"]
+    )
+  },
   created() {
+    this.$store.commit("deleteData");
+
     this.fundingId = this.$route.query.id;
     const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
     const supporterUrl = this.staticUrl + "/api/funding/supporter?fundingId=" + this.fundingId
-   
+    const historyUrl =  this.staticUrl + "/api/funding/usage?fundingId="+ this.fundingId
+    
+    var headers = { Authorization: this.$store.state.Authorization };
+    
     axios
       .get(detailUrl, {
       })
       .then(({ data }) => {
-        console.log(data);
-        this.fundingDetail = data;
+        this.$store.commit("setFundingDetail", data);
       })
 
     axios
       .get(supporterUrl, {
       })
       .then(({ data }) => {
-        console.log(data);
-        this.supporters = data;
+        this.$store.commit("setSupporters", data);
+      })
+
+    axios
+      .get(historyUrl, {"headers":headers})
+      .then(({ data }) => {
+        this.$store.commit("setHistory", data);
       })
   }
 };

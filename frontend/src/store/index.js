@@ -7,6 +7,9 @@ export default createStore({
   state: {
     Authorization: "",
     user: { isAdmin: false, email: "", nickname: "" },
+    fundingDetail: {},
+    supporters:[],
+    history: {},
   },
   getters: {},
   mutations: {
@@ -25,7 +28,21 @@ export default createStore({
     SET_CHANGENICK(state, payload){
       state.user.nickname = payload
     },
-
+    setFundingDetail(state, payload) {
+      state.fundingDetail = payload;
+    },
+    setSupporters(state, payload) {
+      state.supporters = payload;
+    },
+    setHistory(state, payload) {
+      state.history = payload;
+    },
+    deleteData(state){
+      state.fundingDetail = {};
+      state.supporters = [];
+      state.history = {};
+    }
+    
   },
   actions: {},
   modules: {},
