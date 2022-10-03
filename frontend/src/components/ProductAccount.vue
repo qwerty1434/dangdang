@@ -17,42 +17,51 @@
 <script>
 import axios from "axios";
 import AccountEvent from "../components/AccountEvent.vue";
+import {mapState} from 'vuex';
 
 export default {
   components:{
     AccountEvent: AccountEvent,
   },
-
+  computed:{
+    ...mapState(
+      ["fundingDetail", "supporters"]
+    )
+  },
   data(){
     return {
-      fundingDetail: {},
+      // fundingDetail: {},
       fundingId: "",
 
-      history : {},
+      // history : {},
     }
   },
-
+  computed:{
+    ...mapState(
+      ["fundingDetail", "history"]
+    )
+  },
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl =  "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
-    const UsageUrl =   "https://j7a306.p.ssafy.io/api/funding/usage?fundingId="+ this.fundingId
+    // const detailUrl =  "https://j7a306.p.ssafy.io/api/funding/detail?fundingId="+ this.fundingId
+    // const UsageUrl =   "https://j7a306.p.ssafy.io/api/funding/usage?fundingId="+ this.fundingId
 
-    var headers = { Authorization: this.$store.state.Authorization };
-    console.log(headers);
-    console.log(this.$store.state.Authorization);
-    axios
-      .get(detailUrl, {"headers":headers})
-      .then(({ data }) => {
-        this.fundingDetail = data;
-      })
+    // var headers = { Authorization: this.$store.state.Authorization };
+    // console.log(headers);
+    // console.log(this.$store.state.Authorization);
+    // axios
+    //   .get(detailUrl, {"headers":headers})
+    //   .then(({ data }) => {
+    //     this.fundingDetail = data;
+    //   })
    
-    axios
-      .get(UsageUrl, {"headers":headers})
-      .then(({ data }) => {
-        console.log("get history" );
-        console.log(data);
-        this.history = data;
-      })
+    // axios
+    //   .get(UsageUrl, {"headers":headers})
+    //   .then(({ data }) => {
+    //     console.log("get history" );
+    //     console.log(data);
+    //     this.history = data;
+    //   })
   }
 };
 </script>
