@@ -3,10 +3,30 @@
     <div class="headline"></div>
 
     <!-- component랑 div 동시 for문 가능한지 확인 -->
-    <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i"/>
-    <div :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i">
+    <RewardBox
+      :class="{
+        reward1: i == 0,
+        reward2: i == 1,
+        reward3: i == 2,
+        reward4: i == 3,
+      }"
+      v-for="(item, i) in fundingDetail.rewards"
+      :reward="fundingDetail.rewards[i]"
+      :key="i"
+    />
+    <div
+      :class="{
+        reward1: i == 0,
+        reward2: i == 1,
+        reward3: i == 2,
+        reward4: i == 3,
+      }"
+      v-for="(item, i) in fundingDetail.rewards"
+      :reward="fundingDetail.rewards[i]"
+      :key="i"
+    >
       <div class="productnumbertext">수량:</div>
-      <input class="productnumber" type="number" v-model="orderItem[i]"/>
+      <input class="productnumber" type="number" v-model="orderItem[i]" />
     </div>
 
     <!-- <div class="이거는 컴퍼넌트 들어가는 자리">
@@ -28,19 +48,39 @@
     <div class="addressdetailbox"></div>
     <div class="contactbox"></div>
     <div class="emailbox"></div>
-    
-    <button @click="orderFunding()"  class="orderbox">주문하기</button>
+
+    <button @click="orderFunding()" class="orderbox">주문하기</button>
     <div>
-      <input type="text" v-model="address" class="addressinput" />
+      <input
+        type="text"
+        v-model="address"
+        placeholder="주소 찾기를 통해 찾아주세요"
+        class="addressinput"
+      />
     </div>
     <div>
-      <input type="text" v-model="detailAddress" class="addressdetailinput" />
+      <input
+        type="text"
+        v-model="detailAddress"
+        placeholder="상세 주소를 입력해주세요."
+        class="addressdetailinput"
+      />
     </div>
     <div>
-      <input type="text" v-model="phoneNum" class="contactinput" />
+      <input
+        type="text"
+        v-model="phoneNum"
+        placeholder="연락이 가능한 휴대전화번호를 남겨주세요"
+        class="contactinput"
+      />
     </div>
     <div>
-      <input type="text" v-model="email" class="emailinput" />
+      <input
+        type="text"
+        v-model="email"
+        placeholder="이메일을 통해 주문처리과정을 보내드립니다."
+        class="emailinput"
+      />
     </div>
     <div>
       <input type="checkbox" v-model="anonymous" class="anonymousinput" />
@@ -59,40 +99,39 @@ export default {
 
   data() {
     return {
-      orderItem:[],
-      address:"",
-      detailAddress:"",
-      phoneNum:"",
-      email:"",
-      anonymous : "",
+      orderItem: [],
+      address: "",
+      detailAddress: "",
+      phoneNum: "",
+      email: "",
+      anonymous: "",
 
       fundingDetail: {},
       supporters: [],
       fundingId: "",
       // staticUrl: "http://localhost:8080",
-      staticUrl: "https://j7a306.p.ssafy.io", 
-    }
+      staticUrl: "https://j7a306.p.ssafy.io",
+    };
   },
-  
-  methods:{
 
-    getRewards: function() {
+  methods: {
+    getRewards: function () {
       var rewards = [];
-      for(var i=0; i< this.fundingDetail.rewards.length; i++) {
+      for (var i = 0; i < this.fundingDetail.rewards.length; i++) {
         var object = {
-          rewardId: this.fundingDetail.rewards[i].id, 
-          count: this.orderItem[i]
-        }
+          rewardId: this.fundingDetail.rewards[i].id,
+          count: this.orderItem[i],
+        };
         rewards.push(object);
       }
 
       return rewards;
     },
-    
-    getTotalPrice: function() {
-      var totalPrice =0;
-      for (var i=0; i< this.fundingDetail.rewards.length; i++) {
-        totalPrice += this.fundingDetail.rewards.price* this.orderItem[i]; 
+
+    getTotalPrice: function () {
+      var totalPrice = 0;
+      for (var i = 0; i < this.fundingDetail.rewards.length; i++) {
+        totalPrice += this.fundingDetail.rewards.price * this.orderItem[i];
       }
       return totalPrice;
     },
@@ -102,37 +141,38 @@ export default {
 
       const url = this.staticUrl + "/api/funding/order";
       axios
-      .post(url, {
-        fundingId: this.fundingId,
-        totalPrice: this.getTotalPrice(),
-        address: this.address + " " + this.detailAddress,
-        phoneNumber: this.phoneNum,
-        rewards: this.getRewards(),
-        anonymous: this.anonymous,
-      }, {"headers":headers})
-      .then(({data}) => {
-        console.log(data);
-        if(data){
-          alert("펀딩 구매가 완료되었습니다.");
-          this.$router.go(-1);
-        }
-      })
+        .post(
+          url,
+          {
+            fundingId: this.fundingId,
+            totalPrice: this.getTotalPrice(),
+            address: this.address + " " + this.detailAddress,
+            phoneNumber: this.phoneNum,
+            rewards: this.getRewards(),
+            anonymous: this.anonymous,
+          },
+          { headers: headers }
+        )
+        .then(({ data }) => {
+          console.log(data);
+          if (data) {
+            alert("펀딩 구매가 완료되었습니다.");
+            this.$router.go(-1);
+          }
+        });
     },
   },
-  
 
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
-   
-    axios
-      .get(detailUrl, {
-      })
-      .then(({ data }) => {
-        console.log(data);
-        this.fundingDetail = data;
-      })
-  }
+    const detailUrl =
+      this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId;
+
+    axios.get(detailUrl, {}).then(({ data }) => {
+      console.log(data);
+      this.fundingDetail = data;
+    });
+  },
 };
 </script>
 
@@ -375,9 +415,18 @@ export default {
   left: 726px;
   top: 570px;
 
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  color: #62b878;
+
   background: #ffffff;
   border: 0.5px solid #62b878;
   border-radius: 5px;
+
+  outline: 0;
 }
 .addressdetailbox {
   box-sizing: border-box;
@@ -422,8 +471,17 @@ export default {
   left: 398px;
   top: 1070px;
 
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+
+  color: #ffffff;
+
   background: #62b878;
   border-radius: 5px;
+  border: 0;
+  outline: 0;
 }
 .addressinput {
   position: absolute;
@@ -441,6 +499,10 @@ export default {
   align-items: center;
 
   color: #a8a8a8;
+
+  border: none;
+  background: none;
+  outline: none;
 }
 .addressdetailinput {
   /* 상세 주소를 입력해주세요. */
@@ -460,6 +522,10 @@ export default {
   align-items: center;
 
   color: #a8a8a8;
+
+  border: none;
+  background: none;
+  outline: none;
 }
 .contactinput {
   /* 연락이 가능한 휴대전화번호를 남겨주세요 */
@@ -479,6 +545,10 @@ export default {
   align-items: center;
 
   color: #a8a8a8;
+
+  border: none;
+  background: none;
+  outline: none;
 }
 .emailinput {
   /* 이메일을 통해 주문처리과정을 보내드립니다. */
@@ -498,6 +568,10 @@ export default {
   align-items: center;
 
   color: #a8a8a8;
+
+  border: none;
+  background: none;
+  outline: none;
 }
 
 .anonymousinput {

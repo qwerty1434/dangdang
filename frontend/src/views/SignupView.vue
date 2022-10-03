@@ -252,7 +252,8 @@ input[type="password"]::placeholder {
   left: 1202px;
   top: 424px;
 
-  border: 0.5px solid #000000;
+  border: 0.5px solid #62b878;
+
   border-radius: 5px;
   background: #ffffff;
 
@@ -263,7 +264,7 @@ input[type="password"]::placeholder {
   line-height: 20px;
   text-align: center;
 
-  color: #000000;
+  color: #62b878;
 }
 .authNumCheckButton {
   box-sizing: border-box;
@@ -274,7 +275,7 @@ input[type="password"]::placeholder {
   left: 1202px;
   top: 508px;
 
-  border: 0.5px solid #000000;
+  border: 0.5px solid #62b878;
   border-radius: 5px;
   background: #ffffff;
 
@@ -285,7 +286,7 @@ input[type="password"]::placeholder {
   line-height: 20px;
   text-align: center;
 
-  color: #000000;
+  color: #62b878;
 }
 .nickCheckButton {
   box-sizing: border-box;
@@ -296,7 +297,7 @@ input[type="password"]::placeholder {
   left: 1202px;
   top: 760px;
 
-  border: 0.5px solid #000000;
+  border: 0.5px solid #62b878;
   border-radius: 5px;
   background: #ffffff;
 
@@ -307,7 +308,7 @@ input[type="password"]::placeholder {
   line-height: 20px;
   text-align: center;
 
-  color: #000000;
+  color: #62b878;
 }
 .signupButton {
   position: absolute;

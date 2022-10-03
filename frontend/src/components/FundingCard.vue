@@ -10,7 +10,6 @@
     <div class="title">제목호출하는API</div>
     <div class="category">카테고리</div>
     <div class="maker">사업자명</div>
-    <div class="bar"></div>
     <progress
       id="progress"
       value="50"
@@ -31,6 +30,12 @@ export default {
 </script>
 
 <style scoped>
+#progress::-webkit-progress-bar {
+  background: #f7f7f7;
+}
+#progress::-webkit-progress-value {
+  background: #62b878;
+}
 .thumbnail {
   position: absolute;
   width: 300px;
@@ -92,17 +97,9 @@ export default {
   left: 0px;
   top: 458px;
 
-  background: #67be7e;
+  background-color: #62b878;
 }
-.bar {
-  position: absolute;
-  width: 300px;
-  height: 20px;
-  left: 0px;
-  top: 458px;
 
-  background: #f7f7f7;
-}
 .percentage {
   position: absolute;
   width: 60px;

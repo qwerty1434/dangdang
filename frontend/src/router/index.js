@@ -88,6 +88,11 @@ const routes = [
     path: "/:pathMatch(.*)*",
     redirect: "/404",
   },
+  {
+    path: "/temp",
+    name: "temp",
+    component: () => import("@/components/FundingCard.vue"),
+  },
 ];
 
 const router = createRouter({

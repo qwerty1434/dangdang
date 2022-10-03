@@ -6,14 +6,36 @@
         <div class="logotext">당당</div>
       </router-link>
     </div>
-    <div class="searchbar"></div>
+    <div>
+      <input
+        type="text"
+        placeholder="어떤 프로젝트를 찾고 계신가요?"
+        class="searchbar"
+      />
+    </div>
+
     <div class="searchbutton"></div>
     <div class="searchtext">검색</div>
-    <router-link v-if="this.$store.state.Authorization" :to="{ name: '' }" class="login" @click="logout()">로그아웃</router-link>
-    <router-link v-else :to="{ name: 'login' }" class="login">로그인</router-link>
+    <router-link
+      v-if="this.$store.state.Authorization"
+      :to="{ name: '' }"
+      class="login"
+      @click="logout()"
+      >로그아웃</router-link
+    >
+    <router-link v-else :to="{ name: 'login' }" class="login"
+      >로그인</router-link
+    >
     <div class="bar1">|</div>
-    <router-link v-if="this.$store.state.Authorization" :to="{ name: 'mypage' }" class="signup">마이페이지</router-link>
-    <router-link v-else :to="{ name: 'signup' }" class="signup">회원가입</router-link>
+    <router-link
+      v-if="this.$store.state.Authorization"
+      :to="{ name: 'mypage' }"
+      class="signup"
+      >마이페이지</router-link
+    >
+    <router-link v-else :to="{ name: 'signup' }" class="signup"
+      >회원가입</router-link
+    >
     <div class="bar2">|</div>
     <div class="category">카테고리</div>
     <router-link :to="{ name: 'plan' }" class="plan">펀딩예정</router-link>
@@ -25,9 +47,6 @@
       >당당후원</router-link
     >
     <div class="notification">공지사항</div>
-    <router-link :to="{ name: 'mypage' }" class="mypage"
-      >임시마이페이지버튼</router-link
-    >
 
     <div class="shadow"></div>
     <div class=""></div>
@@ -38,37 +57,20 @@
 export default {
   name: "NavBar",
   data() {
-    return{
-      
-    }
+    return {};
   },
   methods: {
-    logout(){
+    logout() {
       this.$store.commit("logout");
       alert("로그아웃 되었습니다.");
-    }
+    },
   },
-
 };
 </script>
 
 <style scoped>
-.mypage {
-  position: absolute;
-  width: 160px;
-  height: 32px;
-  left: 1560px;
-  top: 170px;
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 18px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  background: rgba(254, 229, 0, 0.5);
-  color: #000000;
+input:focus {
+  outline: 1px solid #3c9a03;
 }
 .logo {
   position: absolute;
@@ -102,6 +104,13 @@ export default {
   height: 70px;
   left: 546px;
   top: 60px;
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 45px;
+  display: flex;
+  align-items: center;
 
   border: 2px solid #3c9a03;
   border-radius: 5px;
@@ -136,7 +145,7 @@ export default {
 }
 .login {
   position: absolute;
-  width: 60px;
+  width: 100px;
   height: 20px;
   left: 1558px;
   top: 18px;
@@ -149,12 +158,12 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-
+  text-decoration-line: none;
   color: #000000;
 }
 .signup {
   position: absolute;
-  width: 60px;
+  width: 100px;
   height: 20px;
   left: 1638px;
   top: 18px;
@@ -167,7 +176,7 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-
+  text-decoration-line: none;
   color: #000000;
 }
 .bar1 {
@@ -229,7 +238,7 @@ export default {
   font-size: 28px;
   line-height: 32px;
   /* identical to box height */
-
+  text-decoration-line: none;
   color: #000000;
 }
 .funding {
@@ -245,7 +254,7 @@ export default {
   font-size: 28px;
   line-height: 32px;
   /* identical to box height */
-
+  text-decoration-line: none;
   color: #000000;
 }
 .charity {
@@ -261,7 +270,7 @@ export default {
   font-size: 28px;
   line-height: 32px;
   /* identical to box height */
-
+  text-decoration-line: none;
   color: #000000;
 }
 .notification {
@@ -277,7 +286,7 @@ export default {
   font-size: 28px;
   line-height: 32px;
   /* identical to box height */
-
+  text-decoration-line: none;
   color: #000000;
 }
 .shadow {
