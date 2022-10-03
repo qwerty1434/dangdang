@@ -1,36 +1,92 @@
 <template>
   <div>
-    <div class="modalsize"></div>
-    <div class="headline">펀딩참여 내역</div>
+    <div class="modalsize">
+      <div style="display: flex; margin-top : 15px; width: 370px; margin: auto; justify-content: space-between;">
+        <img
+        class="onpoint"
+        src="@/assets/내역서.png"
+        style="width: 50px; height: 50px; box-sizing: border-box; margin-top: 7px "
+        alt=""
+      />
+      <div class="headline">펀딩참여 내역</div>
+      </div>
     <div class="fundinginfomation">
-      {사업자이름}<br />
-      {펀딩이름 ex / 유패드미니 등등 title}
+      {{this.fundingTitle}}
     </div>
-    <div>
-      <div class="rewardname1">{리워드이름1}</div>
-      <div class="rewardnumber1">{리워드 가격}원 / {n}개</div>
+    <hr class="hrtop">
+    <div class="Orders">
+      <div class="totalOrders" v-for="(order,idx) in userOrderList" :key="idx">
+         <div class="order" v-for="(reward, idx) in order.orderReward" :key="idx">
+            <div>{{reward.title}}</div>
+            <div>{{reward.totalPrice}}원 / {{reward.count}}개</div>
+          </div>  
+        <div>주소 : {{order.orderHistory.address}}</div>
+        <div>총 금액 : {{order.orderHistory.totalPrice}}원</div>
+        <hr class="orderdivHr">
+       </div>
+
     </div>
-    <div>
-      <div class="rewardname2">{리워드이름2}</div>
-      <div class="rewardnumber2">{리워드 가격}원 / {n}개</div>
+    <div style="display:flex; justify-content: space-between;margin:auto;" class="price">
+      <img
+        class="onpoint"
+        src="@/assets/금액.png"
+        style="width: 40px; height: 40px; box-sizing: border-box; "
+        alt=""
+      />
+    <div class="rewardsum">총 참여 금액 : {{this.orderprice}} 원</div>
+
     </div>
-    <div>
-      <div class="rewardname3">{리워드이름3}</div>
-      <div class="rewardnumber3">{리워드 가격}원 / {n}개</div>
-    </div>
-    <div>
-      <div class="rewardname4">{리워드이름4}</div>
-      <div class="rewardnumber4">{리워드 가격}원 / {n}개</div>
-    </div>
-    <div class="rewardsum">총 참여 금액 : {nnnnn} 원</div>
+    
      <button class="goback">뒤로가기</button>
+
+    </div>
+  
   </div>
  
 </template>
 
 <script>
+import axios from "axios";
+import {mapState} from 'vuex';
 export default {
   name: "MyOrder",
+  props: {
+    orderprice: Number,
+    userOrderList: Array,
+    fundingTitle : String,
+  },
+  computed:{
+    ...mapState(
+      ["user", "Authorization"]
+    )
+
+  },
+  // created(){
+  //   this.getOrderInfo()
+  // },
+  methods : {
+    // getOrderInfo(){
+    //   const url = "http://localhost:8080/api/funding/user/order"
+    //   axios.get(url, {
+    //     params: {
+    //       fundingId : this.nowfundingId,
+    //     },headers: {
+    //     Authorization: this.Authorization
+    //   },
+    // })
+    //   .then(({data}) => {
+    //     console.log(data)
+    //     this.orderprice = data.orderTotalPrice,
+    //     console.log(this.orderprice+'총주문금액')
+    //     this.userOrderList = data.userOrderList
+    //   }).catch((err)=> {
+      
+    //     console.log(err)
+        
+    //   })
+
+    // },
+  }
 };
 </script>
 
@@ -38,34 +94,35 @@ export default {
 .modalsize {
   /* Frame 10 */
 
-  width: 860px;
-  height: 860px;
+  width: 600px;
+  height: 800px;
+  
 
   background: #ffffff;
 }
 .headline {
-  position: absolute;
-  width: 860px;
+  width: 300px;
   height: 64px;
   left: 0px;
   top: 0px;
 
   font-family: "NanumSquare";
   font-style: normal;
-  font-weight: 700;
-  font-size: 64px;
+  font-weight: 600;
+  font-size: 50px;
   line-height: 73px;
 
   color: #000000;
 }
 .fundinginfomation {
-  /* {사업자이름} {펀딩이름 ex) 유패드미니 등등 title} */
-
-  position: absolute;
-  width: 860px;
+  /* 펀딩 제목 */
+  position: relative;
+  width: 400px;
   height: 82px;
   left: 0px;
-  top: 140px;
+  top: 20px;
+  margin: auto;
+  text-align : center;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -75,150 +132,21 @@ export default {
 
   color: #000000;
 }
-.rewardname1 {
-  /* {리워드이름1} */
-
-  position: absolute;
-  width: 860px;
-  height: 32px;
-  left: 0px;
-  top: 290px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 36px;
-
-  color: #000000;
+.hrtop{
+  border : 0px;
+  border-top: 5px solid #62b878;
+  width: 90%;
 }
-.rewardnumber1 {
-  /* {리워드 가격}원 / {n}개 */
-
-  position: absolute;
-  width: 860px;
-  height: 24px;
-  left: 0px;
-  top: 336px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 27px;
-
-  color: #000000;
+.orderdivHr{
+  border : 0px;
+  border-top: 3px dashed #62b878;
 }
-.rewardname2 {
-  /* {리워드이름1} */
 
-  position: absolute;
-  width: 860px;
-  height: 32px;
-  left: 0px;
-  top: 390px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 36px;
-
-  color: #000000;
-}
-.rewardnumber2 {
-  /* {리워드 가격}원 / {n}개 */
-
-  position: absolute;
-  width: 860px;
-  height: 24px;
-  left: 0px;
-  top: 436px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 27px;
-
-  color: #000000;
-}
-.rewardname3 {
-  /* {리워드이름1} */
-
-  position: absolute;
-  width: 860px;
-  height: 32px;
-  left: 0px;
-  top: 490px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 36px;
-
-  color: #000000;
-}
-.rewardnumber3 {
-  /* {리워드 가격}원 / {n}개 */
-
-  position: absolute;
-  width: 860px;
-  height: 24px;
-  left: 0px;
-  top: 536px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 27px;
-
-  color: #000000;
-}
-.rewardname4 {
-  /* {리워드이름1} */
-
-  position: absolute;
-  width: 860px;
-  height: 32px;
-  left: 0px;
-  top: 590px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 36px;
-
-  color: #000000;
-}
-.rewardnumber4 {
-  /* {리워드 가격}원 / {n}개 */
-
-  position: absolute;
-  width: 860px;
-  height: 24px;
-  left: 0px;
-  top: 636px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 27px;
-
-  color: #000000;
-}
 .rewardsum {
   /* 총 참여 금액 : {nnnnn} 원 */
-
-  position: absolute;
-  width: 860px;
+  width: 400px;
   height: 36px;
   left: 0px;
-  top: 700px;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -229,12 +157,17 @@ export default {
 
   color: #000000;
 }
+.totalOrders{
+  width: 400px;
+  font-size: 30px;
+  margin: auto;
+}
 .goback {
   position: absolute;
   width: 140px;
   height: 52px;
-  left: 360px;
-  top: 768px;
+  left: 250px;
+  top: 740px;
 
   background: #62b878;
   border-radius: 5px;
@@ -246,7 +179,16 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
+  justify-content: center;
 
   color: #ffffff;
+}
+.price{
+  position: absolute;
+  top: 670px;
+  width: 400px;
+  align-items: center;
+  left: 120px;
+  
 }
 </style>

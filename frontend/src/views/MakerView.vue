@@ -238,6 +238,7 @@ export default {
   height: 62.45px;
   left: 1052px;
   top: 678px;
+  z-index: 1;
 
   background: url("@/assets/edit.png");
 }
