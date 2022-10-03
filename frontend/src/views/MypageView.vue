@@ -69,7 +69,9 @@
       <div class="fundinghistory">진행 중 펀딩</div>
       <div class="fundinghistory">종료 된 펀딩</div>
     </div>
+    <user-join-on-fundings></user-join-on-fundings>
     <div class="background"></div>
+
   </div>
 </template>
 
@@ -77,9 +79,12 @@
 import axios from "axios";
 import { mapState } from "vuex";
 import AWS from "aws-sdk";
+import UserJoinOnFundings from '../components/UserJoinOnFundings.vue';
+
 
 const serverUrl = "j7a306.p.ssafy.io/api";
 export default {
+  components: { UserJoinOnFundings},
   data() {
     return {
       albumBucketName: "dangdang-bucket",
@@ -300,7 +305,7 @@ export default {
   height: 62.45px;
   left: 1052px;
   top: 678px;
-  z-index: 300;
+  z-index: 1;
 
   background: url("@/assets/edit.png");
 }

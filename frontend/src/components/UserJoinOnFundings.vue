@@ -8,17 +8,18 @@
         style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
         alt=""
       />
-
     <div id="fundingList">
-      <div v-for="funding in fundings" :key="funding.id" >
+      <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
         <img
-         @click="checkOrder()"
+         @click="checkOrder(funding.id, funding.title)"
         class="cart"
         src="@/assets/장바구니.png"
         style="width: 30px; height: 30px; box-sizing: border-box; "
         alt=""
       />
-      <my-order></my-order>
+      <modal-view v-if="isModalViewed" @close-modal="isModalViewed = false">
+           <my-order :orderprice=this.orderprice :fundingTitle=this.orderfundingTitle :userOrderList=this.userOrderList></my-order>
+      </modal-view>
       <div class="thumbnail">
       <img
         :src="funding.img"
@@ -68,6 +69,7 @@
 import axios from "axios";
 import {mapState} from 'vuex';
 import MyOrder from '@/components/MyOrder.vue';
+import ModalView from './ModalView.vue';
 
 
 export default {
@@ -80,15 +82,19 @@ export default {
       fundings: [],
       state: 1,
       nextfundings: [],
+      isModalViewed : false,
+      orderprice: 0,
+      userOrderList: [],
+      orderfundingTitle: "",
     };
   },
   components: {
-    MyOrder
+    MyOrder,
+    ModalView
   },
   computed:{
     ...mapState(
- 
-    MyOrder     ["user", "Authorization"]
+    ["user", "Authorization"]
     )
 
   },
@@ -97,6 +103,7 @@ export default {
   },
   methods: {
     getFundings(){
+      console.log(this.Authorization+"토큰확인")
       const url = "http://localhost:8080/api/user/funding-list"
       axios.get(url, {
         params: {
@@ -159,7 +166,33 @@ export default {
         
       })
 
-    }
+    },
+    checkOrder(fundingId, fundingTitle){
+      this.isModalViewed = true;
+      console.log(fundingId)
+      const url = "http://localhost:8080/api/funding/user/order"
+      axios.get(url, {
+        params: {
+          fundingId : fundingId,
+        },headers: {
+        Authorization: this.Authorization
+      },
+    })
+      .then(({data}) => {
+        console.log(data)
+        this.orderprice = data.orderTotalPrice,
+        console.log(this.orderprice+'총주문금액')
+        this.userOrderList = data.userOrderList
+        this.orderfundingTitle = fundingTitle
+      }).catch((err)=> {
+      
+        console.log(err)
+        
+      })
+
+
+
+    },
   },
 };
 </script>
@@ -329,7 +362,7 @@ export default {
 #fundingList{
   display: flex ;
   flex-flow: wrap;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* gap: 10px 1%; */
   width: 1320px;
 

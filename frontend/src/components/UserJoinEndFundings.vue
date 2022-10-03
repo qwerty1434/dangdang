@@ -13,12 +13,15 @@
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
       <img
-         @click="checkOrder()"
+         @click="checkOrder(funding.id, funding.title)"
         class="cart"
         src="@/assets/장바구니.png"
         style="width: 30px; height: 30px; box-sizing: border-box; "
         alt=""
       />
+      <modal-view v-if="isModalViewed" @close-modal="isModalViewed = false">
+        <my-order :orderprice=this.orderprice :fundingTitle=this.orderfundingTitle :userOrderList=this.userOrderList></my-order>
+      </modal-view>
       <div class="thumbnail">
       <img
         :src="funding.img"
@@ -66,9 +69,12 @@
 <script>
 import axios from "axios";
 import {mapState} from 'vuex';
+import MyOrder from '@/components/MyOrder.vue';
+import ModalView from './ModalView.vue';
 
 
 export default {
+  components: { ModalView, MyOrder },
     name: "UserJoinEndFundings",
   
   data() {
@@ -78,6 +84,10 @@ export default {
       fundings: [],
       state: 2,
       nextfundings: [],
+      isModalViewed : false,
+      orderprice: 0,
+      userOrderList: [],
+      orderfundingTitle: "",
     };
   },
   computed:{
@@ -153,7 +163,33 @@ export default {
         
       })
 
-    }
+    },
+    checkOrder(fundingId, fundingTitle){
+      this.isModalViewed = true;
+      console.log(fundingId)
+      const url = "http://localhost:8080/api/funding/user/order"
+      axios.get(url, {
+        params: {
+          fundingId : fundingId,
+        },headers: {
+        Authorization: this.Authorization
+      },
+    })
+      .then(({data}) => {
+        console.log(data)
+        this.orderprice = data.orderTotalPrice,
+        console.log(this.orderprice+'총주문금액')
+        this.userOrderList = data.userOrderList
+        this.orderfundingTitle = fundingTitle
+      }).catch((err)=> {
+      
+        console.log(err)
+        
+      })
+
+
+
+    },
   },
 };
 </script>
