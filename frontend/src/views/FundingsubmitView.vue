@@ -287,6 +287,10 @@ export default {
       this.thumbnail.img = data;
       // this.thumbnailUrl[num] = JSON.parse(JSON.stringify(this.thumbnail));
       this.thumbnailUrl[num] = this.thumbnail;
+      this.thumbnail = {
+        img: "",
+        sequence: "",
+      };
       document.getElementsByClassName(className)[0].style.backgroundImage =
         "url('" + thumbUrl + "')";
     },
@@ -298,6 +302,10 @@ export default {
       this.contentImage.sequence = num;
       this.contentImage.img = data;
       this.contentImageUrl[num] = this.contentImage;
+      this.contentImage = {
+        img: "",
+        sequence: "",
+      };
       document.getElementsByClassName(className)[0].style.backgroundImage =
         "url('" + contentUrl + "')";
     },
@@ -317,7 +325,7 @@ export default {
           Bucket: this.albumBucketName,
         },
       });
-
+      console.log(this.thumbnailUrl);
       for (let index = 0; index < this.thumbnailUrl.length; index++) {
         let photoKey = "funding/" + this.uuid + "/thumbnails/" + index + ".jpg";
         console.log(this.thumbnailUrl[index].img);
