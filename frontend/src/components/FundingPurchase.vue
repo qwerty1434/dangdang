@@ -43,7 +43,7 @@
     <div class="anonymoustext">익명</div>
     <!-- <div class="ordertext">주문하기</div> -->
     <div class="addressbox"></div>
-    <button class="addressfindbox">주소 찾기</button>
+    <button @click="showApi()" class="addressfindbox">주소 찾기</button>
 
     <div class="addressdetailbox"></div>
     <div class="contactbox"></div>
@@ -55,6 +55,7 @@
         type="text"
         v-model="address"
         placeholder="주소 찾기를 통해 찾아주세요"
+        readonly="readonly"
         class="addressinput"
       />
     </div>
@@ -91,6 +92,7 @@
 <script>
 import axios from "axios";
 import RewardBox from "../components/RewardBox.vue";
+import {mapState} from 'vuex';
 
 export default {
   components: {
@@ -99,21 +101,24 @@ export default {
 
   data() {
     return {
-      orderItem: [],
+      orderItem: [0,0,0,0],
       address: "",
       detailAddress: "",
       phoneNum: "",
       email: "",
       anonymous: "",
-
-      fundingDetail: {},
-      supporters: [],
+      zip:"",
       fundingId: "",
+
       // staticUrl: "http://localhost:8080",
       staticUrl: "https://j7a306.p.ssafy.io",
     };
   },
-
+  computed:{
+    ...mapState(
+      ["fundingDetail", "supporters"]
+    )
+  },
   methods: {
     getRewards: function () {
       var rewards = [];
@@ -131,15 +136,20 @@ export default {
     getTotalPrice: function () {
       var totalPrice = 0;
       for (var i = 0; i < this.fundingDetail.rewards.length; i++) {
-        totalPrice += this.fundingDetail.rewards.price * this.orderItem[i];
+        totalPrice += Number(this.fundingDetail.rewards[i].price) * Number(this.orderItem[i]);
       }
       return totalPrice;
     },
 
     orderFunding: function () {
       var headers = { Authorization: this.$store.state.Authorization };
-
       const url = this.staticUrl + "/api/funding/order";
+      
+      if (this.getTotalPrice() == 0){
+        alert("물품을 선택하지 않았습니다.");
+        return
+      }
+
       axios
         .post(
           url,
@@ -154,24 +164,51 @@ export default {
           { headers: headers }
         )
         .then(({ data }) => {
-          console.log(data);
           if (data) {
             alert("펀딩 구매가 완료되었습니다.");
             this.$router.go(-1);
           }
         });
     },
+
+    showApi() {
+      new window.daum.Postcode({
+        oncomplete: (data) => {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 도로명 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            let fullRoadAddr = data.roadAddress; // 도로명 주소 변수
+            let extraRoadAddr = ''; // 도로명 조합형 주소 변수
+
+            // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+            // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+            if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                extraRoadAddr += data.bname;
+            }
+            // 건물명이 있고, 공동주택일 경우 추가한다.
+            if (data.buildingName !== '' && data.apartment === 'Y'){
+              extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+            // 도로명, 지번 조합형 주소가 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+            if (extraRoadAddr !== ''){
+                extraRoadAddr = ' (' + extraRoadAddr + ')';
+            }
+            // 도로명, 지번 주소의 유무에 따라 해당 조합형 주소를 추가한다.
+            if (fullRoadAddr !== ''){
+                fullRoadAddr += extraRoadAddr;
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            this.zip = data.zonecode; //5자리 새우편번호 사용
+            this.address = fullRoadAddr;
+        }
+      }).open()
+    }
   },
 
   created() {
     this.fundingId = this.$route.query.id;
-    const detailUrl =
-      this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId;
-
-    axios.get(detailUrl, {}).then(({ data }) => {
-      console.log(data);
-      this.fundingDetail = data;
-    });
   },
 };
 </script>
