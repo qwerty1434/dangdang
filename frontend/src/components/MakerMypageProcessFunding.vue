@@ -12,6 +12,15 @@
     <div id="fundingList">
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
+        <router-link :to="{ path: '/cashout' , query: {id: funding.id}}">
+          <img
+            class="coin"
+            src="@/assets/금액.png"
+            style="width: 30px; height: 30px; box-sizing: border-box; "
+            alt=""
+          />
+        </router-link>
+
       <div class="thumbnail">
         <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">
       <img
@@ -151,6 +160,9 @@ export default {
         
       })
 
+    },
+    useFundingDeposit(fundingId){
+      this.$router.push()
     }
   },
 };
@@ -330,5 +342,12 @@ export default {
 }
 .onpoint{
   cursor: pointer;
+}
+.coin{
+  cursor: pointer;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 250px;
+
 }
 </style>

@@ -85,6 +85,11 @@ const routes = [
     component: () => import("@/views/FundingCashout.vue"),
   },
   {
+    path: "/cashout",
+    name: "cashout",
+    component: () => import("@/views/FundingCashout.vue"),
+  },
+  {
     path: "/404",
     name: "notfound",
     component: () => import("@/views/NotFound.vue"),
