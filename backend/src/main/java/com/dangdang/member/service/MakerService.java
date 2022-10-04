@@ -164,4 +164,12 @@ public class MakerService {
         makerRepository.save(maker);
     }
 
+    public MakerCompanyResponse findCompanyInfo(HttpServletRequest req) throws NotValidateAccessToken, NotFoundException {
+        String uuid = jwtUtil.getUserIdByHeaderAccessToken(req);
+        Maker maker = makerRepository.findByUserId(uuid);
+        if(maker==null) throw new NotFoundException("유효한 사용자가 아닙니다.");
+
+        return new MakerCompanyResponse(maker.getCompanyName(), maker.getCompanyNumber());
+    }
+
 }

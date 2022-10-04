@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,5 +106,9 @@ public class MakerController {
         }
     }
 
-
+    @GetMapping("/my-info")
+    @ApiOperation(value="메이커 사업자 등록 번호, 회사 이름 return")
+    public ResponseEntity<MakerCompanyResponse> findCompanyInfo(HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
+        return ResponseEntity.ok().body(makerService.findCompanyInfo(req));
+    }
 }
