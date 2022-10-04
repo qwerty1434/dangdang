@@ -23,11 +23,13 @@
         <my-order :orderprice=this.orderprice :fundingTitle=this.orderfundingTitle :userOrderList=this.userOrderList></my-order>
       </modal-view>
       <div class="thumbnail">
+        <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">
       <img
         :src="funding.img"
         style="width: 300px; height: 400px; box-sizing: border-box"
         alt=""
       />
+      </router-link>
 
     </div>
     <div class="title" style="margin-top:5px">{{funding.title}}</div>
@@ -101,7 +103,8 @@ export default {
   },
   methods: {
     getFundings(){
-      const url = "http://localhost:8080/api/user/funding-list"
+      // const url = "http://localhost:8080/api/user/funding-list"
+      const url = "https://j7a306.p.ssafy.io/api/user/funding-list"
       axios.get(url, {
         params: {
           state : this.state,
@@ -144,7 +147,8 @@ export default {
       }
     },
     checknext(){
-      const url = "http://localhost:8080/api/user/funding-list"
+      // const url = "http://localhost:8080/api/user/funding-list"
+      const url = "https://j7a306.p.ssafy.io/api/user/funding-list"
       axios.get(url, {
         params: {
           state : this.state,
@@ -167,7 +171,8 @@ export default {
     checkOrder(fundingId, fundingTitle){
       this.isModalViewed = true;
       console.log(fundingId)
-      const url = "http://localhost:8080/api/funding/user/order"
+      // const url = "http://localhost:8080/api/funding/user/order"
+      const url = "https://j7a306.p.ssafy.io/api/funding/user/order"
       axios.get(url, {
         params: {
           fundingId : fundingId,
