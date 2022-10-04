@@ -29,7 +29,7 @@
     <div class="bar1">|</div>
     <router-link
       v-if="this.$store.state.Authorization"
-      :to="{ name: 'mypage' }"
+      :to="{ path: '/mypage/onfunding' }"
       class="signup"
       >마이페이지</router-link
     >
