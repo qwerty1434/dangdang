@@ -12,7 +12,7 @@
     <div id="fundingList">
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
-        <router-link :to="{ path: '/cashout' , query: {id: funding.id}}">
+        <router-link :to="{ path: '/funding/cashout' , query: {id: funding.id}}">
           <img
             class="coin"
             src="@/assets/금액.png"
@@ -161,9 +161,6 @@ export default {
       })
 
     },
-    useFundingDeposit(fundingId){
-      this.$router.push()
-    }
   },
 };
 </script>

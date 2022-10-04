@@ -110,7 +110,7 @@ export default {
         )
         .then(({ data }) => {
           alert("펀딩 금액 사용이 완료되었습니다.");
-            // this.$router.go(-1);
+          this.$router.go(-1);
         });
     },
   }
