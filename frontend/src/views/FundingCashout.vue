@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="fundingname">{this.펀딩이름}</div>
+    <div class="fundingname">{{fundingDetail.fundingContent.title}}</div>
+    
     <div class="reason">지출 사유?</div>
-    <div class="boxes">
+    <!-- <div class="boxes">
       <label for="material">
         <input
           type="checkbox"
@@ -52,20 +53,68 @@
         />
         기타</label
       >
-    </div>
+    </div> -->
     <input
       type="text"
       class="reasoninput"
+      v-model="reason"
       placeholder="지출사유를 입력해 주세요"
     />
     <div class="cashouttext">지출 금액</div>
-    <input type="text" class="cashoutinput" />
-    <button class="submit">제출하기</button>
+    <input type="number" class="cashoutinput" v-model="cashout" />
+    <button @click="useDeposit()"  class="submit">제출하기</button>
   </div>
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+
+export default {
+  
+  data() {
+    return {
+      fundingId: "",
+      fundingDetail:"",
+      reason:"",
+      cashout:"",
+      staticUrl: "https://j7a306.p.ssafy.io",
+    }
+  },
+  created() {
+    this.fundingId = this.$route.query.id;
+    
+    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
+
+    axios
+    .get(detailUrl, {
+    })
+    .then(({ data }) => {
+      this.fundingDetail = data;
+    })
+  },
+  methods: {
+    useDeposit: function () {
+      console.log("deposit");
+      const url = this.staticUrl + "/api/maker/coin-app";
+      var headers = { Authorization: this.$store.state.Authorization };
+
+      axios
+        .post(
+          url,
+          {
+            fundingId: this.fundingId,
+            amountUsed: this.cashout,
+            purpose: this.reason
+          },
+          { headers: headers }
+        )
+        .then(({ data }) => {
+          alert("펀딩 금액 사용이 완료되었습니다.");
+            // this.$router.go(-1);
+        });
+    },
+  }
+};
 </script>
 
 <style scoped>

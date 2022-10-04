@@ -80,6 +80,11 @@ const routes = [
     component: () => import("@/views/FundingsubmitView.vue"),
   },
   {
+    path: "/funding/cashout",
+    name: "temp2",
+    component: () => import("@/views/FundingCashout.vue"),
+  },
+  {
     path: "/404",
     name: "notfound",
     component: () => import("@/views/NotFound.vue"),
