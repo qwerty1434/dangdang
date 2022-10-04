@@ -13,11 +13,13 @@
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
       <div class="thumbnail">
+        <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">
       <img
         :src="funding.img"
         style="width: 300px; height: 400px; box-sizing: border-box"
         alt=""
       />
+       </router-link>
 
     </div>
     <div class="title" style="margin-top:5px">{{funding.title}}</div>
@@ -85,7 +87,8 @@ export default {
   },
   methods: {
     getFundings(){
-      const url = "http://localhost:8080/api/funding/maker/list"
+      // const url = "http://localhost:8080/api/funding/maker/list"
+      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
       axios.get(url, {
         params: {
           state : this.state,
@@ -128,7 +131,8 @@ export default {
       }
     },
     checknext(){
-      const url = "http://localhost:8080/api/funding/maker/list"
+      // const url = "http://localhost:8080/api/funding/maker/list"
+      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
       axios.get(url, {
         params: {
           state : this.state,

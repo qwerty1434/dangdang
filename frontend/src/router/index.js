@@ -91,7 +91,7 @@ const routes = [
   {
     path: "/temp",
     name: "temp",
-    component: () => import("@/components/FundingCard.vue"),
+    component: () => import("@/views/FundingCashout.vue"),
   },
 ];
 

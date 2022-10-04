@@ -3,18 +3,14 @@
     <div class="background"></div>
 
     <div class="banner"></div>
-    <router-link :to="{ path: '/product/story' , query: {id: '11e1ec14-7069-4d66-ab74-a933f1785ff8'}}">
-      <div class="carousel1"></div>
-    </router-link>
-
     <div class="imminent">마감임박</div>
-
     <div class="to_imminent">더보기</div>
+    <dead-line-fundings class="imminentfunding"></dead-line-fundings>
     <div class="popular">인기상품</div>
-    <div class="carousel2"></div>
+    <popular-fundings class="popularfunding"></popular-fundings>
     <div class="to_popular">더보기</div>
     <div class="fresh">신규상품</div>
-    <div class="carousel3"></div>
+    <new-fundings class="newfunding"></new-fundings>
     <div class="to_fresh">더보기</div>
    
      
@@ -26,9 +22,15 @@
 </template>
 
 <script>
+import DeadLineFundings from '../components/DeadLineFundings.vue';
+import NewFundings from '../components/NewFundings.vue';
+import PopularFundings from '../components/PopularFundings.vue';
+
 
 export default {
+  components: { DeadLineFundings, PopularFundings, NewFundings },
   name: "HomeView",
+
 };
 </script>
 
@@ -169,6 +171,18 @@ export default {
   text-align: right;
 
   color: rgba(0, 0, 0, 0.5);
+}
+.imminentfunding{
+  position: absolute;
+  top: 944px;
+}
+.popularfunding{
+  position: absolute;
+  top: 1672px;
+}
+.newfunding{
+  position: absolute;
+  top: 2400px;
 }
 
 </style>
