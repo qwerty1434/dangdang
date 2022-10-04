@@ -155,7 +155,9 @@
           v-model="reward.price"
         />
       </div>
-      <button @click="makeReward()" class="rewardaddbutton">리워드 추가</button>
+      <button @click="makeReward()" class="rewardaddbutton Btn">
+        리워드 추가
+      </button>
 
       <div>
         <div
@@ -177,12 +179,16 @@
       <div class="companynamebox"></div>
       <div class="companyname">ABC회사</div>
 
-      <div class="tagbox"></div>
-      <input type="text" class="taginput" placeholder="#검색용 #태그" />
+      <!-- <div class="tagbox"></div>
+      <input type="text" class="taginput" placeholder="#검색용 #태그" /> -->
       <!-- 펀딩일정 -->
 
       <div>
         <div class="calendar">
+          <div>
+            시작일&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일
+          </div>
+
           <Datepicker v-model="fromDate" inline autoApply style="float: left" />
           <Datepicker v-model="toDate" inline autoApply />
         </div>
@@ -193,9 +199,10 @@
       </div>
       <!-- 변경사항 취소 임시저장 등록 버튼 -->
       <div>
-        <button @click="clearData()" class="revert">변경사항취소</button>
-        <button @click="b()" class="tempsave">임시저장</button>
-        <button @click="submitData()" class="submit">등록하기</button>
+        <!-- <button @click="clearData()" class="revert">변경사항취소</button>
+        <button @click="b()" class="tempsave">임시저장</button> -->
+        <button @click="revert()" class="revert Btn">취소</button>
+        <button @click="submitData()" class="submit Btn">등록하기</button>
       </div>
     </div>
     <div>
@@ -210,7 +217,7 @@
       <div class="i">기타정보</div>
       <div class="j">사업자 등록번호</div>
       <div class="k">회사명</div>
-      <div class="l">검색용 태그</div>
+      <!-- <div class="l">검색용 태그</div> -->
       <div class="m">펀딩 일정</div>
       <div class="n">썸네일</div>
       <div class="o">본문</div>
@@ -463,9 +470,8 @@ export default {
         });
     },
 
-    clearData() {
-      // 페이지 새로고침
-      this.$router.go();
+    revert() {
+      this.$router.go(-1);
     },
     deleteReward(index) {
       this.rewards.splice(index, 1);
@@ -475,6 +481,20 @@ export default {
 </script>
 
 <style scoped>
+.Btn {
+  background: #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-align: center;
+
+  color: #ffffff;
+}
+
 .categorybox {
   box-sizing: border-box;
 
@@ -833,16 +853,7 @@ export default {
   background: none;
   outline: none;
 }
-.revert {
-  position: absolute;
-  width: 240px;
-  height: 80px;
-  left: 1312px;
-  top: 2514px;
 
-  background: #ffa4a4;
-  border-radius: 5px;
-}
 .tempsave {
   position: absolute;
   width: 240px;
@@ -855,25 +866,36 @@ export default {
 }
 .submit {
   position: absolute;
-  width: 240px;
-  height: 80px;
-  left: 1312px;
-  top: 2860px;
+  width: 140px;
+  height: 52px;
+  left: 1116px;
+  top: 2950px;
 
   background: #62b878;
   border-radius: 5px;
 }
+.revert {
+  position: absolute;
+  width: 140px;
+  height: 52px;
+  left: 880px;
+  top: 2950px;
+
+  background: #ec4040;
+  border-radius: 5px;
+}
+
 .calendar {
   box-sizing: border-box;
 
   position: absolute;
   width: 680px;
   height: 426px;
-  left: 592px;
+  left: 812px;
   top: 2514px;
 
-  background: url("@/assets/calendar.png");
-  border: 1px solid #000000;
+  /* background: url("@/assets/calendar.png"); */
+  /* border: 1px solid #000000; */
 }
 .a {
   position: absolute;
