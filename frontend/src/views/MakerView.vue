@@ -48,6 +48,12 @@
       <div class="registrationchecktext">조회</div>
     </div>
 
+    <div>
+      <router-link to="/funding/submit" class="fundingBtn"
+        >펀딩 신청하기</router-link
+      >
+    </div>
+
     <div class="borderline"></div>
 
     <div class="fundingonwaitbox"></div>
@@ -121,7 +127,6 @@ export default {
           conosle.log(err);
         });
 
-      // 이게 있으면 유저 입장에서는 빨리 바뀐다고 느껴짐 근데 빨리 바꿧다고 생각하고 페이지를 벗어나버리면 문제가 생김
       var image = this.$refs["image"].files[0];
       const url = URL.createObjectURL(image);
       this.image = url;
@@ -300,6 +305,28 @@ export default {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
+
+.fundingBtn {
+  position: absolute;
+  width: 160px;
+  height: 60px;
+  left: 890px;
+  top: 1030px;
+
+  background: #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 58px;
+  text-align: center;
+
+  text-decoration: none;
+  color: #ffffff;
+}
+
 .registrationinput {
   position: absolute;
   width: 280px;
@@ -346,7 +373,7 @@ export default {
   width: 1400px;
   height: 8px;
   left: 260px;
-  top: 1080px;
+  top: 1125px;
 
   background: linear-gradient(
     180deg,
