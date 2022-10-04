@@ -443,7 +443,7 @@ export default {
         category: this.category,
         title: this.title,
         targetPrice: this.targetPrice,
-        projectIntroduction: "",
+        projectIntroduction: "temp",
         startDate: this.changeDateFormat(this.fromDate), // this.fromDate,
         endDate: this.changeDateFormat(this.toDate), //this.toDate,
         rewards: this.rewards,
@@ -468,6 +468,7 @@ export default {
         .catch(() => {
           console.log("error");
         });
+      this.$router.go(-1);
     },
 
     revert() {
