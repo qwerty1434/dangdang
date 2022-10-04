@@ -36,46 +36,43 @@
     <div>
       <div class="registrationnumber">사업자 등록번호</div>
       <div class="registrationbox"></div>
-      <input
-        type="text"
-        class="registrationinput"
-        placeholder="사업자 등록번호"
-      />
+      <div type="text" class="registrationinput">{{ this.companyNo }}</div>
     </div>
 
     <div>
-      <div class="registrationcheckbox"></div>
-      <div class="registrationchecktext">조회</div>
-    </div>
+      <modal-view v-if="isModalViewed" @close-modal="isModalViewed = false">
+        <business-license></business-license>
+      </modal-view>
 
-    <div>
-      <router-link to="/funding/submit" class="fundingBtn"
-        >펀딩 신청하기</router-link
-      >
+      <div class="fundingBtn"></div>
+      <div class="fundingBtn" v-if="this.companyNo == ''" @click="modal()">
+        메이커 등록
+      </div>
+      <div v-else>
+        <router-link to="/funding/submit" class="fundingBtn"
+          >펀딩 신청하기</router-link
+        >
+      </div>
     </div>
 
     <div class="borderline"></div>
     <div>
-    <router-link :to="{ path: '/mypage/maker/prefunding'}">
-    <div class="fundingonwaitbox"></div>
-    <div class="fundingonwaittext">대기 중인 펀딩</div>
-    </router-link>
-    <router-link :to="{ path: '/mypage/maker/onfunding'}">
-    <div class="fundingongoingbox"></div>
-    <div class="fundingongoingtext">진행 중인 펀딩</div>
-    </router-link>
-    <router-link :to="{ path: '/mypage/maker/endfunding'}">
-    <div class="fundingendbox"></div>
-    <div class="fundingendtext">종료 된 펀딩</div>
-    </router-link>
-
+      <router-link :to="{ path: '/mypage/maker/prefunding' }">
+        <div class="fundingonwaitbox"></div>
+        <div class="fundingonwaittext">대기 중인 펀딩</div>
+      </router-link>
+      <router-link :to="{ path: '/mypage/maker/onfunding' }">
+        <div class="fundingongoingbox"></div>
+        <div class="fundingongoingtext">진행 중인 펀딩</div>
+      </router-link>
+      <router-link :to="{ path: '/mypage/maker/endfunding' }">
+        <div class="fundingendbox"></div>
+        <div class="fundingendtext">종료 된 펀딩</div>
+      </router-link>
     </div>
     <div class="routerposition">
       <router-view />
     </div>
-
-
-
 
     <div class="background"></div>
   </div>
@@ -85,6 +82,8 @@
 import axios from "axios";
 import { mapState } from "vuex";
 import AWS from "aws-sdk";
+import BusinessLicense from "@/components/BusinessLicense.vue";
+import ModalView from "@/components/ModalView.vue";
 
 const serverUrl = "j7a306.p.ssafy.io/api";
 export default {
@@ -94,13 +93,31 @@ export default {
       bucketRegion: "ap-northeast-2",
       IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
       image: "",
+      isModalViewed: false,
+      companyNo: "",
+      companyName: "",
     };
   },
+  components: {
+    BusinessLicense,
+    ModalView,
+  },
+
   computed: {
     ...mapState(["user", "Authorization"]),
   },
   created() {
     this.getFiles();
+    const headers = { Authorization: this.$store.state.Authorization };
+    axios
+      .get("https://" + serverUrl + "/maker/my-info", { headers: headers })
+      .then((response) => {
+        this.companyNo = response.data.companyNo;
+        this.companyName = response.data.companyName;
+      })
+      .catch(() => {
+        console.log("error");
+      });
   },
   methods: {
     uploadImg() {
@@ -177,6 +194,10 @@ export default {
           }
         }
       );
+    },
+    modal() {
+      this.isModalViewed = !this.isModalViewed;
+      console.log(this.isModalViewed);
     },
   },
 };
@@ -529,7 +550,7 @@ export default {
 
   background: #ffffff;
 }
-.routerposition{
+.routerposition {
   position: absolute;
   top: 1200px;
 }

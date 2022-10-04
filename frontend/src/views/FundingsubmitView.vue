@@ -175,9 +175,9 @@
     <!-- 기타정보 -->
     <div>
       <div class="registrationnumberbox"></div>
-      <div class="registrationnumber">3753300654</div>
+      <div class="registrationnumber">{{ companyNo }}</div>
       <div class="companynamebox"></div>
-      <div class="companyname">ABC회사</div>
+      <div class="companyname">{{ companyName }}</div>
 
       <!-- <div class="tagbox"></div>
       <input type="text" class="taginput" placeholder="#검색용 #태그" /> -->
@@ -267,6 +267,8 @@ export default {
       },
       fromDate: ref(new Date()),
       toDate: ref(new Date()),
+      companyName: "",
+      companyNo: "",
     };
   },
   components: {
@@ -279,6 +281,16 @@ export default {
       .get("https://" + serverUrl + "/category/list", {})
       .then((response) => {
         this.categories = response.data;
+      })
+      .catch(() => {
+        console.log("error");
+      });
+    const headers = { Authorization: this.$store.state.Authorization };
+    axios
+      .get("https://" + serverUrl + "/maker/my-info", { headers: headers })
+      .then((response) => {
+        this.companyNo = response.data.companyNo;
+        this.companyName = response.data.companyName;
       })
       .catch(() => {
         console.log("error");
