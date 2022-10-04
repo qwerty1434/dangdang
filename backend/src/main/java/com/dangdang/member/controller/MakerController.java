@@ -106,7 +106,7 @@ public class MakerController {
         }
     }
 
-    @PostMapping("/my-info")
+    @GetMapping("/my-info")
     @ApiOperation(value="메이커 사업자 등록 번호, 회사 이름 return")
     public ResponseEntity<MakerCompanyResponse> findCompanyInfo(HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
         return ResponseEntity.ok().body(makerService.findCompanyInfo(req));
