@@ -59,7 +59,7 @@ public class FundingController {
     }
 
     @GetMapping("/search")
-    @ApiOperation(value="마감임박, 신규상품, 인기상품 펀딩 리스트 조회", notes = "type=조회조건(endedAt/new/popular) , page : 페이지 , size : 한 페이지에서 보여줄 개수")
+    @ApiOperation(value="마감임박, 신규상품, 인기상품, 펀딩예정 펀딩 리스트 조회", notes = "type=조회조건(endedAt/new/popular/plan) , page : 페이지 , size : 한 페이지에서 보여줄 개수")
     public ResponseEntity<FundingResponse.fundingList> fundingList (String type, Pageable pageable) {
         System.out.println(type);
         return ResponseEntity.ok().body(fundingService.FundingList(type, pageable));
