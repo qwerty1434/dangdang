@@ -5,7 +5,7 @@
       <div class="pointer"></div>
       <div class="supporter">서포터</div>
       <div class="bar"></div>
-      <router-link :to="{ name: 'maker' }">
+      <router-link :to="{ path: '/mypage/maker/prefunding' }">
         <div class="maker">메이커</div></router-link
       >
     </div>
@@ -66,10 +66,16 @@
         margin-top: 1100px;
       "
     >
+    <router-link :to="{ path: '/mypage/onfunding'}">
       <div class="fundinghistory">진행 중 펀딩</div>
+    </router-link>
+    <router-link :to="{ path: '/mypage/endfunding'}">
       <div class="fundinghistory">종료 된 펀딩</div>
+    </router-link>
     </div>
-    <user-join-on-fundings></user-join-on-fundings>
+    <div>
+      <router-view />
+    </div>
     <div class="background"></div>
 
   </div>

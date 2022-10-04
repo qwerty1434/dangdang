@@ -5,7 +5,7 @@
       <div class="pointer"></div>
       <div class="maker">메이커</div>
       <div class="bar"></div>
-      <router-link :to="{ name: 'mypage' }">
+      <router-link :to="{ path: '/mypage/onfunding' }">
         <div class="supporter">서포터</div></router-link
       >
     </div>
@@ -55,19 +55,27 @@
     </div>
 
     <div class="borderline"></div>
-
+    <div>
+    <router-link :to="{ path: '/mypage/maker/prefunding'}">
     <div class="fundingonwaitbox"></div>
     <div class="fundingonwaittext">대기 중인 펀딩</div>
-    <div class="fundingonwaitcarousel"></div>
+    </router-link>
+    <router-link :to="{ path: '/mypage/maker/onfunding'}">
     <div class="fundingongoingbox"></div>
     <div class="fundingongoingtext">진행 중인 펀딩</div>
-    <div class="fundingongoingcarousel"></div>
+    </router-link>
+    <router-link :to="{ path: '/mypage/maker/endfunding'}">
     <div class="fundingendbox"></div>
     <div class="fundingendtext">종료 된 펀딩</div>
-    <div class="fundingendcarousel"></div>
-    <div class="fundingunauthorizedbox"></div>
-    <div class="fundingunauthorizedtext">승인 전 펀딩</div>
-    <div class="fundingunauthorizedcarousel"></div>
+    </router-link>
+
+    </div>
+    <div class="routerposition">
+      <router-view />
+    </div>
+
+
+
 
     <div class="background"></div>
   </div>
@@ -385,7 +393,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 220px;
+  left: 470px;
   top: 1164px;
 
   background: rgba(98, 184, 120, 0.5);
@@ -394,7 +402,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 220px;
+  left: 470px;
   top: 1164px;
 
   font-family: "NanumSquare";
@@ -410,7 +418,7 @@ export default {
   position: absolute;
   width: 1380px;
   height: 490px;
-  left: 276px;
+  left: 376px;
   top: 1360px;
   background: url("@/assets/캐러셀1.png");
 }
@@ -418,7 +426,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 624px;
+  left: 874px;
   top: 1164px;
 
   background: rgba(98, 184, 120, 0.5);
@@ -427,7 +435,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 624px;
+  left: 874px;
   top: 1164px;
 
   font-family: "NanumSquare";
@@ -451,7 +459,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 1050px;
+  left: 1300px;
   top: 1164px;
 
   background: rgba(98, 184, 120, 0.5);
@@ -460,7 +468,7 @@ export default {
   position: absolute;
   width: 200px;
   height: 28px;
-  left: 1050px;
+  left: 1300px;
   top: 1164px;
 
   font-family: "NanumSquare";
@@ -520,5 +528,9 @@ export default {
   z-index: -5;
 
   background: #ffffff;
+}
+.routerposition{
+  position: absolute;
+  top: 1200px;
 }
 </style>

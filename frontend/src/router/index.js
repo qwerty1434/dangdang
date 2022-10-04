@@ -68,11 +68,37 @@ const routes = [
     path: "/mypage",
     name: "mypage",
     component: () => import("@/views/MypageView.vue"),
+    children: [
+      {
+        path: "onfunding",
+        name: "onfunding",
+        component: () => import("@/components/UserJoinOnFundings.vue"),
+      },
+      {
+        path: "endfunding",
+        name: "endfunding",
+        component: () => import("@/components/UserJoinEndFundings.vue"),
+      },
+    ],
   },
   {
     path: "/mypage/maker",
     name: "maker",
     component: () => import("@/views/MakerView.vue"),
+    children: [
+      {
+        path: "prefunding",
+        component: () => import("@/components/MakerMypagePreFunding.vue"),
+      },
+      {
+        path: "onfunding",
+        component: () => import("@/components/MakerMypageProcessFunding.vue"),
+      },
+      {
+        path: "endfunding",
+        component: () => import("@/components/MakerMypageEndFunding.vue"),
+      },
+    ],
   },
   {
     path: "/funding/submit",
