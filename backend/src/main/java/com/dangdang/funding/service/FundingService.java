@@ -245,7 +245,10 @@ public class FundingService {
         List<Funding> fundings = null;
         if(type.equals("popular")){
             fundings = fundingRepository.findByPopular(1, pageable);
-        }else {
+        }else if(type.equals("plan")){
+            fundings = fundingRepository.findByState(0, pageable);
+        }
+        else {
             fundings = fundingRepository.findByState(1, pageable);
         }
         for(int i = 0; i < fundings.size(); i++){
