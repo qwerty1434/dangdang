@@ -74,6 +74,9 @@ export default {
       category: false,
     };
   },
+  mounted () {
+  window.scrollTo(0, 0)
+  },
   created(){
     this.id = this.$route.query.id;
     if(this.id != "endedAt" && this.id != "new" && this.id != "popular"  && this.id != "plan"){
