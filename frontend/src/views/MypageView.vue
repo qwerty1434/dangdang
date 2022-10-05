@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a my page</h1>
     <div>
       <div class="pointer"></div>
       <div class="supporter">서포터</div>
@@ -66,18 +65,17 @@
         margin-top: 1100px;
       "
     >
-    <router-link :to="{ path: '/mypage/onfunding'}">
-      <div class="fundinghistory">진행 중 펀딩</div>
-    </router-link>
-    <router-link :to="{ path: '/mypage/endfunding'}">
-      <div class="fundinghistory">종료 된 펀딩</div>
-    </router-link>
+      <router-link :to="{ path: '/mypage/onfunding' }">
+        <div class="fundinghistory">진행 중 펀딩</div>
+      </router-link>
+      <router-link :to="{ path: '/mypage/endfunding' }">
+        <div class="fundinghistory">종료 된 펀딩</div>
+      </router-link>
     </div>
     <div>
       <router-view />
     </div>
     <div class="background"></div>
-
   </div>
 </template>
 
@@ -85,12 +83,11 @@
 import axios from "axios";
 import { mapState } from "vuex";
 import AWS from "aws-sdk";
-import UserJoinOnFundings from '../components/UserJoinOnFundings.vue';
-
+import UserJoinOnFundings from "../components/UserJoinOnFundings.vue";
 
 const serverUrl = "j7a306.p.ssafy.io/api";
 export default {
-  components: { UserJoinOnFundings},
+  components: { UserJoinOnFundings },
   data() {
     return {
       albumBucketName: "dangdang-bucket",
@@ -150,6 +147,7 @@ export default {
       var image = this.$refs["image"].files[0];
       const url = URL.createObjectURL(image);
       this.image = url;
+      alert("이미지가 변경되었습니다.");
     },
 
     getFiles() {
@@ -192,7 +190,6 @@ export default {
     },
 
     changeNickname() {
-      
       // const url = "http://localhost:8080/api/user/change/nick";
       const url = "https://" + serverUrl + "/user/change/nick";
       axios

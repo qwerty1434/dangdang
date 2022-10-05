@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a maker page</h1>
     <div>
       <div class="pointer"></div>
       <div class="maker">메이커</div>
@@ -168,6 +167,7 @@ export default {
       var image = this.$refs["image"].files[0];
       const url = URL.createObjectURL(image);
       this.image = url;
+      alert("변경되었습니다.");
     },
 
     getFiles() {
