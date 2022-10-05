@@ -10,6 +10,7 @@ export default createStore({
     fundingDetail: {},
     supporters:[],
     history: {},
+    searchFundings: [],
   },
   getters: {},
   mutations: {
@@ -41,6 +42,9 @@ export default createStore({
       state.fundingDetail = {};
       state.supporters = [];
       state.history = {};
+    },
+    SearchFunding(state, payload){
+      state.searchFundings = payload
     }
     
   },
