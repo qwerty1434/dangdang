@@ -126,7 +126,7 @@ public class MakerService {
         String uuid = input.getMakerId();
         User user = userRepository.findById(UUID.fromString(uuid)).get();
 
-        List<Funding> fundings = fundingRepository.findByState(input.getState(),pageable);
+        List<Funding> fundings = fundingRepository.findByMakerIdAndState(user.getId(),input.getState(),pageable);
         List<FundingListResponse> output = new LinkedList<>();
         for(Funding f: fundings){
             LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
