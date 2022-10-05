@@ -153,10 +153,10 @@
           v-for="(reward, index) in rewards"
           v-bind:key="reward"
           :class="`reward${index + 1}`">
-          <div @click="deleteReward(index)">{{ index }} 삭제</div>
-          <div class="title">제목: {{ reward.title }}</div>
-          <div class="contents">내용: {{ reward.content }}</div>
-          <div class="price">가격: {{ reward.price }}</div>
+          <div @click="deleteReward(index)" class="deletereward">x</div>
+          <div class="title">{{ reward.title }}</div>
+          <div class="contents">{{ reward.content }}</div>
+          <div class="price">{{ reward.price }}원</div>
         </div>
       </div>
     </div>
@@ -758,9 +758,6 @@ export default {
   font-weight: 400;
   font-size: 16px;
   line-height: 18px;
-  display: flex;
-  align-items: center;
-  text-align: center;
 
   color: #000000;
 }
@@ -778,6 +775,22 @@ export default {
   line-height: 14px;
   display: flex;
   align-items: center;
+
+  color: #000000;
+}
+.deletereward {
+  position: absolute;
+  width: 32px;
+  height: 12px;
+  left: 176px;
+  top: 4px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: right;
 
   color: #000000;
 }
