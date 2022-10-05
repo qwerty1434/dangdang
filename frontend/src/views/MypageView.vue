@@ -192,7 +192,8 @@ export default {
     },
 
     changeNickname() {
-      console.log(this.nick);
+      
+      // const url = "http://localhost:8080/api/user/change/nick";
       const url = "https://" + serverUrl + "/user/change/nick";
       axios
         .patch(
@@ -212,9 +213,9 @@ export default {
           if (this.isCheckNick) {
             // state의 유저의 닉네임 변경
             this.$store.commit("SET_CHANGENICK", this.nick);
-            console.log("change nickname successful");
+            alert("닉네임 변경이 완료되었습니다 :)");
           } else {
-            alert("이미 사용중인 닉네임입니다.");
+            alert("이미 사용중인 닉네임입니다 :(");
             this.nick = "";
           }
         })
