@@ -30,13 +30,25 @@
     <div>
       <div class="aliastext">닉네임</div>
       <input
+        v-if="isChanged"
         type="text"
         class="alias"
         style="border: none"
         :placeholder="this.user.nickname"
         v-model="nick"
       />
-      <div @click="changeNickname()" class="aliasedit"></div>
+      <input
+        v-else
+        type="text"
+        class="alias"
+        style="border: none"
+        :placeholder="this.user.nickname"
+        v-model="nick"
+        disabled
+      />
+
+      <div v-if="isChanged" @click="changeNickname()" class="aliasedit"></div>
+      <div v-else @click="changeState()" class="aliasedit"></div>
     </div>
 
     <div>
@@ -100,6 +112,7 @@ export default {
       fundings: [],
       state: 1,
       nextfundings: [],
+      isChanged: false,
     };
   },
   computed: {
@@ -110,6 +123,9 @@ export default {
     this.getFiles();
   },
   methods: {
+    changeState() {
+      this.isChanged = !this.isChanged;
+    },
     uploadImg() {
       AWS.config.update({
         region: this.bucketRegion,
@@ -215,6 +231,7 @@ export default {
             // state의 유저의 닉네임 변경
             this.$store.commit("SET_CHANGENICK", this.nick);
             alert("닉네임 변경이 완료되었습니다 :)");
+            this.isChanged = false;
           } else {
             alert("이미 사용중인 닉네임입니다 :(");
             this.nick = "";
