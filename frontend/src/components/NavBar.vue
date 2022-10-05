@@ -11,11 +11,13 @@
         type="text"
         placeholder="어떤 프로젝트를 찾고 계신가요?"
         class="searchbar"
+        v-model="keyword"
+        v-on:keyup.enter="searchFunding()"
       />
     </div>
 
     <div class="searchbutton"></div>
-    <div class="searchtext">검색</div>
+    <div @click="searchFunding()" class="searchtext">검색</div>
     <router-link
       v-if="this.$store.state.Authorization"
       :to="{ name: '' }"
@@ -65,16 +67,46 @@
 
 <script>
 import CategoryList from "@/components/CategoryList.vue";
+import axios from "axios";
 export default {
   name: "NavBar",
   data() {
-    return {};
+    return {
+      keyword: "",
+      searchFundings: [],
+    };
   },
   methods: {
     logout() {
       this.$store.commit("logout");
       alert("로그아웃 되었습니다.");
     },
+    searchFunding(){
+      console.log(this.keyword);
+      const url = "http://localhost:8080/api/funding/searchtitle"
+      // const url = "https://j7a306.p.ssafy.io/api/funding/searchtitle"
+      axios.get(url, {
+        params: {
+          keyword : this.keyword
+        }
+    })
+      .then(({data}) => {
+        this.searchFundings = data.fundingList;
+        if(this.searchFundings.length == 0){
+          alert("해당 펀딩이 존재하지 않습니다 :(");
+          this.keyword = "";
+        }else{
+          this.$store.commit("SearchFunding", data.fundingList);
+          this.$router.push({ path: "funding", query: { search: this.keyword  } });
+          this.keyword = "";
+        }
+      }).catch((err)=> {
+      
+        console.log(err)
+        
+      })
+
+    }
   },
   components: {
     CategoryList,
@@ -156,6 +188,7 @@ input:focus {
   text-align: center;
 
   color: #ffffff;
+  cursor: pointer;
 }
 .login {
   position: absolute;

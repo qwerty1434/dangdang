@@ -9,6 +9,7 @@
       <div class="mainTitle" v-if='this.id=="new"'>신규상품순 펀딩리스트</div>
       <div class="mainTitle" v-if='this.id=="plan"'>펀딩예정 리스트</div>
       <div class="mainTitle" v-if='this.category'>{{this.id}} 펀딩리스트</div>
+      <div class="mainTitle" v-if='this.keyword!= undefined'>{{this.keyword}} 관련 펀딩리스트</div>
     <div id="fundingList" style="width: 1320px; margin:auto; margin-top: 260px">
       
       <div v-for="funding in fundingList" :key="funding.id" style="margin-right:30px; margin-top: 30px" >
@@ -60,6 +61,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 export default {
   name: "FundingView",
   data() {
@@ -72,17 +74,28 @@ export default {
       size: 12,
       id: "",
       category: false,
+      keyword: "",
     };
+  },
+  computed: {
+    ...mapState(["searchFundings"]),
   },
   mounted () {
   window.scrollTo(0, 0)
   },
   created(){
     this.id = this.$route.query.id;
-    if(this.id != "endedAt" && this.id != "new" && this.id != "popular"  && this.id != "plan"){
+    this.keyword = this.$route.query.search;
+    console.log(this.id);
+    if(this.id != "endedAt" && this.id != "new" && this.id != "popular"  && this.id != "plan" && this.id != undefined){
       this.category = true
     }
-    this.getFundings();
+    console.log(this.keyword+" 키워드");
+    if(this.keyword == undefined){
+      this.getFundings();
+    }else{
+      this.fundingList = this.searchFundings;
+    }
   },
   methods: {
     getFundings(){
