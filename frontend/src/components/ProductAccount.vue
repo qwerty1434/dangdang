@@ -2,7 +2,7 @@
   <div>
     <div class="headline">통장내역</div>
     <div class="accountbrif">
-      이 프로젝트의 총 펀딩 금액은 {{fundingDetail.nowPrice}}원, 잔고는 {{history.totalRemain}}원
+      이 프로젝트의 총 펀딩 금액은 {{fundingDetail.fundingContent.nowPrice}}원, 잔고는 {{history.totalRemain}}원
       입니다.
     </div>
     <!-- <div class="piechart"></div> -->
