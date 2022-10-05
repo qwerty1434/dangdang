@@ -154,9 +154,9 @@
           v-bind:key="reward"
           :class="`reward${index + 1}`">
           <div @click="deleteReward(index)">{{ index }} 삭제</div>
-          <div :class="`title${index + 1}`">제목: {{ reward.title }}</div>
-          <div :class="`contents${index + 1}`">내용: {{ reward.content }}</div>
-          <div :class="`price${index + 1}`">가격: {{ reward.price }}</div>
+          <div class="title">제목: {{ reward.title }}</div>
+          <div class="contents">내용: {{ reward.content }}</div>
+          <div class="price">가격: {{ reward.price }}</div>
         </div>
       </div>
     </div>
@@ -509,7 +509,7 @@ export default {
 
   font-family: "NanumSquare";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 20px;
   line-height: 23px;
 
@@ -729,24 +729,12 @@ export default {
   background: #62b878;
   border-radius: 5px;
 }
-.reward1 {
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 216px;
-  height: 216px;
-  left: 592px;
-  top: 1536px;
-
-  border: 0.5px solid #000000;
-  border-radius: 5px;
-}
-.title1 {
+.title {
   position: absolute;
   width: 200px;
   height: 20px;
-  left: 608px;
-  top: 2356px;
+  left: 16px;
+  top: 20px;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -758,29 +746,12 @@ export default {
 
   color: #000000;
 }
-.price1 {
-  position: absolute;
-  width: 160px;
-  height: 20px;
-  left: 608px;
-  top: 2383px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.contents1 {
+.contents {
   position: absolute;
   width: 200px;
   height: 120px;
-  left: 600px;
-  top: 2414px;
+  left: 8px;
+  top: 78px;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -792,6 +763,35 @@ export default {
   text-align: center;
 
   color: #000000;
+}
+.price {
+  position: absolute;
+  width: 160px;
+  height: 20px;
+  left: 16px;
+  top: 47px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  display: flex;
+  align-items: center;
+
+  color: #000000;
+}
+.reward1 {
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 216px;
+  height: 216px;
+  left: 592px;
+  top: 1536px;
+
+  border: 0.5px solid #000000;
+  border-radius: 5px;
 }
 .reward2 {
   box-sizing: border-box;
@@ -805,58 +805,7 @@ export default {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
-.title2 {
-  position: absolute;
-  width: 200px;
-  height: 20px;
-  left: 856px;
-  top: 2356px;
 
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 32px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.price2 {
-  position: absolute;
-  width: 160px;
-  height: 20px;
-  left: 856px;
-  top: 2383px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.contents2 {
-  position: absolute;
-  width: 200px;
-  height: 120px;
-  left: 848px;
-  top: 2414px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 18px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-
-  color: #000000;
-}
 .reward3 {
   box-sizing: border-box;
 
@@ -869,58 +818,7 @@ export default {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
-.title3 {
-  position: absolute;
-  width: 200px;
-  height: 20px;
-  left: 1104px;
-  top: 2356px;
 
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 32px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.price3 {
-  position: absolute;
-  width: 160px;
-  height: 20px;
-  left: 1104px;
-  top: 2383px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.contents3 {
-  position: absolute;
-  width: 200px;
-  height: 120px;
-  left: 1096px;
-  top: 2414px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 18px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-
-  color: #000000;
-}
 .reward4 {
   box-sizing: border-box;
 
@@ -933,58 +831,7 @@ export default {
   border: 0.5px solid #000000;
   border-radius: 5px;
 }
-.title4 {
-  position: absolute;
-  width: 200px;
-  height: 20px;
-  left: 1352px;
-  top: 2356px;
 
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 32px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.price4 {
-  position: absolute;
-  width: 160px;
-  height: 20px;
-  left: 1352px;
-  top: 2383px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
-}
-.contents4 {
-  position: absolute;
-  width: 200px;
-  height: 120px;
-  left: 1344px;
-  top: 2414px;
-
-  font-family: "NanumSquare";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 18px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-
-  color: #000000;
-}
 /* 기타정보  */
 .registrationnumberbox {
   box-sizing: border-box;
