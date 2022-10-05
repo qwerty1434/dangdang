@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav-bar></nav-bar>
-    <router-view />
+    <router-view id="router" :key="$route.fullPath"/>
   </div>
 </template>
 

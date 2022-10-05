@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a maker page</h1>
     <div>
       <div class="pointer"></div>
       <div class="maker">메이커</div>
@@ -54,7 +53,6 @@
         >
       </div>
     </div>
-
     <div class="borderline"></div>
     <div>
       <router-link :to="{ path: '/mypage/maker/prefunding' }">
@@ -146,15 +144,30 @@ export default {
       })
         .promise()
         .then((data) => {
+          console.log(data);
           this.image = data.Location;
+          var headers = { Authorization: this.$store.state.Authorization };
+          var result = { imgUrl: this.image };
+          axios
+            .post("https://" + serverUrl + "/maker/change/img", result, {
+              headers: headers,
+            })
+            .then((response) => {
+              alert("변경되었습니다.");
+              this.getFiles();
+              this.$router.go();
+            })
+            .catch(() => {
+              console.log("error");
+            });
         })
         .catch((err) => {
           conosle.log(err);
         });
-
-      var image = this.$refs["image"].files[0];
-      const url = URL.createObjectURL(image);
-      this.image = url;
+      // var image = this.$refs["image"].files[0];
+      // const url = URL.createObjectURL(image);
+      // this.image = url;
+      // alert("변경되었습니다.");
     },
 
     getFiles() {
@@ -186,7 +199,9 @@ export default {
             try {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key;
+                data.Contents[0].Key.split("@")[0] +
+                "%40" +
+                data.Contents[0].Key.split("@")[1];
             } catch (err) {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
@@ -194,6 +209,7 @@ export default {
           }
         }
       );
+      console.log("end");
     },
     modal() {
       this.isModalViewed = !this.isModalViewed;

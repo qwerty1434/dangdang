@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="background"></div>
-    <h1>this is a signup page</h1>
 
     <div class="signuptext">회원가입</div>
     <div>
@@ -106,29 +105,39 @@ export default {
   methods: {
     checkRealEmail() {
       const url = this.staticUrl + "/api/user/check/email";
-      axios
-        .post(url, {
-          str: this.email,
-        })
-        .then(({ data }) => {
-          // true는 중복 이메일 있는 것, false는 없는 것
-          this.isCheckEmail = data;
-          this.isCheckAuthNum = false;
-          this.isCheckNick = true;
-          this.authNum = "";
-          this.checkEmail = "";
-          this.checkNick = "";
-          //이메일 형식인지 확인
-          if (this.isCheckEmail) {
-            alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요.");
-          } else {
-            this.checkEmail = this.email;
-            this.authEmail();
-          }
-        })
-        .catch(({ data }) => {
-          alert("이메일을 다시 입력해주세요.");
-        });
+      const validateEmail =
+        /^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\.[A-Za-z0-9\\-]+/;
+
+      if (!validateEmail.test(this.email) || !this.email) {
+        alert("이메일 형식이 아닙니다. 다시 입력해주세요.");
+      } else {
+        axios
+          .post(url, {
+            str: this.email,
+          })
+          .then(({ data }) => {
+            // true는 중복 이메일 있는 것, false는 없는 것
+            this.isCheckEmail = data;
+            this.isCheckAuthNum = false;
+            this.isCheckNick = true;
+            this.authNum = "";
+            this.checkEmail = "";
+            this.checkNick = "";
+            //이메일 형식인지 확인
+            if (this.isCheckEmail) {
+              alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요.");
+            } else {
+              alert(
+                "입력하신 이메일로 인증 번호를 보냈습니다. 확인 후 입력해주세요."
+              );
+              this.checkEmail = this.email;
+              this.authEmail();
+            }
+          })
+          .catch(({ data }) => {
+            alert("이메일을 다시 입력해주세요.");
+          });
+      }
     },
     authEmail() {
       const url = this.staticUrl + "/api/user/auth-email";
@@ -140,9 +149,6 @@ export default {
           // 서버에서 정상적인 값이 넘어 왔을경우 실행.
           this.isValidEmail = data;
           this.authNum = data.authNum;
-          alert(
-            "입력하신 이메일로 인증 번호를 보냈습니다. 확인 후 입력해주세요."
-          );
         })
         .catch(({ data }) => {
           alert("이메일 재입력 필요");

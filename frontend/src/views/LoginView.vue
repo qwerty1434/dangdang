@@ -3,18 +3,23 @@
     <div class="background"></div>
     <div class="logintext">로그인</div>
     <div class="loginbox"></div>
-    <input type="text" placeholder="아이디를 입력해주세요" class="logininput" v-model="email"/>
+    <input
+      type="text"
+      placeholder="아이디를 입력해주세요"
+      class="logininput"
+      v-model="email"
+    />
     <div class="passwordbox"></div>
     <input
       type="password"
       placeholder="비밀번호를 입력해주세요"
       class="pwinput"
-      v-model="pw" 
-      />
+      v-model="pw"
+    />
     <div>
       <button @click="login()" class="loginBtn">로그인</button>
     </div>
-      <button type="button" @click="join()" class="joinBtn">회원가입</button>
+    <button type="button" @click="join()" class="joinBtn">회원가입</button>
 
     <div class="findid">아이디 찾기</div>
     <div class="findpw">비밀번호 찾기</div>
@@ -24,71 +29,76 @@
 </template>
 
 <script>
-  import axios from "axios";
-  const instance = axios.create({
-    baseURL: "/",
-    headers: {
-      Authrozation: "test",
-    },
-  });
+import axios from "axios";
+const instance = axios.create({
+  baseURL: "/",
+  headers: {
+    Authrozation: "test",
+  },
+});
 export default {
   data() {
-    return{
-      email:"",
-      pw:"",
-      isClick:false,
-      isInputId:false,
-      isInputPw:false,
+    return {
+      email: "",
+      pw: "",
+      isClick: false,
+      isInputId: false,
+      isInputPw: false,
       user: { email: "", isAdmin: false, nickname: "", accessToken: "" },
       // staticUrl: "http://localhost:8080",
       // serverUrl: "https://j7a306.p.ssafy.io",
       staticUrl: "https://j7a306.p.ssafy.io",
-    }
+    };
   },
   methods: {
-    login(){
+    login() {
       const url = this.staticUrl + "/api/user/login";
-      console.log("1");
-      if(this.email==""){
-        alert("이메일을 입력해주세요.");
+      const validateEmail =
+        /^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\.[A-Za-z0-9\\-]+/;
+
+      if (!validateEmail.test(this.email) || !this.email) {
+        alert("이메일을 다시 입력해주세요.");
         this.isInputId = false;
-      } else { this.isInputId = true; }
-      if(this.email!="" && this.pw==""){
+      } else {
+        this.isInputId = true;
+      }
+      if (this.isInputId && this.email != "" && this.pw == "") {
         alert("비밀번호를 입력해주세요.");
         this.isInputPw = false;
-      } else { this.isInputPw = true; }
-      if(!this.isClick && this.isInputId && this.isInputPw){
-        axios
-          instance.post(url, {
+      } else {
+        this.isInputPw = true;
+      }
+      if (!this.isClick && this.isInputId && this.isInputPw) {
+        axios;
+        instance
+          .post(url, {
             email: this.email,
             password: this.pw,
           })
           .then(({ data }) => {
             //이메일 형식인지 확인
-              this.isClick=true;
-              console.log(data);
-              this.user.isAdmin = data.admin;
-              this.user.nickname = data.nickname;
-              this.user.email = data.email;
-              this.user.accessToken = data.accessToken;
-              this.$store.commit("registUser", this.user);
-              console.log("page 이동 전");
-              console.log(this.$store.state);
-              this.$router.go(-1);
-              console.log("page 이동 후");
-              console.log(this.$store.state);
+            this.isClick = true;
+            console.log(data);
+            this.user.isAdmin = data.admin;
+            this.user.nickname = data.nickname;
+            this.user.email = data.email;
+            this.user.accessToken = data.accessToken;
+            this.$store.commit("registUser", this.user);
+            console.log("page 이동 전");
+            console.log(this.$store.state);
+            this.$router.go(-1);
+            console.log("page 이동 후");
+            console.log(this.$store.state);
           })
           .catch(({ data }) => {
             alert("이메일과 비밀번호를 다시 확인해주세요.");
           });
       }
-      
     },
-    join(){
-      this.$router.push({ path: 'signup' });
+    join() {
+      this.$router.push({ path: "signup" });
     },
   },
-
 };
 </script>
 
@@ -107,7 +117,7 @@ input[type="password"]::placeholder {
 
   background: #ffffff;
 }
-.loginBtn{
+.loginBtn {
   position: absolute;
   width: 420px;
   height: 64px;
@@ -127,7 +137,7 @@ input[type="password"]::placeholder {
 
   color: #ffffff;
 }
-.joinBtn{
+.joinBtn {
   box-sizing: border-box;
 
   position: absolute;

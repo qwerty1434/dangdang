@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="banner"></div>
-    <div class="fundingtitle">{{fundingDetail.fundingContent.title}}</div>
-    <router-link :to="{ path: '/product/story' , query: {id: fundingId}}">
+    <div class="fundingtitle">{{ fundingDetail.fundingContent.title }}</div>
+    <router-link :to="{ path: '/product/story', query: { id: fundingId } }">
       <div class="storybutton">스토리</div>
     </router-link>
-    <router-link :to="{ path: '/product/supporter' , query: {id: fundingId}}">
+    <router-link :to="{ path: '/product/supporter', query: { id: fundingId } }">
       <div class="supporterbutton">서포터</div>
     </router-link>
-    <router-link :to="{ path: '/product/account' , query: {id: fundingId}}">
+    <router-link :to="{ path: '/product/account', query: { id: fundingId } }">
       <div class="accountbutton">통장내역</div>
     </router-link>
 
@@ -16,88 +16,101 @@
       <router-view />
     </div>
 
-    <div class="due">종료 {{fundingDetail.fundingContent.remainDays}}일 전</div>
+    <div class="due">
+      종료 {{ fundingDetail.fundingContent.remainDays }}일 전
+    </div>
     <div>
       <progress
         id="progress"
-        v-bind:value=fundingDetail.fundingContent.achieveRate
+        v-bind:value="fundingDetail.fundingContent.achieveRate"
         min="0"
         max="100"
-        class="progressbar"></progress>
+        class="progressbar"
+      ></progress>
     </div>
-    <div class="complete">{{fundingDetail.fundingContent.achieveRate}}% 달성</div>
-    <div class="funded">{{fundingDetail.fundingContent.nowPrice}} 원 펀딩</div>
-    <div class="supporter">{{supporters.length}} 명의 서포터</div>
-    <router-link :to="{ path: '/product/purchase' , query: {id: fundingId}}">
+    <div class="complete">
+      {{ fundingDetail.fundingContent.achieveRate }}% 달성
+    </div>
+    <div class="funded">
+      {{ fundingDetail.fundingContent.nowPrice }} 원 펀딩
+    </div>
+    <div class="supporter">{{ supporters.length }} 명의 서포터</div>
+    <router-link :to="{ path: '/product/purchase', query: { id: fundingId } }">
       <button class="joinfunding">펀딩 참여</button>
-    </router-link>    
+    </router-link>
     <div class="makertext">메이커 정보</div>
     <router-link :to="{ path: '/maker/onfunding' , query: {id: fundingDetail.maker.id}}">
-      <div class="maker">{{fundingDetail.maker.companyName}}</div>
-      <div class="makerprofilepic"></div>
-      <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
-      <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
-      <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
+      <div class="maker">{{ fundingDetail.maker.companyName }}</div>
+      <img :src="makerProfileUrl" alt="none" class="makerprofilepic" />
+      <div class="makercompany">{{ fundingDetail.maker.companyName }}</div>
+      <div class="cumulativesupporter">
+        누적서포터 {{ fundingDetail.maker.supporter }}명
+      </div>
+      <div class="fundingdone">
+        완료한 펀딩 {{ fundingDetail.maker.fundingSum }}개
+      </div>
     </router-link>
-    <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i" />
 
+    <RewardBox
+      :class="{
+        reward1: i == 0,
+        reward2: i == 1,
+        reward3: i == 2,
+        reward4: i == 3,
+      }"
+      v-for="(item, i) in fundingDetail.rewards"
+      :reward="fundingDetail.rewards[i]"
+      :key="i"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import RewardBox from "../components/RewardBox.vue";
-import {mapState} from 'vuex';
+import { mapState } from "vuex";
 
 export default {
-  name:"Test",
+  name: "Test",
   components: {
     RewardBox: RewardBox,
   },
   data() {
     return {
       fundingId: "",
+      makerProfileUrl: "",
       // staticUrl: "http://localhost:8080",
       staticUrl: "https://j7a306.p.ssafy.io",
-
-    }
+    };
   },
-  computed:{
-    ...mapState(
-      ["fundingDetail", "supporters", "history"]
-    )
+  computed: {
+    ...mapState(["fundingDetail", "supporters", "history"]),
   },
   created() {
+    this.makerProfileUrl = this.fundingDetail.maker.img;
     this.$store.commit("deleteData");
-
     this.fundingId = this.$route.query.id;
-    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
-    const supporterUrl = this.staticUrl + "/api/funding/supporter?fundingId=" + this.fundingId
-    const historyUrl =  this.staticUrl + "/api/funding/usage?fundingId="+ this.fundingId
-    
+    const detailUrl =
+      this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId;
+    const supporterUrl =
+      this.staticUrl + "/api/funding/supporter?fundingId=" + this.fundingId;
+    const historyUrl =
+      this.staticUrl + "/api/funding/usage?fundingId=" + this.fundingId;
+
     var headers = { Authorization: this.$store.state.Authorization };
-    
-    axios
-      .get(detailUrl, {
-      })
-      .then(({ data }) => {
-        this.$store.commit("setFundingDetail", data);
-        console.log(data);
-      })
 
-    axios
-      .get(supporterUrl, {
-      })
-      .then(({ data }) => {
-        this.$store.commit("setSupporters", data);
-      })
+    axios.get(detailUrl, {}).then(({ data }) => {
+      this.$store.commit("setFundingDetail", data);
+    });
 
-    axios
-      .get(historyUrl, {"headers":headers})
-      .then(({ data }) => {
-        this.$store.commit("setHistory", data);
-      })
-  }
+    axios.get(supporterUrl, {}).then(({ data }) => {
+      this.$store.commit("setSupporters", data);
+    });
+
+    axios.get(historyUrl, { headers: headers }).then(({ data }) => {
+      this.$store.commit("setHistory", data);
+    });
+  },
 };
 </script>
 

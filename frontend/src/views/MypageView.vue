@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a my page</h1>
     <div>
       <div class="pointer"></div>
       <div class="supporter">서포터</div>
@@ -55,7 +54,6 @@
       <div class="withdrawbox"></div>
       <div class="withdrawtext">출금</div>
     </div>
-
     <div class="borderline"></div>
     <div
       style="
@@ -66,18 +64,17 @@
         margin-top: 1100px;
       "
     >
-    <router-link :to="{ path: '/mypage/onfunding'}">
-      <div class="fundinghistory">진행 중 펀딩</div>
-    </router-link>
-    <router-link :to="{ path: '/mypage/endfunding'}">
-      <div class="fundinghistory">종료 된 펀딩</div>
-    </router-link>
+      <router-link :to="{ path: '/mypage/onfunding' }">
+        <div class="fundinghistory">진행 중 펀딩</div>
+      </router-link>
+      <router-link :to="{ path: '/mypage/endfunding' }">
+        <div class="fundinghistory">종료 된 펀딩</div>
+      </router-link>
     </div>
     <div>
       <router-view />
     </div>
     <div class="background"></div>
-
   </div>
 </template>
 
@@ -85,12 +82,11 @@
 import axios from "axios";
 import { mapState } from "vuex";
 import AWS from "aws-sdk";
-import UserJoinOnFundings from '../components/UserJoinOnFundings.vue';
-
+import UserJoinOnFundings from "../components/UserJoinOnFundings.vue";
 
 const serverUrl = "j7a306.p.ssafy.io/api";
 export default {
-  components: { UserJoinOnFundings},
+  components: { UserJoinOnFundings },
   data() {
     return {
       albumBucketName: "dangdang-bucket",
@@ -140,16 +136,20 @@ export default {
       })
         .promise()
         .then((data) => {
+          alert("변경되었습니다.");
+          this.getFiles();
+          this.$router.go();
+
           this.image = data.Location;
         })
         .catch((err) => {
           conosle.log(err);
         });
 
-      // 이게 있으면 유저 입장에서는 빨리 바뀐다고 느껴짐 근데 빨리 바꿧다고 생각하고 페이지를 벗어나버리면 문제가 생김
-      var image = this.$refs["image"].files[0];
-      const url = URL.createObjectURL(image);
-      this.image = url;
+      // var image = this.$refs["image"].files[0];
+      // const url = URL.createObjectURL(image);
+      // this.image = url;
+      // alert("이미지가 변경되었습니다.");
     },
 
     getFiles() {
@@ -181,7 +181,9 @@ export default {
               console.log(data);
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key;
+                data.Contents[0].Key.split("@")[0] +
+                "%40" +
+                data.Contents[0].Key.split("@")[1];
             } catch (err) {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
@@ -192,7 +194,7 @@ export default {
     },
 
     changeNickname() {
-      console.log(this.nick);
+      // const url = "http://localhost:8080/api/user/change/nick";
       const url = "https://" + serverUrl + "/user/change/nick";
       axios
         .patch(
@@ -212,9 +214,9 @@ export default {
           if (this.isCheckNick) {
             // state의 유저의 닉네임 변경
             this.$store.commit("SET_CHANGENICK", this.nick);
-            console.log("change nickname successful");
+            alert("닉네임 변경이 완료되었습니다 :)");
           } else {
-            alert("이미 사용중인 닉네임입니다.");
+            alert("이미 사용중인 닉네임입니다 :(");
             this.nick = "";
           }
         })
