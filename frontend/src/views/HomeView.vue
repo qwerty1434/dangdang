@@ -12,6 +12,10 @@
     <div class="fresh">신규상품</div>
     <new-fundings class="newfunding"></new-fundings>
     <div class="to_fresh">더보기</div>
+
+    <!-- <router-link :to="{ path: '/funding' , query: {id: 'food'}}">
+      <div class="temp">펀딩목록가기</div>
+    </router-link> -->
    
      
   
@@ -28,7 +32,7 @@ import PopularFundings from '../components/PopularFundings.vue';
 
 
 export default {
-  components: { DeadLineFundings, PopularFundings, NewFundings },
+  components: { DeadLineFundings, PopularFundings, NewFundings},
   name: "HomeView",
 
 };
@@ -184,5 +188,12 @@ export default {
   position: absolute;
   top: 2400px;
 }
-
+.position{
+  position: absolute;
+  top: 3000px;
+}
+.temp{
+  position: absolute;
+  top: 10px;
+}
 </style>
