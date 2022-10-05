@@ -331,13 +331,19 @@ export default {
 
   color: #000000;
 }
+#progress::-webkit-progress-bar {
+  background: #f7f7f7;
+}
+#progress::-webkit-progress-value {
+  background: #62b878;
+}
 .progressbar {
   width: 300px;
   height: 20px;
   left: 0px;
   top: 458px;
 
-  background: #67be7e;
+  background: #62b878;
 }
 .bars {
   width: 300px;

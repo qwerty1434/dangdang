@@ -1,68 +1,104 @@
 <template>
   <div>
-    <div class="fundings" style="display:flex; justify-content: space-between; width: 1500px; margin:auto;">
-         <img
-         @click="left()"
+    <div
+      class="fundings"
+      style="
+        display: flex;
+        justify-content: space-between;
+        width: 1500px;
+        margin: auto;
+      "
+    >
+      <img
+        @click="left()"
         class="onpoint"
         src="@/assets/left.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
         alt=""
       />
 
-    <div id="fundingList">
-      
-      <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
+      <div id="fundingList">
+        <div
+          v-for="funding in fundings"
+          :key="funding.id"
+          style="margin-right: 30px"
+        >
+          <img
+            @click="checkOrder(funding.id, funding.title)"
+            class="cart"
+            src="@/assets/장바구니.png"
+            style="width: 30px; height: 30px; box-sizing: border-box"
+            alt=""
+          />
+          <modal-view v-if="isModalViewed" @close-modal="isModalViewed = false">
+            <my-order
+              :orderprice="this.orderprice"
+              :fundingTitle="this.orderfundingTitle"
+              :userOrderList="this.userOrderList"
+            ></my-order>
+          </modal-view>
+          <div class="thumbnail">
+            <router-link
+              :to="{ path: '/product/story', query: { id: funding.id } }"
+            >
+              <img
+                :src="funding.img"
+                style="width: 300px; height: 400px; box-sizing: border-box"
+                alt=""
+              />
+            </router-link>
+          </div>
+          <div class="title" style="margin-top: 5px">{{ funding.title }}</div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              width: 300px;
+              margin-top: 5px;
+            "
+          >
+            <div class="category">{{ funding.category }}</div>
+            <div class="makername">{{ funding.companyName }}</div>
+          </div>
+          <progress
+            id="progress"
+            :value="funding.achieveRate * 100"
+            min="0"
+            max="100"
+            class="progressbar"
+            style="margin-top: 5px"
+          ></progress>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-top: 5px;
+              width: 300px;
+            "
+          >
+            <div class="percentage">{{ funding.achieveRate * 100 }}%</div>
+            <div class="total">{{ funding.nowPrice }}원(코인)</div>
+          </div>
+        </div>
+      </div>
       <img
-         @click="checkOrder(funding.id, funding.title)"
-        class="cart"
-        src="@/assets/장바구니.png"
-        style="width: 30px; height: 30px; box-sizing: border-box; "
-        alt=""
-      />
-      <modal-view v-if="isModalViewed" @close-modal="isModalViewed = false">
-        <my-order :orderprice=this.orderprice :fundingTitle=this.orderfundingTitle :userOrderList=this.userOrderList></my-order>
-      </modal-view>
-      <div class="thumbnail">
-        <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">
-      <img
-        :src="funding.img"
-        style="width: 300px; height: 400px; box-sizing: border-box"
-        alt=""
-      />
-      </router-link>
-
-    </div>
-    <div class="title" style="margin-top:5px">{{funding.title}}</div>
-    <div style="display:flex; justify-content: space-between; width: 300px; margin-top:5px">
-      <div class="category">{{funding.category}}</div>
-      <div class="makername" >{{funding.companyName}}</div>
-    </div>
-    <progress
-      id="progress"
-      :value="funding.achieveRate*100"
-      min="0"
-      max="100"
-      class="progressbar"
-      style="margin-top : 5px"
-    ></progress>
-    <div style="display:flex; justify-content: space-between; margin-top:5px; width: 300px">
-       <div class="percentage">{{funding.achieveRate*100}}%</div>
-       <div class="total">{{funding.nowPrice}}원(코인)</div>
-    </div>
-    </div>
-
-    </div>
-    <img
         class="onpoint"
         src="@/assets/right.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
         alt=""
         @click="right()"
       />
-
     </div>
- 
-    
 
     <div class="background"></div>
   </div>
@@ -70,15 +106,14 @@
 
 <script>
 import axios from "axios";
-import {mapState} from 'vuex';
-import MyOrder from '@/components/MyOrder.vue';
-import ModalView from './ModalView.vue';
-
+import { mapState } from "vuex";
+import MyOrder from "@/components/MyOrder.vue";
+import ModalView from "./ModalView.vue";
 
 export default {
   components: { ModalView, MyOrder },
-    name: "UserJoinEndFundings",
-  
+  name: "UserJoinEndFundings",
+
   data() {
     return {
       image: "",
@@ -86,122 +121,115 @@ export default {
       fundings: [],
       state: 2,
       nextfundings: [],
-      isModalViewed : false,
+      isModalViewed: false,
       orderprice: 0,
       userOrderList: [],
       orderfundingTitle: "",
     };
   },
-  computed:{
-    ...mapState(
-      ["user", "Authorization"]
-    )
-
+  computed: {
+    ...mapState(["user", "Authorization"]),
   },
-  created(){
+  created() {
     this.getFundings();
   },
   methods: {
-    getFundings(){
+    getFundings() {
       // const url = "http://localhost:8080/api/user/funding-list"
-      const url = "https://j7a306.p.ssafy.io/api/user/funding-list"
-      axios.get(url, {
-        params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        Authorization: this.Authorization
-      },
-    })
-      .then(({data}) => {
-        this.fundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
+      const url = "https://j7a306.p.ssafy.io/api/user/funding-list";
+      axios
+        .get(url, {
+          params: {
+            state: this.state,
+            page: this.nowPage,
+            size: 4,
+          },
+          headers: {
+            Authorization: this.Authorization,
+          },
+        })
+        .then(({ data }) => {
+          this.fundings = data;
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    left(){
-      this.nowPage = this.nowPage -1;
-      if(this.nowPage <0){
+    left() {
+      this.nowPage = this.nowPage - 1;
+      if (this.nowPage < 0) {
         this.nowPage = 0;
       }
       console.log(this.nowPage);
-      this.getFundings()
+      this.getFundings();
     },
-    right(){
+    right() {
       this.nowPage = this.nowPage + 1;
-      console.log(this.nowPage)
-      if(this.fundings.length == 4){
-        this.checknext()
-        if(this.nextfundings.length != 0){
-            this.getFundings()
-        }else{
-          this.nowPage = this.nowPage-1;
+      console.log(this.nowPage);
+      if (this.fundings.length == 4) {
+        this.checknext();
+        if (this.nextfundings.length != 0) {
+          this.getFundings();
+        } else {
+          this.nowPage = this.nowPage - 1;
         }
-        
-      }else{
+      } else {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext(){
+    checknext() {
       // const url = "http://localhost:8080/api/user/funding-list"
-      const url = "https://j7a306.p.ssafy.io/api/user/funding-list"
-      axios.get(url, {
-        params: {
-          state : this.state,
-          page : this.nowPage,
-          size : 4
-        },headers: {
-        Authorization: this.Authorization
-      },
-    })
-      .then(({data}) => {
-        this.nextfundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-
+      const url = "https://j7a306.p.ssafy.io/api/user/funding-list";
+      axios
+        .get(url, {
+          params: {
+            state: this.state,
+            page: this.nowPage,
+            size: 4,
+          },
+          headers: {
+            Authorization: this.Authorization,
+          },
+        })
+        .then(({ data }) => {
+          this.nextfundings = data;
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    checkOrder(fundingId, fundingTitle){
+    checkOrder(fundingId, fundingTitle) {
       this.isModalViewed = true;
-      console.log(fundingId)
+      console.log(fundingId);
       // const url = "http://localhost:8080/api/funding/user/order"
-      const url = "https://j7a306.p.ssafy.io/api/funding/user/order"
-      axios.get(url, {
-        params: {
-          fundingId : fundingId,
-        },headers: {
-        Authorization: this.Authorization
-      },
-    })
-      .then(({data}) => {
-        console.log(data)
-        this.orderprice = data.orderTotalPrice,
-        console.log(this.orderprice+'총주문금액')
-        this.userOrderList = data.userOrderList
-        this.orderfundingTitle = fundingTitle
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-
-
-
+      const url = "https://j7a306.p.ssafy.io/api/funding/user/order";
+      axios
+        .get(url, {
+          params: {
+            fundingId: fundingId,
+          },
+          headers: {
+            Authorization: this.Authorization,
+          },
+        })
+        .then(({ data }) => {
+          console.log(data);
+          (this.orderprice = data.orderTotalPrice),
+            console.log(this.orderprice + "총주문금액");
+          this.userOrderList = data.userOrderList;
+          this.orderfundingTitle = fundingTitle;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
 </script>
 
 <style scoped>
-
-
 .aliastext {
   position: absolute;
   width: 200px;
@@ -217,13 +245,11 @@ export default {
 
   color: #000000;
 }
-.fundinghistory{
+.fundinghistory {
   width: 200px;
   height: 28px;
   left: 259px;
   cursor: pointer;
-
-  
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
@@ -302,13 +328,19 @@ export default {
 
   color: #000000;
 }
+#progress::-webkit-progress-bar {
+  background: #f7f7f7;
+}
+#progress::-webkit-progress-value {
+  background: #62b878;
+}
 .progressbar {
   width: 300px;
   height: 20px;
   left: 0px;
   top: 458px;
 
-  background: #67be7e;
+  background: #62b878;
 }
 .bars {
   width: 300px;
@@ -333,7 +365,6 @@ export default {
   color: #000000;
 }
 .total {
- 
   height: 14px;
   left: 60px;
   top: 484px;
@@ -361,24 +392,22 @@ export default {
 
   color: #000000;
 }
-#fundingList{
-  display: flex ;
+#fundingList {
+  display: flex;
   flex-flow: wrap;
   /* justify-content: space-between; */
   /* gap: 10px 1%; */
   width: 1320px;
 
   margin-top: 70px;
-
 }
-.onpoint{
+.onpoint {
   cursor: pointer;
 }
-.cart{
+.cart {
   cursor: pointer;
   position: absolute;
   margin-top: 20px;
   margin-left: 250px;
-
 }
 </style>
