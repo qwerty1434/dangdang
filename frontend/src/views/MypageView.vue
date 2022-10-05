@@ -54,7 +54,6 @@
       <div class="withdrawbox"></div>
       <div class="withdrawtext">출금</div>
     </div>
-
     <div class="borderline"></div>
     <div
       style="
@@ -137,17 +136,20 @@ export default {
       })
         .promise()
         .then((data) => {
+          alert("변경되었습니다.");
+          this.getFiles();
+          this.$router.go();
+
           this.image = data.Location;
         })
         .catch((err) => {
           conosle.log(err);
         });
 
-      // 이게 있으면 유저 입장에서는 빨리 바뀐다고 느껴짐 근데 빨리 바꿧다고 생각하고 페이지를 벗어나버리면 문제가 생김
-      var image = this.$refs["image"].files[0];
-      const url = URL.createObjectURL(image);
-      this.image = url;
-      alert("이미지가 변경되었습니다.");
+      // var image = this.$refs["image"].files[0];
+      // const url = URL.createObjectURL(image);
+      // this.image = url;
+      // alert("이미지가 변경되었습니다.");
     },
 
     getFiles() {
@@ -179,7 +181,9 @@ export default {
               console.log(data);
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key;
+                data.Contents[0].Key.split("@")[0] +
+                "%40" +
+                data.Contents[0].Key.split("@")[1];
             } catch (err) {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
