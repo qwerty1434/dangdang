@@ -2,8 +2,13 @@
   <div>
     <div>
       <router-link :to="{ name: 'home' }">
-        <div class="logo"></div>
-        <div class="logotext">당당</div>
+        <div class="logo">
+          <img
+            src="@/assets/logo.png"
+            style="height: 60px; width: auto"
+            alt="" />
+        </div>
+        <div class="logotext"></div>
       </router-link>
     </div>
     <div>
@@ -12,8 +17,7 @@
         placeholder="어떤 프로젝트를 찾고 계신가요?"
         class="searchbar"
         v-model="keyword"
-        v-on:keyup.enter="searchFunding()"
-      />
+        v-on:keyup.enter="searchFunding()" />
     </div>
 
     <div class="searchbutton"></div>
@@ -110,7 +114,7 @@ export default {
             this.keyword = "";
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -127,12 +131,8 @@ input:focus {
 }
 .logo {
   position: absolute;
-  width: 120px;
-  height: 60px;
   left: 170px;
   top: 60px;
-
-  background: rgba(52, 168, 83, 0.5);
 }
 .logotext {
   position: absolute;
@@ -354,7 +354,7 @@ input:focus {
 }
 .shadow {
   position: absolute;
-  width: 1920px;
+  width: 1900px;
   height: 10px;
   left: 0px;
   top: 230px;

@@ -14,22 +14,18 @@
       </div>
       <div
         id="fundingList"
-        style="width: 1320px; margin: auto; margin-top: 260px"
-      >
+        style="width: 1320px; margin: auto; margin-top: 260px">
         <div
           v-for="funding in fundingList"
           :key="funding.id"
-          style="margin-right: 30px; margin-top: 30px"
-        >
+          style="margin-right: 30px; margin-top: 30px">
           <div class="thumbnail">
             <router-link
-              :to="{ path: '/product/story', query: { id: funding.id } }"
-            >
+              :to="{ path: '/product/story', query: { id: funding.id } }">
               <img
                 :src="funding.img"
                 style="width: 300px; height: 400px; box-sizing: border-box"
-                alt=""
-              />
+                alt="" />
             </router-link>
           </div>
           <div class="title" style="margin-top: 5px">{{ funding.title }}</div>
@@ -39,8 +35,7 @@
               justify-content: space-between;
               width: 300px;
               margin-top: 5px;
-            "
-          >
+            ">
             <div class="category">{{ funding.category }}</div>
             <div class="makername">{{ funding.companyName }}</div>
           </div>
@@ -50,15 +45,13 @@
             min="0"
             max="100"
             class="progressbar"
-            style="margin-top: 5px"
-          ></progress>
+            style="margin-top: 5px"></progress>
           <div
             style="
               display: flex;
               justify-content: space-between;
               margin-top: 5px;
-            "
-          >
+            ">
             <div class="percentage">{{ funding.achieveRate }}%</div>
             <div class="total" v-if="this.id != 'plan'">
               {{ funding.nowPrice }}원(코인)
@@ -81,8 +74,7 @@
             width: 200px;
             margin: auto;
             margin-top: 70px;
-          "
-        >
+          ">
           <div @click="change(0)">1</div>
           <div @click="change(1)">2</div>
           <div @click="change(2)">3</div>
@@ -161,7 +153,7 @@ export default {
             this.fundingList = data.fundingList;
             console.log(data);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       } else if (this.id == "new") {
@@ -178,7 +170,7 @@ export default {
             this.fundingList = data.fundingList;
             console.log(data);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       } else if (this.id == "popular") {
@@ -194,7 +186,7 @@ export default {
             this.fundingList = data.fundingList;
             console.log(data);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       } else if (this.id == "plan") {
@@ -211,7 +203,7 @@ export default {
             this.fundingList = data.fundingList;
             console.log(data);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       } else {
@@ -228,7 +220,7 @@ export default {
             this.fundingList = data.fundingList;
             console.log(data);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       }

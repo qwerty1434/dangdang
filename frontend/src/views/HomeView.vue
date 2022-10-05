@@ -2,7 +2,12 @@
   <div>
     <div class="background"></div>
 
-    <div class="banner"></div>
+    <div class="banner">
+      <img
+        src="@/assets/banner1.png"
+        style="width: 1900px; height: auto"
+        alt="" />
+    </div>
     <div class="imminent">마감임박</div>
 
     <router-link
@@ -50,12 +55,8 @@ export default {
 }
 .banner {
   position: absolute;
-  width: 100%;
-  height: 550px;
   left: 0px;
-  top: 230px;
-
-  background: url("@/assets/550banner.png");
+  top: 210px;
 }
 .imminent {
   position: absolute;
@@ -104,30 +105,6 @@ export default {
   text-align: center;
 
   color: #000000;
-}
-.carousel1 {
-  position: absolute;
-  width: 1380px;
-  height: 490px;
-  left: 270px;
-  top: 968px;
-  background: url("@/assets/캐러셀1.png");
-}
-.carousel2 {
-  position: absolute;
-  width: 1380px;
-  height: 490px;
-  left: 270px;
-  top: 1696px;
-  background: url("@/assets/캐러셀2.png");
-}
-.carousel3 {
-  position: absolute;
-  width: 1380px;
-  height: 490px;
-  left: 270px;
-  top: 2424px;
-  background: url("@/assets/캐러셀3.png");
 }
 .to_imminent {
   position: absolute;
