@@ -37,23 +37,34 @@
       >회원가입</router-link
     >
     <div class="bar2">|</div>
-    <div class="category">카테고리</div>
-    <router-link :to="{ name: 'plan' }" class="plan">펀딩예정</router-link>
+    <div>
+      <div class="category">카테고리</div>
+      <div>
+        <category-list class="categorylist"></category-list>
+      </div>
+    </div>
 
-    <router-link :to="{ name: 'funding' }" class="funding"
+    <router-link :to="{ path: '/funding', query: { id: 'plan' } }" class="plan"
+      >펀딩예정</router-link
+    >
+
+    <router-link
+      :to="{ path: '/funding', query: { id: 'new' } }"
+      class="funding"
       >당당펀딩</router-link
     >
-    <router-link :to="{ name: 'charity' }" class="charity"
+    <router-link
+      :to="{ path: '/funding', query: { id: 'charity' } }"
+      class="charity"
       >당당후원</router-link
     >
     <div class="notification">공지사항</div>
-
     <div class="shadow"></div>
-    <div class=""></div>
   </div>
 </template>
 
 <script>
+import CategoryList from "@/components/CategoryList.vue";
 export default {
   name: "NavBar",
   data() {
@@ -64,6 +75,9 @@ export default {
       this.$store.commit("logout");
       alert("로그아웃 되었습니다.");
     },
+  },
+  components: {
+    CategoryList,
   },
 };
 </script>
@@ -224,6 +238,15 @@ input:focus {
   /* identical to box height */
 
   color: #000000;
+}
+.categorylist {
+  position: absolute;
+  z-index: 10;
+  position: absolute;
+  width: 240px;
+  height: 320px;
+  left: 100px;
+  top: 202px;
 }
 .plan {
   position: absolute;

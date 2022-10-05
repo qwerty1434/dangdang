@@ -122,7 +122,7 @@ const routes = [
   {
     path: "/temp",
     name: "temp",
-    component: () => import("@/views/FundingCashout.vue"),
+    component: () => import("@/components/CategoryList.vue"),
   },
 ];
 

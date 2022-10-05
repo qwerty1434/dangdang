@@ -4,33 +4,38 @@
 
     <div class="banner"></div>
     <div class="imminent">마감임박</div>
-    <div class="to_imminent">더보기</div>
+
+    <router-link
+      :to="{ path: '/funding', query: { id: 'endedAt' } }"
+      class="to_imminent"
+      >더보기</router-link
+    >
     <dead-line-fundings class="imminentfunding"></dead-line-fundings>
     <div class="popular">인기상품</div>
     <popular-fundings class="popularfunding"></popular-fundings>
-    <div class="to_popular">더보기</div>
+    <router-link
+      :to="{ path: '/funding', query: { id: 'popular' } }"
+      class="to_popular"
+      >더보기</router-link
+    >
+    <router-link
+      :to="{ path: '/funding', query: { id: 'new' } }"
+      class="to_fresh"
+      >더보기</router-link
+    >
     <div class="fresh">신규상품</div>
     <new-fundings class="newfunding"></new-fundings>
-    <div class="to_fresh">더보기</div>
-   
-     
-  
-    
-
-     
   </div>
 </template>
 
 <script>
-import DeadLineFundings from '../components/DeadLineFundings.vue';
-import NewFundings from '../components/NewFundings.vue';
-import PopularFundings from '../components/PopularFundings.vue';
-
+import DeadLineFundings from "../components/DeadLineFundings.vue";
+import NewFundings from "../components/NewFundings.vue";
+import PopularFundings from "../components/PopularFundings.vue";
 
 export default {
   components: { DeadLineFundings, PopularFundings, NewFundings },
   name: "HomeView",
-
 };
 </script>
 
@@ -172,17 +177,16 @@ export default {
 
   color: rgba(0, 0, 0, 0.5);
 }
-.imminentfunding{
+.imminentfunding {
   position: absolute;
   top: 944px;
 }
-.popularfunding{
+.popularfunding {
   position: absolute;
   top: 1672px;
 }
-.newfunding{
+.newfunding {
   position: absolute;
   top: 2400px;
 }
-
 </style>
