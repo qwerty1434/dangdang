@@ -32,12 +32,13 @@
       <button class="joinfunding">펀딩 참여</button>
     </router-link>    
     <div class="makertext">메이커 정보</div>
-    <div class="maker">{{fundingDetail.maker.companyName}}</div>
-    <div class="makerprofilepic"></div>
-    <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
-    <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
-    <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
-    
+    <router-link :to="{ path: '/maker/onfunding' , query: {id: fundingDetail.maker.id}}">
+      <div class="maker">{{fundingDetail.maker.companyName}}</div>
+      <div class="makerprofilepic"></div>
+      <div class="makercompany">{{fundingDetail.maker.companyName}}</div>
+      <div class="cumulativesupporter">누적서포터 {{fundingDetail.maker.supporter}}명</div>
+      <div class="fundingdone">완료한 펀딩 {{fundingDetail.maker.fundingSum}}개</div>
+    </router-link>
     <RewardBox :class= "{reward1: i==0, reward2: i==1,reward3: i==2,reward4: i==3}" v-for="(item, i) in fundingDetail.rewards" :reward=fundingDetail.rewards[i] :key ="i" />
 
   </div>
@@ -81,6 +82,7 @@ export default {
       })
       .then(({ data }) => {
         this.$store.commit("setFundingDetail", data);
+        console.log(data);
       })
 
     axios
