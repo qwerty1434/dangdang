@@ -1,27 +1,21 @@
 <template>
   <div>
-   
-  <!-- <div class="mockup"></div> -->
-  <img class="mockup" v-bind:src=fundingDetail.bodyImages[0].img>
-
+    <!-- <div class="mockup"></div> -->
+    <img class="mockup" v-bind:src="fundingDetail.bodyImages[0].img" />
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from "vuex";
 
-export default {  
+export default {
   data() {
     return {
-      fundingId:"",
-    }
-  
+      fundingId: "",
+    };
   },
-  computed:{
-    ...mapState(
-      ["fundingDetail", "supporters"]
-    )
-
+  computed: {
+    ...mapState(["fundingDetail", "supporters"]),
   },
 };
 </script>

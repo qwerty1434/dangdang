@@ -39,9 +39,9 @@
       >회원가입</router-link
     >
     <div class="bar2">|</div>
-    <div>
+    <div class="stop-dragging" @click="toggleShow">
       <div class="category">카테고리</div>
-      <div>
+      <div v-if="show">
         <category-list class="categorylist"></category-list>
       </div>
     </div>
@@ -68,45 +68,52 @@
 <script>
 import CategoryList from "@/components/CategoryList.vue";
 import axios from "axios";
+
 export default {
   name: "NavBar",
   data() {
     return {
       keyword: "",
       searchFundings: [],
+      show: false,
     };
   },
   methods: {
+    toggleShow() {
+      this.show = !this.show;
+    },
     logout() {
       this.$store.commit("logout");
       alert("로그아웃 되었습니다.");
     },
-    searchFunding(){
+    searchFunding() {
       console.log(this.keyword);
       // const url = "http://localhost:8080/api/funding/searchtitle"
-      const url = "https://j7a306.p.ssafy.io/api/funding/searchtitle"
-      axios.get(url, {
-        params: {
-          keyword : this.keyword
-        }
-    })
-      .then(({data}) => {
-        this.searchFundings = data.fundingList;
-        if(this.searchFundings.length == 0){
-          alert("해당 펀딩이 존재하지 않습니다 :(");
-          this.keyword = "";
-        }else{
-          this.$store.commit("SearchFunding", data.fundingList);
-          this.$router.push({ path: "funding", query: { search: this.keyword  } });
-          this.keyword = "";
-        }
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-
-    }
+      const url = "https://j7a306.p.ssafy.io/api/funding/searchtitle";
+      axios
+        .get(url, {
+          params: {
+            keyword: this.keyword,
+          },
+        })
+        .then(({ data }) => {
+          this.searchFundings = data.fundingList;
+          if (this.searchFundings.length == 0) {
+            alert("해당 펀딩이 존재하지 않습니다 :(");
+            this.keyword = "";
+          } else {
+            this.$store.commit("SearchFunding", data.fundingList);
+            this.$router.push({
+              path: "funding",
+              query: { search: this.keyword },
+            });
+            this.keyword = "";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   components: {
     CategoryList,
