@@ -77,7 +77,7 @@ public class MakerController {
         return makerService.totalSupport(makerId);
     }
 
-    @GetMapping("/funding-list")
+    @PostMapping("/funding-list")
     @ApiOperation(value="(판매자페이지) 메이커 펀딩 목록 조회", notes = "'/api/maker/funding-list?page=1&size=12&sort=startDate 형식으로 사용")
     public List<FundingListResponse> findFundingList(
             @RequestBody MakerFundingListRequest input, Pageable pageable, HttpServletRequest req) throws NotFoundException, NotValidateAccessToken {
