@@ -111,6 +111,25 @@ const routes = [
     component: () => import("@/views/FundingCashout.vue"),
   },
   {
+    path: "/maker",
+    name: "clientMakerView",
+    component: () => import("@/views/ClientMakerView.vue"),
+    children: [
+      {
+        path: "prefunding",
+        component: () => import("@/components/MakerPreFunding.vue"),
+      },
+      {
+        path: "onfunding",
+        component: () => import("@/components/MakerProcessFunding.vue"),
+      },
+      {
+        path: "endfunding",
+        component: () => import("@/components/MakerEndFunding.vue"),
+      },
+    ],
+  },
+  {
     path: "/404",
     name: "notfound",
     component: () => import("@/views/NotFound.vue"),

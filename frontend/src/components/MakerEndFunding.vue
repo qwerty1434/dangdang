@@ -12,14 +12,6 @@
     <div id="fundingList">
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
-        <router-link :to="{ path: '/funding/cashout' , query: {id: funding.id}}">
-          <img
-            class="coin"
-            src="@/assets/금액.png"
-            style="width: 30px; height: 30px; box-sizing: border-box; "
-            alt=""
-          />
-        </router-link>
       <div class="thumbnail">
       <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">  
       <img
@@ -59,9 +51,6 @@
       />
 
     </div>
- 
-    
-
     <div class="background"></div>
   </div>
 </template>
@@ -95,10 +84,12 @@ export default {
   methods: {
     getFundings(){
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
-      axios.get(url, {
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
+      axios.post(url, {
+        makerId: this.$route.query.id,
+        state : this.state,
+
         params: {
-          state : this.state,
           page : this.nowPage,
           size : 4
         },headers: {
@@ -106,7 +97,7 @@ export default {
       },
     })
       .then(({data}) => {
-        this.fundings = data.fundingList;
+        this.fundings = data;
         console.log(data)
       }).catch((err)=> {
       
@@ -139,10 +130,11 @@ export default {
     },
     checknext(){
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
-      axios.get(url, {
-        params: {
-          state : this.state,
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
+      axios.post(url, {
+        makerId: this.$route.query.id,
+        state : this.state,
+          params: {
           page : this.nowPage,
           size : 4
         },headers: {
@@ -150,7 +142,7 @@ export default {
       },
     })
       .then(({data}) => {
-        this.nextfundings = data.fundingList;
+        this.nextfundings = data;
         console.log(data)
       }).catch((err)=> {
       
@@ -337,12 +329,5 @@ export default {
 }
 .onpoint{
   cursor: pointer;
-}
-.coin{
-  cursor: pointer;
-  position: absolute;
-  margin-top: 20px;
-  margin-left: 250px;
-
 }
 </style>

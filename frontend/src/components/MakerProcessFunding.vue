@@ -12,22 +12,14 @@
     <div id="fundingList">
       
       <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
-        <router-link :to="{ path: '/funding/cashout' , query: {id: funding.id}}">
+      <div class="thumbnail">
+        <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">
           <img
-            class="coin"
-            src="@/assets/금액.png"
-            style="width: 30px; height: 30px; box-sizing: border-box; "
+            :src="funding.img"
+            style="width: 300px; height: 400px; box-sizing: border-box"
             alt=""
           />
-        </router-link>
-      <div class="thumbnail">
-      <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">  
-      <img
-        :src="funding.img"
-        style="width: 300px; height: 400px; box-sizing: border-box"
-        alt=""
-      />
-      </router-link>
+       </router-link>
 
     </div>
     <div class="title" style="margin-top:5px">{{funding.title}}</div>
@@ -43,9 +35,10 @@
       class="progressbar"
       style="margin-top : 5px"
     ></progress>
-    <div style="display:flex; justify-content: space-between; margin-top:5px; width: 300px">
-       <div class="percentage">{{funding.achieveRate*100}}%</div>
-       <div class="total">{{funding.nowPrice}}원(코인)</div>
+    <div style="display:flex; justify-content: space-between; margin-top:5px">
+    <div class="percentage">{{funding.achieveRate*100}}%</div>
+    <div class="total">{{funding.nowPrice}}원(코인)</div>
+    <div class="remain">{{funding.remainDays}}일 남음</div>
     </div>
     </div>
 
@@ -72,14 +65,14 @@ import {mapState} from 'vuex';
 
 
 export default {
-    name: "MakerMypageEndFunding",
+    name: "MakerMypageProcessFunding",
   
   data() {
     return {
       image: "",
       nowPage: 0,
       fundings: [],
-      state: 2,
+      state: 1,
       nextfundings: [],
     };
   },
@@ -95,23 +88,24 @@ export default {
   methods: {
     getFundings(){
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
-      axios.get(url, {
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
+
+      axios.post(url, {
+        makerId: this.$route.query.id,
+        state : this.state,
         params: {
-          state : this.state,
           page : this.nowPage,
           size : 4
-        },headers: {
-        Authorization: this.Authorization
-      },
+        },
+        headers: {
+          Authorization: this.Authorization
+        },
     })
       .then(({data}) => {
-        this.fundings = data.fundingList;
-        console.log(data)
+        this.fundings = data;
+        console.log(data);
       }).catch((err)=> {
-      
         console.log(err)
-        
       })
     },
     left(){
@@ -139,10 +133,11 @@ export default {
     },
     checknext(){
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/funding/maker/list"
-      axios.get(url, {
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
+      axios.post(url, {
+        makerId: this.$route.query.id,
+        state : this.state,
         params: {
-          state : this.state,
           page : this.nowPage,
           size : 4
         },headers: {
@@ -150,7 +145,7 @@ export default {
       },
     })
       .then(({data}) => {
-        this.nextfundings = data.fundingList;
+        this.nextfundings = data;
         console.log(data)
       }).catch((err)=> {
       
@@ -297,7 +292,7 @@ export default {
   color: #000000;
 }
 .total {
- 
+  width: 140px;
   height: 14px;
   left: 60px;
   top: 484px;
@@ -337,12 +332,5 @@ export default {
 }
 .onpoint{
   cursor: pointer;
-}
-.coin{
-  cursor: pointer;
-  position: absolute;
-  margin-top: 20px;
-  margin-left: 250px;
-
 }
 </style>

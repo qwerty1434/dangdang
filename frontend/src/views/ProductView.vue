@@ -39,15 +39,17 @@
       <button class="joinfunding">펀딩 참여</button>
     </router-link>
     <div class="makertext">메이커 정보</div>
-    <div class="maker">{{ fundingDetail.maker.companyName }}</div>
-    <img :src="makerProfileUrl" alt="none" class="makerprofilepic" />
-    <div class="makercompany">{{ fundingDetail.maker.companyName }}</div>
-    <div class="cumulativesupporter">
-      누적서포터 {{ fundingDetail.maker.supporter }}명
-    </div>
-    <div class="fundingdone">
-      완료한 펀딩 {{ fundingDetail.maker.fundingSum }}개
-    </div>
+    <router-link :to="{ path: '/maker/onfunding' , query: {id: fundingDetail.maker.id}}">
+      <div class="maker">{{ fundingDetail.maker.companyName }}</div>
+      <img :src="fundingDetail.maker.img" alt="none" class="makerprofilepic" />
+      <div class="makercompany">{{ fundingDetail.maker.companyName }}</div>
+      <div class="cumulativesupporter">
+        누적서포터 {{ fundingDetail.maker.supporter }}명
+      </div>
+      <div class="fundingdone">
+        완료한 펀딩 {{ fundingDetail.maker.fundingSum }}개
+      </div>
+    </router-link>
 
     <RewardBox
       :class="{
@@ -76,7 +78,6 @@ export default {
   data() {
     return {
       fundingId: "",
-      makerProfileUrl: "",
       // staticUrl: "http://localhost:8080",
       staticUrl: "https://j7a306.p.ssafy.io",
     };
@@ -85,7 +86,6 @@ export default {
     ...mapState(["fundingDetail", "supporters", "history"]),
   },
   created() {
-    this.makerProfileUrl = this.fundingDetail.maker.img;
     this.$store.commit("deleteData");
     this.fundingId = this.$route.query.id;
     const detailUrl =
