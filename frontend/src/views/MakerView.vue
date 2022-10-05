@@ -146,7 +146,20 @@ export default {
       })
         .promise()
         .then((data) => {
+          console.log(data);
           this.image = data.Location;
+          var headers = { Authorization: this.$store.state.Authorization };
+          var result = { imgUrl: this.image };
+          axios
+            .post("https://" + serverUrl + "/maker/change/img", result, {
+              headers: headers,
+            })
+            .then((response) => {
+              console.log(response);
+            })
+            .catch(() => {
+              console.log("error");
+            });
         })
         .catch((err) => {
           conosle.log(err);
