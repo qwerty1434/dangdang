@@ -29,7 +29,7 @@
 
     <div>
       <div class="companytext">회사이름</div>
-      <div class="company">(주)싸피</div>
+      <div class="company">{{ this.companyName }}</div>
     </div>
 
     <div>
@@ -309,7 +309,7 @@ export default {
 }
 .company {
   position: absolute;
-  width: 280px;
+  width: 350px;
   height: 40px;
   left: 820px;
   top: 820px;
