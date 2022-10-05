@@ -83,8 +83,8 @@ export default {
     },
     searchFunding(){
       console.log(this.keyword);
-      const url = "http://localhost:8080/api/funding/searchtitle"
-      // const url = "https://j7a306.p.ssafy.io/api/funding/searchtitle"
+      // const url = "http://localhost:8080/api/funding/searchtitle"
+      const url = "https://j7a306.p.ssafy.io/api/funding/searchtitle"
       axios.get(url, {
         params: {
           keyword : this.keyword
