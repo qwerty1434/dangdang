@@ -15,8 +15,7 @@
           type="text"
           class="fundingtitleinput"
           placeholder="제목을 입력해주세요"
-          v-model="title"
-        />
+          v-model="title" />
       </div>
       <div>
         <div class="goalbox"></div>
@@ -24,8 +23,7 @@
           type="text"
           class="goalinput"
           placeholder="목표 금액을 입력해주세요"
-          v-model="targetPrice"
-        />
+          v-model="targetPrice" />
       </div>
       <div>
         <div class="">
@@ -39,8 +37,7 @@
               id="file0"
               accept="image/*"
               style="display: none"
-              @change="UploadThumbnail(0)"
-            />
+              @change="UploadThumbnail(0)" />
           </form>
         </div>
 
@@ -55,8 +52,7 @@
               id="file1"
               accept="image/*"
               style="display: none"
-              @change="UploadThumbnail(1)"
-            />
+              @change="UploadThumbnail(1)" />
           </form>
         </div>
 
@@ -71,8 +67,7 @@
               id="file2"
               accept="image/*"
               style="display: none"
-              @change="UploadThumbnail(2)"
-            />
+              @change="UploadThumbnail(2)" />
           </form>
         </div>
 
@@ -87,8 +82,7 @@
               id="file3"
               accept="image/*"
               style="display: none"
-              @change="UploadContentImage(0)"
-            />
+              @change="UploadContentImage(0)" />
           </form>
         </div>
 
@@ -103,8 +97,7 @@
               id="file4"
               accept="image/*"
               style="display: none"
-              @change="UploadContentImage(1)"
-            />
+              @change="UploadContentImage(1)" />
           </form>
         </div>
 
@@ -119,8 +112,7 @@
               id="file5"
               accept="image/*"
               style="display: none"
-              @change="UploadContentImage(2)"
-            />
+              @change="UploadContentImage(2)" />
           </form>
         </div>
       </div>
@@ -134,8 +126,7 @@
           type="text"
           class="rewardtitleinput"
           placeholder="리워드 제목을 입력해주세요"
-          v-model="reward.title"
-        />
+          v-model="reward.title" />
       </div>
       <div>
         <div class="rewardcontentbox"></div>
@@ -143,8 +134,7 @@
           type="text"
           class="rewardcontentinput"
           placeholder="리워드 내용을 입력해주세요"
-          v-model="reward.content"
-        />
+          v-model="reward.content" />
       </div>
       <div>
         <div class="rewardpricebox"></div>
@@ -152,8 +142,7 @@
           type="text"
           class="rewardpriceinput"
           placeholder="리워드에 해당하는 금액을 입력해주세요"
-          v-model="reward.price"
-        />
+          v-model="reward.price" />
       </div>
       <button @click="makeReward()" class="rewardaddbutton Btn">
         리워드 추가
@@ -163,8 +152,7 @@
         <div
           v-for="(reward, index) in rewards"
           v-bind:key="reward"
-          :class="`reward${index + 1}`"
-        >
+          :class="`reward${index + 1}`">
           <div @click="deleteReward(index)">{{ index }} 삭제</div>
           <div>제목: {{ reward.title }}</div>
           <div>내용: {{ reward.content }}</div>
@@ -279,7 +267,7 @@ export default {
     this.createUuid(); // uuid생성
     axios
       .get("https://" + serverUrl + "/category/list", {})
-      .then((response) => {
+      .then(response => {
         this.categories = response.data;
       })
       .catch(() => {
@@ -288,7 +276,7 @@ export default {
     const headers = { Authorization: this.$store.state.Authorization };
     axios
       .get("https://" + serverUrl + "/maker/my-info", { headers: headers })
-      .then((response) => {
+      .then(response => {
         this.companyNo = response.data.companyNo;
         this.companyName = response.data.companyName;
       })
@@ -354,12 +342,12 @@ export default {
           ACL: "public-read",
         })
           .promise()
-          .then((data) => {
+          .then(data => {
             console.log("hello");
             console.log(data.Location);
             this.thumbnailUrl[index].img = data.Location;
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
             console.log("world");
           });
@@ -372,10 +360,10 @@ export default {
           ACL: "public-read",
         })
           .promise()
-          .then((data) => {
+          .then(data => {
             this.contentImageUrl[index].img = data.Location;
           })
-          .catch((err) => {
+          .catch(err => {
             conosle.log(err);
             console.log("world");
           });
@@ -410,7 +398,7 @@ export default {
     },
 
     createUuid() {
-      this.uuid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+      this.uuid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (
           c ^
           (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
@@ -474,7 +462,7 @@ export default {
         //   .post("http://" + "localhost:8080/api" + "/funding/regist", result, {
         //     headers: headers,
         //   })
-        .then((response) => {
+        .then(response => {
           console.log(response);
         })
         .catch(() => {
@@ -516,6 +504,12 @@ export default {
   height: 64px;
   left: 592px;
   top: 478px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
 
   border: 0.5px solid #000000;
   border-radius: 5px;
