@@ -358,4 +358,11 @@ export default {
 .onpoint {
   cursor: pointer;
 }
+.coin{
+  cursor: pointer;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 250px;
+
+}
 </style>

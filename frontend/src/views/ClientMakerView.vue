@@ -3,38 +3,19 @@
     <div>
       <div class="pointer"></div>
       <div class="maker">메이커</div>
-      <div class="bar"></div>
-      <router-link :to="{ path: '/mypage/onfunding' }">
-        <div class="supporter">서포터</div></router-link
-      >
     </div>
 
     <div>
-      <form method="post" enctype="multipart/form-data">
-        <div>
-          <label for="chooseFile" class="profileimgedit"> </label>
-        </div>
-        <input
-          ref="image"
-          @change="uploadImg()"
-          type="file"
-          id="chooseFile"
-          name="chooseFile"
-          accept="image/*"
-          style="display: none"
-        />
-      </form>
       <img :src="image" alt="none" class="profileimg" />
     </div>
 
     <div>
       <div class="companytext">회사이름</div>
-      <div class="company">{{ this.companyName }}</div>
+      <div class="company">{{this.companyName}}</div>
     </div>
 
     <div>
       <div class="registrationnumber">사업자 등록번호</div>
-      <div class="registrationbox"></div>
       <div type="text" class="registrationinput">{{ this.companyNo }}</div>
     </div>
 
@@ -43,27 +24,19 @@
         <business-license></business-license>
       </modal-view>
 
-      <div class="fundingBtn"></div>
-      <div class="fundingBtn" v-if="this.companyNo == ''" @click="modal()">
-        메이커 등록
-      </div>
-      <div v-else>
-        <router-link to="/funding/submit" class="fundingBtn"
-          >펀딩 신청하기</router-link
-        >
-      </div>
     </div>
+
     <div class="borderline"></div>
     <div>
-      <router-link :to="{ path: '/mypage/maker/prefunding' }">
+      <router-link :to="{ path: '/maker/prefunding' , query: {id: makerId}}">
         <div class="fundingonwaitbox"></div>
         <div class="fundingonwaittext">대기 중인 펀딩</div>
       </router-link>
-      <router-link :to="{ path: '/mypage/maker/onfunding' }">
+      <router-link :to="{ path: '/maker/onfunding' , query: {id: makerId}}">
         <div class="fundingongoingbox"></div>
         <div class="fundingongoingtext">진행 중인 펀딩</div>
       </router-link>
-      <router-link :to="{ path: '/mypage/maker/endfunding' }">
+      <router-link :to="{ path: '/maker/endfunding' , query: {id: makerId}}">
         <div class="fundingendbox"></div>
         <div class="fundingendtext">종료 된 펀딩</div>
       </router-link>
@@ -94,6 +67,7 @@ export default {
       isModalViewed: false,
       companyNo: "",
       companyName: "",
+      makerId: "",
     };
   },
   components: {
@@ -105,6 +79,7 @@ export default {
     ...mapState(["user", "Authorization"]),
   },
   created() {
+    this.makerId = this.$route.query.id;
     this.getFiles();
     const headers = { Authorization: this.$store.state.Authorization };
     axios
@@ -144,30 +119,15 @@ export default {
       })
         .promise()
         .then((data) => {
-          console.log(data);
           this.image = data.Location;
-          var headers = { Authorization: this.$store.state.Authorization };
-          var result = { imgUrl: this.image };
-          axios
-            .post("https://" + serverUrl + "/maker/change/img", result, {
-              headers: headers,
-            })
-            .then((response) => {
-              alert("변경되었습니다.");
-              this.getFiles();
-              this.$router.go();
-            })
-            .catch(() => {
-              console.log("error");
-            });
         })
         .catch((err) => {
           conosle.log(err);
         });
-      // var image = this.$refs["image"].files[0];
-      // const url = URL.createObjectURL(image);
-      // this.image = url;
-      // alert("변경되었습니다.");
+
+      var image = this.$refs["image"].files[0];
+      const url = URL.createObjectURL(image);
+      this.image = url;
     },
 
     getFiles() {
@@ -199,9 +159,7 @@ export default {
             try {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key.split("@")[0] +
-                "%40" +
-                data.Contents[0].Key.split("@")[1];
+                data.Contents[0].Key;
             } catch (err) {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
@@ -209,7 +167,6 @@ export default {
           }
         }
       );
-      console.log("end");
     },
     modal() {
       this.isModalViewed = !this.isModalViewed;
@@ -224,7 +181,7 @@ export default {
   position: absolute;
   width: 90px;
   height: 82.51px;
-  left: 1150px;
+  left: 810px;
   top: 290px;
 
   background: url("@/assets/flower.png");
@@ -258,7 +215,7 @@ export default {
   position: absolute;
   width: 110px;
   height: 45px;
-  left: 1240px;
+  left: 900px;
   top: 310px;
 
   font-family: "NanumSquare";
@@ -309,7 +266,7 @@ export default {
 }
 .company {
   position: absolute;
-  width: 350px;
+  width: 280px;
   height: 40px;
   left: 820px;
   top: 820px;
