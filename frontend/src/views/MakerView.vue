@@ -53,7 +53,6 @@
         >
       </div>
     </div>
-
     <div class="borderline"></div>
     <div>
       <router-link :to="{ path: '/mypage/maker/prefunding' }">
@@ -154,7 +153,9 @@ export default {
               headers: headers,
             })
             .then((response) => {
-              console.log(response);
+              alert("변경되었습니다.");
+              this.getFiles();
+              this.$router.go();
             })
             .catch(() => {
               console.log("error");
@@ -163,11 +164,10 @@ export default {
         .catch((err) => {
           conosle.log(err);
         });
-
-      var image = this.$refs["image"].files[0];
-      const url = URL.createObjectURL(image);
-      this.image = url;
-      alert("변경되었습니다.");
+      // var image = this.$refs["image"].files[0];
+      // const url = URL.createObjectURL(image);
+      // this.image = url;
+      // alert("변경되었습니다.");
     },
 
     getFiles() {
@@ -199,7 +199,9 @@ export default {
             try {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key;
+                data.Contents[0].Key.split("@")[0] +
+                "%40" +
+                data.Contents[0].Key.split("@")[1];
             } catch (err) {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
@@ -207,6 +209,7 @@ export default {
           }
         }
       );
+      console.log("end");
     },
     modal() {
       this.isModalViewed = !this.isModalViewed;
