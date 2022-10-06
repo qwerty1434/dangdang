@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="fundingname">{{fundingDetail.fundingContent.title}}</div>
-    
-    <div class="reason">지출 사유?</div>
+    <div class="fundingname">{{ fundingDetail.fundingContent.title }}</div>
+
+    <div class="reason">지출 사유</div>
     <!-- <div class="boxes">
       <label for="material">
         <input
@@ -58,11 +58,10 @@
       type="text"
       class="reasoninput"
       v-model="reason"
-      placeholder="지출사유를 입력해 주세요"
-    />
+      placeholder="지출사유를 입력해 주세요" />
     <div class="cashouttext">지출 금액</div>
     <input type="number" class="cashoutinput" v-model="cashout" />
-    <button @click="useDeposit()"  class="submit">제출하기</button>
+    <button @click="useDeposit()" class="submit">제출하기</button>
   </div>
 </template>
 
@@ -70,27 +69,24 @@
 import axios from "axios";
 
 export default {
-  
   data() {
     return {
       fundingId: "",
-      fundingDetail:"",
-      reason:"",
-      cashout:"",
+      fundingDetail: "",
+      reason: "",
+      cashout: "",
       staticUrl: "https://j7a306.p.ssafy.io",
-    }
+    };
   },
   created() {
     this.fundingId = this.$route.query.id;
-    
-    const detailUrl = this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId
 
-    axios
-    .get(detailUrl, {
-    })
-    .then(({ data }) => {
+    const detailUrl =
+      this.staticUrl + "/api/funding/detail?fundingId=" + this.fundingId;
+
+    axios.get(detailUrl, {}).then(({ data }) => {
       this.fundingDetail = data;
-    })
+    });
   },
   methods: {
     useDeposit: function () {
@@ -104,7 +100,7 @@ export default {
           {
             fundingId: this.fundingId,
             amountUsed: this.cashout,
-            purpose: this.reason
+            purpose: this.reason,
           },
           { headers: headers }
         )
@@ -113,7 +109,7 @@ export default {
           this.$router.go(-1);
         });
     },
-  }
+  },
 };
 </script>
 
@@ -178,9 +174,9 @@ export default {
   width: 600px;
   height: 70px;
   left: 632px;
-  top: 600px;
+  top: 535px;
 
-  border: 1px solid #3c9a03;
+  border: 1px solid #62b878;
   border-radius: 5px;
 }
 .cashoutinput {
@@ -192,7 +188,7 @@ export default {
   left: 632px;
   top: 742px;
 
-  border: 1px solid #3c9a03;
+  border: 1px solid #62b878;
   border-radius: 5px;
 }
 .submit {
@@ -201,6 +197,8 @@ export default {
   top: 900px;
   width: 400px;
   height: 70px;
-  background: #3c9a03;
+  border: 0;
+  outline: 0;
+  background: #62b878;
 }
 </style>

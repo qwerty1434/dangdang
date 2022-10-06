@@ -89,7 +89,7 @@ export default {
     logout() {
       this.$store.commit("logout");
       alert("로그아웃 되었습니다.");
-      this.$router.push({ path: '/' })
+      this.$router.push({ path: "/" });
     },
     searchFunding() {
       console.log(this.keyword);
@@ -128,7 +128,7 @@ export default {
 
 <style scoped>
 input:focus {
-  outline: 1px solid #3c9a03;
+  outline: 1px solid #62b878;
 }
 .logo {
   position: absolute;
@@ -166,7 +166,7 @@ input:focus {
   display: flex;
   align-items: center;
 
-  border: 2px solid #3c9a03;
+  border: 2px solid #62b878;
   border-radius: 5px;
 }
 .searchbutton {
