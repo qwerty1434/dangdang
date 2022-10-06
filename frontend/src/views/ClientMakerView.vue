@@ -64,6 +64,7 @@ export default {
       bucketRegion: "ap-northeast-2",
       IdentityPoolId: "ap-northeast-2:81a948c5-f0c2-4e4b-ac0c-6ed0ffbce8b8",
       image: "",
+      makerEmail : "",
       isModalViewed: false,
       companyNo: "",
       companyName: "",
@@ -80,12 +81,33 @@ export default {
   },
   created() {
     this.makerId = this.$route.query.id;
-    this.getFiles();
     const headers = { Authorization: this.$store.state.Authorization };
+
     axios
-      .get("https://" + serverUrl + "/maker/my-info", { headers: headers })
+        .post(
+          "https://" + serverUrl + "/user/find/my-email",
+          {
+            uuid: this.makerId,
+          },
+          { headers: this.headers }
+        )
+        .then(({ data }) => {
+          this.makerEmail = data.email;
+          console.log("makerEmail", data.email);
+          this.getFiles();
+
+        });
+
+   axios
+      .get("https://" + serverUrl + "/maker/company-info", 
+      {
+        params: {
+            makerId: this.makerId,
+        },
+        headers: headers 
+      })
       .then((response) => {
-        this.companyNo = response.data.companyNo;
+        this.companyNo = response.data.companyNumber;
         this.companyName = response.data.companyName;
       })
       .catch(() => {
@@ -93,43 +115,6 @@ export default {
       });
   },
   methods: {
-    uploadImg() {
-      AWS.config.update({
-        region: this.bucketRegion,
-        credentials: new AWS.CognitoIdentityCredentials({
-          IdentityPoolId: this.IdentityPoolId,
-        }),
-      });
-
-      const S3 = new AWS.S3({
-        apiVersion: "2012-10-17",
-        params: {
-          Bucket: this.albumBucketName,
-        },
-      });
-      const fileName = this.$refs["image"].files[0].name;
-      const fileArr = fileName.split(".");
-      const fileExtension = fileArr[fileArr.length - 1];
-      let photoKey =
-        "user/" + this.user.email + "/profile/maker/" + "0." + "jpg";
-      S3.upload({
-        Key: photoKey,
-        Body: this.$refs["image"].files[0],
-        ACL: "public-read",
-      })
-        .promise()
-        .then((data) => {
-          this.image = data.Location;
-        })
-        .catch((err) => {
-          conosle.log(err);
-        });
-
-      var image = this.$refs["image"].files[0];
-      const url = URL.createObjectURL(image);
-      this.image = url;
-    },
-
     getFiles() {
       // 파일 불러오기
       AWS.config.update({
@@ -147,9 +132,10 @@ export default {
       });
 
       console.log("start");
+      console.log("sssss", "user/" + this.makerEmail + "/profile/maker",);
       S3.listObjects(
         {
-          Prefix: "user/" + this.user.email + "/profile/maker",
+          Prefix: "user/" + this.makerEmail + "/profile/maker",
         },
         (err, data) => {
           if (err) {
@@ -161,6 +147,7 @@ export default {
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
                 data.Contents[0].Key;
             } catch (err) {
+              console.log("errrrrrrrrrrrrr")
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/basic_image/seaotter.png";
             }
