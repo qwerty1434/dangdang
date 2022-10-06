@@ -175,6 +175,9 @@ export default {
   height: 70px;
   left: 632px;
   top: 535px;
+  font-family: "NanumSquare";
+  font-size: 32px;
+  line-height: 32px;
 
   border: 1px solid #62b878;
   border-radius: 5px;
@@ -187,6 +190,9 @@ export default {
   height: 70px;
   left: 632px;
   top: 742px;
+  font-family: "NanumSquare";
+  font-size: 32px;
+  line-height: 32px;
 
   border: 1px solid #62b878;
   border-radius: 5px;
@@ -210,5 +216,6 @@ export default {
   text-align: center;
 
   color: #ffffff;
+  padding: 100px;
 }
 </style>

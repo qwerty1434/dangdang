@@ -119,7 +119,7 @@ export default {
   font-size: 20px;
   line-height: 23px;
   text-align: right;
-
+  text-decoration-line: none;
   color: rgba(0, 0, 0, 0.5);
 }
 .to_popular {
@@ -135,7 +135,7 @@ export default {
   font-size: 20px;
   line-height: 23px;
   text-align: right;
-
+  text-decoration-line: none;
   color: rgba(0, 0, 0, 0.5);
 }
 .to_fresh {
@@ -151,7 +151,7 @@ export default {
   font-size: 20px;
   line-height: 23px;
   text-align: right;
-
+  text-decoration-line: none;
   color: rgba(0, 0, 0, 0.5);
 }
 .imminentfunding {
