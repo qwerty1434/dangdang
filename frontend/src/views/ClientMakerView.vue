@@ -240,7 +240,7 @@ export default {
 }
 .companytext {
   position: absolute;
-  width: 200px;
+  width: 350px;
   height: 40px;
   left: 608px;
   top: 820px;
