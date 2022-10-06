@@ -216,6 +216,5 @@ export default {
   text-align: center;
 
   color: #ffffff;
-  padding: 100px;
 }
 </style>

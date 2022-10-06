@@ -21,8 +21,7 @@
           id="chooseFile"
           name="chooseFile"
           accept="image/*"
-          style="display: none"
-        />
+          style="display: none" />
       </form>
       <img :src="image" alt="none" class="profileimg" />
     </div>
@@ -35,8 +34,7 @@
         class="alias"
         style="border: none"
         :placeholder="this.user.nickname"
-        v-model="nick"
-      />
+        v-model="nick" />
       <input
         v-else
         type="text"
@@ -44,8 +42,7 @@
         style="border: none"
         :placeholder="this.user.nickname"
         v-model="nick"
-        disabled
-      />
+        disabled />
 
       <div v-if="isChanged" @click="changeNickname()" class="aliasedit"></div>
       <div v-else @click="changeState()" class="aliasedit"></div>
@@ -74,8 +71,7 @@
         width: 1000px;
         margin: auto;
         margin-top: 1100px;
-      "
-    >
+      ">
       <router-link :to="{ path: '/mypage/onfunding' }">
         <div class="fundinghistory">진행 중 펀딩</div>
       </router-link>
@@ -151,14 +147,14 @@ export default {
         ACL: "public-read",
       })
         .promise()
-        .then((data) => {
+        .then(data => {
           alert("변경되었습니다.");
           this.getFiles();
           this.$router.go();
 
           this.image = data.Location;
         })
-        .catch((err) => {
+        .catch(err => {
           conosle.log(err);
         });
 
@@ -237,7 +233,7 @@ export default {
             this.nick = "";
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -254,7 +250,7 @@ export default {
           console.log(data);
           this.remainCoin = data.won;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -492,6 +488,7 @@ export default {
   height: 28px;
   left: 259px;
   cursor: pointer;
+  text-decoration: none;
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
