@@ -74,6 +74,9 @@ public class OrderService {
             }
             int itemTotalPrice = rewards.get(i).getCount() * reward.get().getPrice();
             OrderReward orderReward = OrderReward.OrderRewardCreate(reward.get(), savedOrderHistory.get(), rewards.get(i).getCount(), itemTotalPrice);
+            if(orderReward.getCount()==0){
+                continue;
+            }
             orderRewardRepository.save(orderReward);
             System.out.println(orderReward);
             totalPrice += itemTotalPrice;
