@@ -145,7 +145,9 @@ export default {
             try {
               this.image =
                 "https://dangdang-bucket.s3.ap-northeast-2.amazonaws.com/" +
-                data.Contents[0].Key;
+                data.Contents[0].Key.split("@")[0] +
+                "%40" +
+                data.Contents[0].Key.split("@")[1];
             } catch (err) {
               console.log("errrrrrrrrrrrrr")
               this.image =
