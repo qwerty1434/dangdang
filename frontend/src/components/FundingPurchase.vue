@@ -26,7 +26,7 @@
       :key="i"
     >
       <div class="productnumbertext">수량:</div>
-      <input class="productnumber" type="number" v-model="orderItem[i]" />
+      <input class="productnumber" type="number" min ="0" v-model="orderItem[i]" />
     </div>
 
     <!-- <div class="이거는 컴퍼넌트 들어가는 자리">
