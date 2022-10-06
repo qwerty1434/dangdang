@@ -11,6 +11,7 @@
     >
       <img
         @click="left()"
+        v-show="nowPage!=0"
         class="onpoint"
         src="@/assets/left.png"
         style="
@@ -18,6 +19,20 @@
           height: 20px;
           box-sizing: border-box;
           margin-top: 270px;
+        "
+        alt=""
+      />
+       <img
+        @click="left()"
+        v-show="nowPage==0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
         "
         alt=""
       />
@@ -40,6 +55,7 @@
               :orderprice="this.orderprice"
               :fundingTitle="this.orderfundingTitle"
               :userOrderList="this.userOrderList"
+              @close-modal="isModalViewed = false"
             ></my-order>
           </modal-view>
           <div class="thumbnail">
@@ -87,6 +103,7 @@
         </div>
       </div>
       <img
+       v-if="nextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
         style="
@@ -94,6 +111,20 @@
           height: 20px;
           box-sizing: border-box;
           margin-top: 270px;
+        "
+        alt=""
+        @click="right()"
+      />
+      <img
+        v-if="nextfundings.length == 0"
+        class="onpoint"
+        src="@/assets/right.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
         "
         alt=""
         @click="right()"
@@ -135,6 +166,7 @@ export default {
   },
   methods: {
     getFundings() {
+      this.checknext(this.nowPage + 1);
       // const url = "http://localhost:8080/api/user/funding-list"
       const url = "https://j7a306.p.ssafy.io/api/user/funding-list";
       axios
@@ -168,7 +200,6 @@ export default {
       this.nowPage = this.nowPage + 1;
       console.log(this.nowPage);
       if (this.fundings.length == 4) {
-        this.checknext();
         if (this.nextfundings.length != 0) {
           this.getFundings();
         } else {
@@ -178,14 +209,14 @@ export default {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext() {
+    checknext(next) {
       // const url = "http://localhost:8080/api/user/funding-list"
       const url = "https://j7a306.p.ssafy.io/api/user/funding-list";
       axios
         .get(url, {
           params: {
             state: this.state,
-            page: this.nowPage,
+            page: next,
             size: 4,
           },
           headers: {

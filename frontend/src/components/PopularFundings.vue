@@ -11,6 +11,7 @@
     >
       <img
         @click="left()"
+        v-show="popularnowPage!=0"
         class="onpoint"
         src="@/assets/left.png"
         style="
@@ -18,6 +19,20 @@
           height: 20px;
           box-sizing: border-box;
           margin-top: 270px;
+        "
+        alt=""
+      />
+       <img
+        @click="left()"
+        v-show="popularnowPage==0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
         "
         alt=""
       />
@@ -73,6 +88,7 @@
         </div>
       </div>
       <img
+       v-if="popularnextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
         style="
@@ -80,6 +96,20 @@
           height: 20px;
           box-sizing: border-box;
           margin-top: 270px;
+        "
+        alt=""
+        @click="right()"
+      />
+      <img
+        v-if="popularnextfundings.length == 0"
+        class="onpoint"
+        src="@/assets/right.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
         "
         alt=""
         @click="right()"
