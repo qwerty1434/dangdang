@@ -99,7 +99,7 @@ export default {
 .fundinginfomation {
   /* 펀딩 제목 */
   position: relative;
-  width: 400px;
+  width: 500px;
   height: 82px;
   left: 0px;
   top: 20px;
@@ -109,7 +109,7 @@ export default {
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 34px;
   line-height: 41px;
 
   color: #000000;
@@ -126,7 +126,7 @@ export default {
 
 .rewardsum {
   /* 총 참여 금액 : {nnnnn} 원 */
-  width: 400px;
+  width: 500px;
   height: 36px;
   left: 0px;
 
@@ -170,9 +170,9 @@ export default {
 .price{
   position: absolute;
   top: 670px;
-  width: 400px;
+  width: 450px;
   align-items: center;
-  left: 120px;
+  left: 95px;
   
 }
 </style>

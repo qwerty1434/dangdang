@@ -70,7 +70,7 @@
           </div>
           <progress
             id="progress"
-            :value="funding.achieveRate * 100"
+            :value="funding.achieveRate"
             min="0"
             max="100"
             class="progressbar"
@@ -82,7 +82,7 @@
               margin-top: 5px;
               width: 300px;
             ">
-            <div class="percentage">{{ funding.achieveRate * 100 }}%</div>
+            <div class="percentage">{{ funding.achieveRate}}%</div>
             <div class="total">{{ funding.nowPrice }}원</div>
           </div>
         </div>
