@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="banner"></div>
+    <img class="banner" v-if="fundingDetail.fundThumbnails[1] !== undefined" v-bind:src="fundingDetail.fundThumbnails[1].img" />
+    <img class="banner" v-else v-bind:src= "require(`@/assets/thumbnailplaceholder.jpg`)"/>
+
     <div class="fundingtitle">{{ fundingDetail.fundingContent.title }}</div>
     <router-link :to="{ path: '/product/story', query: { id: fundingId } }">
       <div class="storybutton">스토리</div>
@@ -143,8 +145,7 @@ export default {
   left: 0px;
   top: 224px;
 
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("@/assets/thumbnailplaceholder.jpg");
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
   backdrop-filter: blur(2px);
 }
 .storybutton {
