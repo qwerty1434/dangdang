@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="highlight"></div>
     <div
       class="fundings"
       style="
@@ -39,7 +40,6 @@
           v-for="funding in fundings"
           :key="funding.id"
           style="margin-right: 30px">
-
           <div class="thumbnail">
             <router-link
               :to="{ path: '/product/story', query: { id: funding.id } }">
@@ -73,7 +73,7 @@
               justify-content: space-between;
               margin-top: 5px;
             ">
-            <div class="percentage">{{ funding.achieveRate}}%</div>
+            <div class="percentage">{{ funding.achieveRate }}%</div>
             <div class="total">{{ funding.nowPrice }}원</div>
             <div class="remain">{{ funding.remainDays }}일 남음</div>
           </div>
@@ -250,7 +250,7 @@ export default {
   height: 2160px;
   z-index: -5;
 
-  background: #ffffff;
+  background: none;
 }
 .thumbnail {
   width: 300px;
@@ -384,5 +384,15 @@ export default {
   position: absolute;
   margin-top: 20px;
   margin-left: 250px;
+}
+.highlight {
+  z-index: -3;
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  left: 866px;
+  top: -36px;
+
+  background: rgba(98, 184, 120, 0.5);
 }
 </style>

@@ -435,6 +435,7 @@ export default {
   background: rgba(98, 184, 120, 0.5);
 }
 .fundingonwaittext {
+  z-index: 5;
   position: absolute;
   width: 200px;
   height: 28px;
@@ -563,7 +564,7 @@ export default {
   height: 2160px;
   z-index: -5;
 
-  background: #ffffff;
+  background: none;
 }
 .routerposition {
   position: absolute;

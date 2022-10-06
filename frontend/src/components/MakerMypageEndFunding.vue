@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="highlight"></div>
     <div
       class="fundings"
       style="
@@ -82,7 +83,7 @@
               margin-top: 5px;
               width: 300px;
             ">
-            <div class="percentage">{{ funding.achieveRate}}%</div>
+            <div class="percentage">{{ funding.achieveRate }}%</div>
             <div class="total">{{ funding.nowPrice }}원</div>
           </div>
         </div>
@@ -258,7 +259,7 @@ export default {
   height: 2160px;
   z-index: -5;
 
-  background: #ffffff;
+  background: none;
 }
 .thumbnail {
   width: 300px;
@@ -391,5 +392,15 @@ export default {
   position: absolute;
   margin-top: 20px;
   margin-left: 250px;
+}
+.highlight {
+  z-index: -3;
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  left: 1294px;
+  top: -36px;
+
+  background: rgba(98, 184, 120, 0.5);
 }
 </style>

@@ -72,10 +72,14 @@
         margin: auto;
         margin-top: 1100px;
       ">
-      <router-link :to="{ path: '/mypage/onfunding' }">
+      <router-link
+        style="text-decoration: none; color: inherit"
+        :to="{ path: '/mypage/onfunding' }">
         <div class="fundinghistory">진행 중 펀딩</div>
       </router-link>
-      <router-link :to="{ path: '/mypage/endfunding' }">
+      <router-link
+        style="text-decoration: none; color: inherit"
+        :to="{ path: '/mypage/endfunding' }">
         <div class="fundinghistory">종료 된 펀딩</div>
       </router-link>
     </div>
@@ -488,7 +492,6 @@ export default {
   height: 28px;
   left: 259px;
   cursor: pointer;
-  text-decoration-line: none;
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
@@ -498,6 +501,7 @@ export default {
   font-size: 28px;
   line-height: 32px;
   text-align: center;
+  text-decoration-line: none;
 
   color: #000000;
 }
