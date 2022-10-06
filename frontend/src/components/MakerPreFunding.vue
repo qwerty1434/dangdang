@@ -2,10 +2,30 @@
   <div>
     <div class="fundings" style="display:flex; justify-content: space-between; width: 1500px; margin:auto;">
          <img
-         @click="left()"
+        @click="left()"
+        v-show="nowPage!=0"
         class="onpoint"
         src="@/assets/left.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
+        alt=""
+      />
+       <img
+        @click="left()"
+        v-show="nowPage==0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
+        "
         alt=""
       />
 
@@ -43,9 +63,29 @@
 
     </div>
     <img
+       v-if="nextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
+        alt=""
+        @click="right()"
+      />
+      <img
+        v-if="nextfundings.length == 0"
+        class="onpoint"
+        src="@/assets/right.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden;
+        "
         alt=""
         @click="right()"
       />
@@ -84,22 +124,25 @@ export default {
 
   },
   created(){
-    this.getFundings();
     this.makerId = this.$route.query.id;
+    this.getFundings();
   },
   methods: {
     getFundings(){
+      this.checknext(this.nowPage + 1);
+      console.log(this.nextfundings.length+"메이커페이지 대기중펀딩")
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
       axios.post(url, {
         makerId: this.$route.query.id,
         state : this.state,
+      },
+      {
         params: {
-          makerId: this.makerId,
-          state : this.state,
           page : this.nowPage,
           size : 4
-        },headers: {
+        },
+        headers: {
         Authorization: this.Authorization
       },
     })
@@ -120,31 +163,32 @@ export default {
       console.log(this.nowPage);
       this.getFundings()
     },
-    right(){
+    right() {
       this.nowPage = this.nowPage + 1;
-      console.log(this.nowPage)
-      if(this.fundings.length == 4){
-        this.checknext()
-        if(this.nextfundings.length != 0){
-            this.getFundings()
-        }else{
-          this.nowPage = this.nowPage-1;
+      console.log(this.nowPage);
+      if (this.fundings.length == 4) {
+        if (this.nextfundings.length != 0) {
+          this.getFundings();
+        } else {
+          this.nowPage = this.nowPage - 1;
         }
-        
-      }else{
+      } else {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext(){
+    checknext(next){
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
       axios.post(url, {
         makerId: this.$route.query.id,
         state : this.state,
+      },
+      {
         params: {
-          page : this.nowPage,
+          page : next,
           size : 4
-        },headers: {
+        },
+        headers: {
         Authorization: this.Authorization
       },
     })

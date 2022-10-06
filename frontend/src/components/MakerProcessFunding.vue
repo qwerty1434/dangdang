@@ -2,10 +2,30 @@
   <div>
     <div class="fundings" style="display:flex; justify-content: space-between; width: 1500px; margin:auto;">
          <img
-         @click="left()"
+        @click="left()"
+        v-show="nowPage!=0"
         class="onpoint"
         src="@/assets/left.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
+        alt=""
+      />
+       <img
+        @click="left()"
+        v-show="nowPage==0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
+        "
         alt=""
       />
 
@@ -44,9 +64,29 @@
 
     </div>
     <img
+       v-if="nextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
-        style="width: 20px; height: 20px; box-sizing: border-box; margin-top : 270px"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
+        alt=""
+        @click="right()"
+      />
+      <img
+        v-if="nextfundings.length == 0"
+        class="onpoint"
+        src="@/assets/right.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility:hidden 
+        "
         alt=""
         @click="right()"
       />
@@ -87,19 +127,24 @@ export default {
   },
   methods: {
     getFundings(){
+      console.log("thist.nowPage+1", this.nowPage +1 )
+      this.checknext(this.nowPage + 1);
+      console.log(this.nextfundings.length+" 다음페이지 길이")
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
 
       axios.post(url, {
         makerId: this.$route.query.id,
         state : this.state,
+      },
+      {
         params: {
           page : this.nowPage,
           size : 4
         },
         headers: {
-          Authorization: this.Authorization
-        },
+        Authorization: this.Authorization
+      },
     })
       .then(({data}) => {
         this.fundings = data;
@@ -116,37 +161,40 @@ export default {
       console.log(this.nowPage);
       this.getFundings()
     },
-    right(){
+    right() {
       this.nowPage = this.nowPage + 1;
-      console.log(this.nowPage)
-      if(this.fundings.length == 4){
-        this.checknext()
-        if(this.nextfundings.length != 0){
-            this.getFundings()
-        }else{
-          this.nowPage = this.nowPage-1;
+      console.log(this.nowPage);
+      if (this.fundings.length == 4) {
+        if (this.nextfundings.length != 0) {
+          this.getFundings();
+        } else {
+          this.nowPage = this.nowPage - 1;
         }
-        
-      }else{
+      } else {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext(){
+    checknext(next){
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
+      console.log("next", next);
       axios.post(url, {
         makerId: this.$route.query.id,
         state : this.state,
+      },
+      {
         params: {
-          page : this.nowPage,
+          page : next,
           size : 4
-        },headers: {
+        },
+        headers: {
         Authorization: this.Authorization
       },
     })
       .then(({data}) => {
         this.nextfundings = data;
-        console.log(data)
+        
+        console.log("data",data)
       }).catch((err)=> {
       
         console.log(err)
