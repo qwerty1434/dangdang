@@ -488,7 +488,7 @@ export default {
   height: 28px;
   left: 259px;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration-line: none;
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */

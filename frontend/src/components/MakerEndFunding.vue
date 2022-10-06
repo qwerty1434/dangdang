@@ -1,69 +1,85 @@
 <template>
   <div>
-    <div class="fundings" style="display:flex; justify-content: space-between; width: 1500px; margin:auto;">
-         <img
-        @click="left()"
-        v-show="nowPage!=0"
-        class="onpoint"
-        src="@/assets/left.png"
-        style="
-          width: 20px;
-          height: 20px;
-          box-sizing: border-box;
-          margin-top: 270px;
-        "
-        alt=""
-      />
-       <img
-        @click="left()"
-        v-show="nowPage==0"
-        class="onpoint"
-        src="@/assets/left.png"
-        style="
-          width: 20px;
-          height: 20px;
-          box-sizing: border-box;
-          margin-top: 270px;
-          visibility:hidden 
-        "
-        alt=""
-      />
-
-    <div id="fundingList">
-      
-      <div v-for="funding in fundings" :key="funding.id" style="margin-right:30px">
-      <div class="thumbnail">
-      <router-link :to="{ path: '/product/story' , query: {id: funding.id}}">  
+    <div
+      class="fundings"
+      style="
+        display: flex;
+        justify-content: space-between;
+        width: 1500px;
+        margin: auto;
+      ">
       <img
-        :src="funding.img"
-        style="width: 300px; height: 400px; box-sizing: border-box"
-        alt=""
-      />
-      </router-link>
+        @click="left()"
+        v-show="nowPage != 0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+        "
+        alt="" />
+      <img
+        @click="left()"
+        v-show="nowPage == 0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility: hidden;
+        "
+        alt="" />
 
-    </div>
-    <div class="title" style="margin-top:5px">{{funding.title}}</div>
-    <div style="display:flex; justify-content: space-between; width: 300px; margin-top:5px">
-      <div class="category">{{funding.category}}</div>
-      <div class="makername" >{{funding.companyName}}</div>
-    </div>
-    <progress
-      id="progress"
-      :value="funding.achieveRate*100"
-      min="0"
-      max="100"
-      class="progressbar"
-      style="margin-top : 5px"
-    ></progress>
-    <div style="display:flex; justify-content: space-between; margin-top:5px; width: 300px">
-       <div class="percentage">{{funding.achieveRate*100}}%</div>
-       <div class="total">{{funding.nowPrice}}원(코인)</div>
-    </div>
-    </div>
-
-    </div>
-    <img
-       v-if="nextfundings.length != 0"
+      <div id="fundingList">
+        <div
+          v-for="funding in fundings"
+          :key="funding.id"
+          style="margin-right: 30px">
+          <div class="thumbnail">
+            <router-link
+              :to="{ path: '/product/story', query: { id: funding.id } }">
+              <img
+                :src="funding.img"
+                style="width: 300px; height: 400px; box-sizing: border-box"
+                alt="" />
+            </router-link>
+          </div>
+          <div class="title" style="margin-top: 5px">{{ funding.title }}</div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              width: 300px;
+              margin-top: 5px;
+            ">
+            <div class="category">{{ funding.category }}</div>
+            <div class="makername">{{ funding.companyName }}</div>
+          </div>
+          <progress
+            id="progress"
+            :value="funding.achieveRate * 100"
+            min="0"
+            max="100"
+            class="progressbar"
+            style="margin-top: 5px"></progress>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-top: 5px;
+              width: 300px;
+            ">
+            <div class="percentage">{{ funding.achieveRate * 100 }}%</div>
+            <div class="total">{{ funding.nowPrice }}원</div>
+          </div>
+        </div>
+      </div>
+      <img
+        v-if="nextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
         style="
@@ -73,8 +89,7 @@
           margin-top: 270px;
         "
         alt=""
-        @click="right()"
-      />
+        @click="right()" />
       <img
         v-if="nextfundings.length == 0"
         class="onpoint"
@@ -84,12 +99,10 @@
           height: 20px;
           box-sizing: border-box;
           margin-top: 270px;
-          visibility:hidden 
+          visibility: hidden;
         "
         alt=""
-        @click="right()"
-      />
-
+        @click="right()" />
     </div>
     <div class="background"></div>
   </div>
@@ -97,12 +110,11 @@
 
 <script>
 import axios from "axios";
-import {mapState} from 'vuex';
-
+import { mapState } from "vuex";
 
 export default {
-    name: "MakerMypageEndFunding",
-  
+  name: "MakerMypageEndFunding",
+
   data() {
     return {
       image: "",
@@ -112,49 +124,49 @@ export default {
       nextfundings: [],
     };
   },
-  computed:{
-    ...mapState(
-      ["user", "Authorization"]
-    )
-
+  computed: {
+    ...mapState(["user", "Authorization"]),
   },
-  created(){
+  created() {
     this.getFundings();
   },
   methods: {
-    getFundings(){
+    getFundings() {
       this.checknext(this.nowPage + 1);
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
-      axios.post(url, {
-        makerId: this.$route.query.id,
-        state : this.state,
-      },
-      {
-        params: {
-          page : this.nowPage,
-          size : 4
-        },
-        headers: {
-        Authorization: this.Authorization
-      },
-    })
-      .then(({data}) => {
-        this.fundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list";
+      axios
+        .post(
+          url,
+          {
+            makerId: this.$route.query.id,
+            state: this.state,
+          },
+          {
+            params: {
+              page: this.nowPage,
+              size: 4,
+            },
+            headers: {
+              Authorization: this.Authorization,
+            },
+          }
+        )
+        .then(({ data }) => {
+          this.fundings = data;
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    left(){
-      this.nowPage = this.nowPage -1;
-      if(this.nowPage <0){
+    left() {
+      this.nowPage = this.nowPage - 1;
+      if (this.nowPage < 0) {
         this.nowPage = 0;
       }
       console.log(this.nowPage);
-      this.getFundings()
+      this.getFundings();
     },
     right() {
       this.nowPage = this.nowPage + 1;
@@ -169,39 +181,39 @@ export default {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext(next){
+    checknext(next) {
       // const url = "http://localhost:8080/api/funding/maker/list"
-      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list"
-      axios.post(url, {
-        makerId: this.$route.query.id,
-        state : this.state,
-      },
-      {
-        params: {
-          page : next,
-          size : 4
-        },
-        headers: {
-        Authorization: this.Authorization
-      },
-    })
-      .then(({data}) => {
-        this.nextfundings = data;
-        console.log(data)
-      }).catch((err)=> {
-      
-        console.log(err)
-        
-      })
-
-    }
+      const url = "https://j7a306.p.ssafy.io/api/maker/funding-list";
+      axios
+        .post(
+          url,
+          {
+            makerId: this.$route.query.id,
+            state: this.state,
+          },
+          {
+            params: {
+              page: next,
+              size: 4,
+            },
+            headers: {
+              Authorization: this.Authorization,
+            },
+          }
+        )
+        .then(({ data }) => {
+          this.nextfundings = data;
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>
 
 <style scoped>
-
-
 .aliastext {
   position: absolute;
   width: 200px;
@@ -217,13 +229,11 @@ export default {
 
   color: #000000;
 }
-.fundinghistory{
+.fundinghistory {
   width: 200px;
   height: 28px;
   left: 259px;
   cursor: pointer;
-
-  
 
   /* background: rgba(98, 184, 120, 0.5); */
   /* 텍스트 */
@@ -333,7 +343,6 @@ export default {
   color: #000000;
 }
 .total {
- 
   height: 14px;
   left: 60px;
   top: 484px;
@@ -361,17 +370,16 @@ export default {
 
   color: #000000;
 }
-#fundingList{
-  display: flex ;
+#fundingList {
+  display: flex;
   flex-flow: wrap;
   /* justify-content: space-between; */
   /* gap: 10px 1%; */
   width: 1320px;
 
   margin-top: 70px;
-
 }
-.onpoint{
+.onpoint {
   cursor: pointer;
 }
 </style>
