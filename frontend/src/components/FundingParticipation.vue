@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="temp">
     <div class="time">{{(user.time+'').substr(0,10) +' ' + (user.time+'').substr(11,8)}}</div>
-    <div class="detail">{{getUserNickname()}}님이 {{user.won}}원 펀딩으로 참여하셨습니다.</div>
+    <div class="detail"><b>{{getUserNickname()}}</b>님이 <b>{{user.won}}원</b> 펀딩으로 참여하셨습니다.</div>
+    <hr>
   </div>
+  
 </template>
 
 <script>
@@ -32,6 +34,11 @@
 </script>
 
 <style scoped>
+.temp{
+  width:600px;
+  margin:auto;
+  margin-top:30px;
+}
 .time {
   width: 860px;
   height: 24px;
@@ -56,9 +63,8 @@
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 400;
-  font-size: 32px;
+  font-size: 25px;
   line-height: 36px;
-  margin-bottom: 20px;
   color: #000000;
 }
 </style>

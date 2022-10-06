@@ -1,10 +1,12 @@
 <template>
   <div>
     <div class="headline">통장내역</div>
+    <hr color="#62b878" size=3px width="70%">
     <div class="accountbrif">
-      이 프로젝트의 총 펀딩 금액은 {{fundingDetail.fundingContent.nowPrice}}원, 잔고는 {{history.totalRemain}}원
+      이 프로젝트의 총 펀딩 금액은 <b>{{fundingDetail.fundingContent.nowPrice}}원</b> <br>잔고는 <b>{{history.totalRemain}}원</b>
       입니다.
     </div>
+    <hr color="#62b878" size=3px width="70%">
     <!-- <div class="piechart"></div> -->
     <div class="accountevent">
       <div class="supporterjoin">
@@ -73,6 +75,8 @@ export default {
   height: 90px;
   left: 0px;
   top: 0px;
+  text-align:center;
+  margin-bottom:30px;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -89,11 +93,14 @@ export default {
   height: 82px;
   left: 400px;
   top: 646px;
+  margin-top:25px;
+  margin-bottom:25px;
+  text-align: center;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 30px;
   line-height: 41px;
 
   color: #000000;

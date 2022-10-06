@@ -121,9 +121,9 @@ export default {
 }
 .fundingname {
   position: absolute;
-  width: 400px;
+  width: 1200px;
   height: 60px;
-  left: 155px;
+  left: 70px;
   top: 360px;
 
   font-family: "NanumSquare";
