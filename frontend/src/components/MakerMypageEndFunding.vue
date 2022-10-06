@@ -39,6 +39,15 @@
           v-for="funding in fundings"
           :key="funding.id"
           style="margin-right: 30px">
+          <router-link
+            :to="{ path: '/funding/cashout', query: { id: funding.id } }">
+            <img
+              class="coin"
+              src="@/assets/금액.png"
+              style="width: 30px; height: 30px; box-sizing: border-box"
+              alt="" />
+          </router-link>
+
           <div class="thumbnail">
             <router-link
               :to="{ path: '/product/story', query: { id: funding.id } }">

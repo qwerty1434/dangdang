@@ -18,8 +18,14 @@
       <router-view />
     </div>
 
-    <div class="due">
-      종료 {{ fundingDetail.fundingContent.remainDays }}일 전
+    <div class="due"  v-if=" fundingDetail.fundingContent.detailState== `승인 완료`">
+      펀딩 대기중
+    </div>
+    <div class="due"  v-else-if=" fundingDetail.fundingContent.detailState== `펀딩 진행중`">
+       종료 {{ fundingDetail.fundingContent.remainDays }}일 전
+    </div>
+    <div class="due"  v-else>
+       종료
     </div>
     <div>
       <progress
@@ -37,9 +43,17 @@
       {{ fundingDetail.fundingContent.nowPrice }} 원 펀딩
     </div>
     <div class="supporter">{{ supporters.length }} 명의 서포터</div>
-    <router-link :to="{ path: '/product/purchase', query: { id: fundingId } }">
-      <button class="joinfunding">펀딩 참여</button>
-    </router-link>
+    <div v-if=" fundingDetail.fundingContent.detailState==`펀딩 진행중`">
+      <router-link :to="{ path: '/product/purchase', query: { id: fundingId } }">
+        <button class="joinfunding">펀딩 참여</button>
+      </router-link>
+    </div>
+    <div v-else-if=" fundingDetail.fundingContent.detailState==`승인 완료`">
+      <button class="joinfunding" disabled>펀딩 예정</button>
+    </div>
+    <div v-else>
+      <button class="joinfunding" disabled>펀딩 마감</button>
+    </div>
     <div class="makertext">메이커 정보</div>
     <router-link :to="{ path: '/maker/onfunding' , query: {id: fundingDetail.maker.id}}">
       <div class="maker">{{ fundingDetail.maker.companyName }}</div>
