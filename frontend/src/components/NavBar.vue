@@ -14,7 +14,7 @@
     <div>
       <input
         type="text"
-        placeholder="어떤 프로젝트를 찾고 계신가요?"
+        placeholder="   어떤 프로젝트를 찾고 계신가요?"
         class="searchbar"
         v-model="keyword"
         v-on:keyup.enter="searchFunding()" />
@@ -59,12 +59,13 @@
       class="funding"
       >당당펀딩</router-link
     >
-    <router-link
+    <!-- <router-link
       :to="{ path: '/funding', query: { id: 'charity' } }"
       class="charity"
       >당당후원</router-link
-    >
-    <div class="notification">공지사항</div>
+    > -->
+    <div class="charity" @click="alert()"> 당당후원</div>
+    <div class="notification" @click="alert()">공지사항</div>
     <div class="shadow"></div>
   </div>
 </template>
@@ -83,6 +84,9 @@ export default {
     };
   },
   methods: {
+    alert(){
+      alert("서비스 점검중입니다")
+    },
     toggleShow() {
       this.show = !this.show;
     },
@@ -161,7 +165,7 @@ input:focus {
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 400;
-  font-size: 40px;
+  font-size: 25px;
   line-height: 45px;
   display: flex;
   align-items: center;
