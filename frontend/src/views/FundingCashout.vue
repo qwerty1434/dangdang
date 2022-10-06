@@ -200,5 +200,15 @@ export default {
   border: 0;
   outline: 0;
   background: #62b878;
+  border-radius: 5px;
+
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 40px;
+  text-align: center;
+
+  color: #ffffff;
 }
 </style>
