@@ -37,7 +37,7 @@
 
     </div>
     
-     <button class="goback">뒤로가기</button>
+     <button class="goback"  @click="$emit('close-modal')">뒤로가기</button>
 
     </div>
   
@@ -65,27 +65,9 @@ export default {
   //   this.getOrderInfo()
   // },
   methods : {
-    // getOrderInfo(){
-    //   const url = "http://localhost:8080/api/funding/user/order"
-    //   axios.get(url, {
-    //     params: {
-    //       fundingId : this.nowfundingId,
-    //     },headers: {
-    //     Authorization: this.Authorization
-    //   },
-    // })
-    //   .then(({data}) => {
-    //     console.log(data)
-    //     this.orderprice = data.orderTotalPrice,
-    //     console.log(this.orderprice+'총주문금액')
-    //     this.userOrderList = data.userOrderList
-    //   }).catch((err)=> {
-      
-    //     console.log(err)
-        
-    //   })
+    goback(){
 
-    // },
+    }
   }
 };
 </script>
@@ -180,6 +162,8 @@ export default {
   align-items: center;
   text-align: center;
   justify-content: center;
+
+  cursor: pointer;
 
   color: #ffffff;
 }
