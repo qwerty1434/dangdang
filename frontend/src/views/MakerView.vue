@@ -21,8 +21,7 @@
           id="chooseFile"
           name="chooseFile"
           accept="image/*"
-          style="display: none"
-        />
+          style="display: none" />
       </form>
       <img :src="image" alt="none" class="profileimg" />
     </div>
@@ -56,15 +55,15 @@
     <div class="borderline"></div>
     <div>
       <router-link :to="{ path: '/mypage/maker/prefunding' }">
-        <div class="fundingonwaitbox"></div>
+        <div></div>
         <div class="fundingonwaittext">대기 중인 펀딩</div>
       </router-link>
       <router-link :to="{ path: '/mypage/maker/onfunding' }">
-        <div class="fundingongoingbox"></div>
+        <div></div>
         <div class="fundingongoingtext">진행 중인 펀딩</div>
       </router-link>
       <router-link :to="{ path: '/mypage/maker/endfunding' }">
-        <div class="fundingendbox"></div>
+        <div></div>
         <div class="fundingendtext">종료 된 펀딩</div>
       </router-link>
     </div>
@@ -109,7 +108,7 @@ export default {
     const headers = { Authorization: this.$store.state.Authorization };
     axios
       .get("https://" + serverUrl + "/maker/my-info", { headers: headers })
-      .then((response) => {
+      .then(response => {
         this.companyNo = response.data.companyNo;
         this.companyName = response.data.companyName;
       })
@@ -143,7 +142,7 @@ export default {
         ACL: "public-read",
       })
         .promise()
-        .then((data) => {
+        .then(data => {
           console.log(data);
           this.image = data.Location;
           var headers = { Authorization: this.$store.state.Authorization };
@@ -152,7 +151,7 @@ export default {
             .post("https://" + serverUrl + "/maker/change/img", result, {
               headers: headers,
             })
-            .then((response) => {
+            .then(response => {
               alert("변경되었습니다.");
               this.getFiles();
               this.$router.go();
@@ -161,7 +160,7 @@ export default {
               console.log("error");
             });
         })
-        .catch((err) => {
+        .catch(err => {
           conosle.log(err);
         });
       // var image = this.$refs["image"].files[0];

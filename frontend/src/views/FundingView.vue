@@ -54,7 +54,7 @@
             ">
             <div class="percentage">{{ funding.achieveRate }}%</div>
             <div class="total" v-if="this.id != 'plan'">
-              {{ funding.nowPrice }}원(코인)
+              {{ funding.nowPrice }}원
             </div>
             <div class="startDay" v-if="this.id == 'plan'">
               시작일 : {{ funding.startDate }}

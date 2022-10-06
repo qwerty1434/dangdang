@@ -4,8 +4,7 @@
       <img
         src="@/assets/thumbnailplaceholder.jpg"
         style="width: 300px; height: 400px; box-sizing: border-box"
-        alt=""
-      />
+        alt="" />
     </div>
     <div class="title">제목호출하는API</div>
     <div class="category">카테고리</div>
@@ -15,10 +14,9 @@
       value="50"
       min="0"
       max="100"
-      class="progressbar"
-    ></progress>
+      class="progressbar"></progress>
     <div class="percentage">300%</div>
-    <div class="total">24141원(코인)</div>
+    <div class="total">24141원</div>
     <div class="remain">20일 남음</div>
   </div>
 </template>

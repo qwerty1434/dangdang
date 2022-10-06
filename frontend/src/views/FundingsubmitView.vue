@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a /funding/submit page</h1>
     <div>
       <div>
         <select v-model="category" class="categorybox">
@@ -387,14 +386,24 @@ export default {
     },
 
     makeReward() {
-      if (this.rewards.length >= 4) {
-        alert("최대 4개만 가능함");
+      const re = /[0-9]/;
+      if (!this.reward.title || !this.reward.content || !this.reward.price) {
+        alert("리워드 정보를 채워주세요.");
       }
-      this.rewards.push(JSON.parse(JSON.stringify(this.reward))); // 깊은 복사를 위해 JSON 활용
-      this.reward.title = "";
-      this.reward.content = "";
-      this.reward.price = "";
-      console.log(this.rewards);
+      else{
+        if(!re.test(this.reward.price)){
+          alert("금액을 다시 입력해주세요.");
+        } else{
+          if (this.rewards.length >= 4) {
+            alert("최대 4개만 가능함");
+          }
+          this.rewards.push(JSON.parse(JSON.stringify(this.reward))); // 깊은 복사를 위해 JSON 활용
+          this.reward.title = "";
+          this.reward.content = "";
+          this.reward.price = "";
+          console.log(this.rewards);
+        }
+      }
     },
 
     createUuid() {
@@ -732,26 +741,26 @@ export default {
 .title {
   position: absolute;
   width: 200px;
-  height: 20px;
+  height: 35px;
   left: 16px;
   top: 20px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 25px;
   line-height: 32px;
   display: flex;
-  align-items: center;
-
+  overflow:hidden;
+  text-overflow: ellipsis;
   color: #000000;
 }
 .contents {
   position: absolute;
   width: 200px;
-  height: 120px;
+  height: 100px;
   left: 8px;
-  top: 78px;
+  top: 105px;
 
   font-family: "NanumSquare";
   font-style: normal;
@@ -760,18 +769,27 @@ export default {
   line-height: 18px;
 
   color: #000000;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.contents::-webkit-scrollbar{
+  width: 10px;
+  background-color:transparent;
+}
+.contents::-webkit-scrollbar-thumb{
+  background-color:#d9d9d9;
 }
 .price {
   position: absolute;
   width: 160px;
-  height: 20px;
-  left: 16px;
+  height: 60px;
+  left: 8px;
   top: 47px;
 
   font-family: "NanumSquare";
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 14px;
   display: flex;
   align-items: center;

@@ -7,10 +7,10 @@
         justify-content: space-between;
         width: 1500px;
         margin: auto;
-      "
-    >
+      ">
       <img
         @click="left()"
+        v-show="nowPage != 0"
         class="onpoint"
         src="@/assets/left.png"
         style="
@@ -19,35 +19,42 @@
           box-sizing: border-box;
           margin-top: 270px;
         "
-        alt=""
-      />
+        alt="" />
+      <img
+        @click="left()"
+        v-show="nowPage == 0"
+        class="onpoint"
+        src="@/assets/left.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility: hidden;
+        "
+        alt="" />
 
       <div id="fundingList">
         <div
           v-for="funding in fundings"
           :key="funding.id"
-          style="margin-right: 30px"
-        >
+          style="margin-right: 30px">
           <router-link
-            :to="{ path: '/funding/cashout', query: { id: funding.id } }"
-          >
+            :to="{ path: '/funding/cashout', query: { id: funding.id } }">
             <img
               class="coin"
               src="@/assets/금액.png"
               style="width: 30px; height: 30px; box-sizing: border-box"
-              alt=""
-            />
+              alt="" />
           </router-link>
 
           <div class="thumbnail">
             <router-link
-              :to="{ path: '/product/story', query: { id: funding.id } }"
-            >
+              :to="{ path: '/product/story', query: { id: funding.id } }">
               <img
                 :src="funding.img"
                 style="width: 300px; height: 400px; box-sizing: border-box"
-                alt=""
-              />
+                alt="" />
             </router-link>
           </div>
           <div class="title" style="margin-top: 5px">{{ funding.title }}</div>
@@ -57,8 +64,7 @@
               justify-content: space-between;
               width: 300px;
               margin-top: 5px;
-            "
-          >
+            ">
             <div class="category">{{ funding.category }}</div>
             <div class="makername">{{ funding.companyName }}</div>
           </div>
@@ -68,22 +74,21 @@
             min="0"
             max="100"
             class="progressbar"
-            style="margin-top: 5px"
-          ></progress>
+            style="margin-top: 5px"></progress>
           <div
             style="
               display: flex;
               justify-content: space-between;
               margin-top: 5px;
-            "
-          >
+            ">
             <div class="percentage">{{ funding.achieveRate * 100 }}%</div>
-            <div class="total">{{ funding.nowPrice }}원(코인)</div>
+            <div class="total">{{ funding.nowPrice }}원</div>
             <div class="remain">{{ funding.remainDays }}일 남음</div>
           </div>
         </div>
       </div>
       <img
+        v-if="nextfundings.length != 0"
         class="onpoint"
         src="@/assets/right.png"
         style="
@@ -93,8 +98,20 @@
           margin-top: 270px;
         "
         alt=""
-        @click="right()"
-      />
+        @click="right()" />
+      <img
+        v-if="nextfundings.length == 0"
+        class="onpoint"
+        src="@/assets/right.png"
+        style="
+          width: 20px;
+          height: 20px;
+          box-sizing: border-box;
+          margin-top: 270px;
+          visibility: hidden;
+        "
+        alt=""
+        @click="right()" />
     </div>
 
     <div class="background"></div>
@@ -125,6 +142,7 @@ export default {
   },
   methods: {
     getFundings() {
+      this.checknext(this.nowPage + 1);
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/funding/maker/list";
       axios
@@ -142,7 +160,7 @@ export default {
           this.fundings = data.fundingList;
           console.log(data);
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -158,7 +176,6 @@ export default {
       this.nowPage = this.nowPage + 1;
       console.log(this.nowPage);
       if (this.fundings.length == 4) {
-        this.checknext();
         if (this.nextfundings.length != 0) {
           this.getFundings();
         } else {
@@ -168,14 +185,14 @@ export default {
         this.nowPage = this.nowPage - 1;
       }
     },
-    checknext() {
+    checknext(next) {
       // const url = "http://localhost:8080/api/funding/maker/list"
       const url = "https://j7a306.p.ssafy.io/api/funding/maker/list";
       axios
         .get(url, {
           params: {
             state: this.state,
-            page: this.nowPage,
+            page: next,
             size: 4,
           },
           headers: {
@@ -186,7 +203,7 @@ export default {
           this.nextfundings = data.fundingList;
           console.log(data);
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
