@@ -8,7 +8,7 @@
       <div class="mainTitle" v-if="this.id == 'popular'">인기순 펀딩리스트</div>
       <div class="mainTitle" v-if="this.id == 'new'">신규상품순 펀딩리스트</div>
       <div class="mainTitle" v-if="this.id == 'plan'">펀딩예정 리스트</div>
-      <div class="mainTitle" v-if="this.category">{{ this.id }} 펀딩리스트</div>
+      <div class="mainTitle temp" v-if="this.category">{{ this.id }}</div>
       <div class="mainTitle" v-if="this.keyword != undefined">
         {{ this.keyword }} 관련 펀딩리스트
       </div>
@@ -234,6 +234,12 @@ export default {
 </script>
 
 <style scoped>
+.temp{
+  height:140px;
+  line-height: 140px;
+  color: #62b878;
+  background-color:white;
+}
 .background {
   float: left top;
   width: 1920px;
@@ -383,7 +389,7 @@ export default {
   font-size: 60px;
   font-weight: 600;
   margin: auto;
-  width: 700px;
+  width: 1400px;
   top: 260px;
   text-align: center;
 }
