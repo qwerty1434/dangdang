@@ -130,4 +130,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findmyId(req));
     }
 
+    @PostMapping("/find/my-email")
+    @ApiOperation(value="uuid에서 email 가져오기")
+    public ResponseEntity<EmailResponse> findEmail(@RequestBody UUIDRequest input) throws NotFoundException, NotValidateAccessToken {
+        return ResponseEntity.ok().body(userService.findMyEmail(input));
+    }
 }

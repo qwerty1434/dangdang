@@ -238,4 +238,11 @@ public class UserService {
         String userId = jwtUtil.getUserIdByHeaderAccessToken(req);
         return new UUIDResponse(userId);
     }
+
+    public EmailResponse findMyEmail(UUIDRequest input){
+        UUID uuid = UUID.fromString(input.getUuid());
+        User user = userRepository.findById(uuid).get();
+
+        return new EmailResponse(user.getEmail());
+    }
 }
