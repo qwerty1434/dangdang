@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>this is a charity page</h1>
     <div class="placeholder"></div>
   </div>
 </template>
