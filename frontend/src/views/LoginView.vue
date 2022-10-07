@@ -24,7 +24,6 @@
     <div class="findid">아이디 찾기</div>
     <div class="findpw">비밀번호 찾기</div>
     <div class="bar">|</div>
-    <h1>this is a login page</h1>
   </div>
 </template>
 

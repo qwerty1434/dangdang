@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <h1>this is a plan page</h1>
-  </div>
+  <div></div>
 </template>
 
 <script>
