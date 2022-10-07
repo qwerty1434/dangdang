@@ -175,4 +175,18 @@ export default {
   left: 95px;
   
 }
+.Orders{
+  overflow: scroll;
+  overflow-x: hidden;
+  height: 430px;
+}
+
+.Orders::-webkit-scrollbar{
+  width: 10px;
+  background-color:transparent;
+}
+.Orders::-webkit-scrollbar-thumb{
+  background-color:#d9d9d9;
+}
+
 </style>
