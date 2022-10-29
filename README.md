@@ -69,11 +69,8 @@
 
 ---
 
-## ✅프로젝트 산출물
+## ✅Sequence_Diagram
 
-### 기능 정의서
-
-### Sequence_Diagram
 ![1.gif](./docs/sequence_diagram/1.png)
 
 ![2.gif](./docs/sequence_diagram/2.png)
@@ -83,9 +80,6 @@
 ![4.gif](./docs/sequence_diagram/4.png)
 
 ![5.gif](./docs/sequence_diagram/5.png)
-
-
-### 발표자료
 
 ---
 
